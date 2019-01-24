@@ -1,0 +1,9 @@
+export interface {{typeName}} {{#superClass}}extends {{superClass}} {{/superClass}}{
+{{#properties}}
+{{{tsComments}}}{{name}}{{^required}}?{{/required}}: {{{type}}};
+{{/properties}}
+{{#additionalProperties}}
+
+  [key: string]: {{additionalProperties}};
+{{/additionalProperties}}
+}

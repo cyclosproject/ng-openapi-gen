@@ -1,0 +1,54 @@
+{
+  "name": "ng-openapi-gen",
+  "version": "0.0.1",
+  "license": "MIT",
+  "author": "Cyclos development team",
+  "description": "An OpenAPI 3 codegen for Angular 6+",
+  "private": false,
+  "keywords": [
+    "angular",
+    "openapi",
+    "codegen"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cyclosproject/ng-openapi-gen.git"
+  },
+  "bin": {
+    "ng-openapi-gen": "./ng-openapi-gen"
+  },
+  "scripts": {
+    "start": "npm run serve",
+    "build": "tsc && npm run tslint && npm test",
+    "watch": "tsc -w",
+    "tslint": "tslint -c tslint.json -p tsconfig.json",
+    "test": "jasmine-ts tsconfig.json --config=jasmine.json",
+    "watch-test": "npm run test -- --watchAll"
+  },
+  "dependencies": {
+    "@loopback/openapi-v3-types": "^1.0.4",
+    "@types/jsesc": "^0.4.29",
+    "@types/json-schema": "^7.0.1",
+    "@types/mustache": "^0.8.32",
+    "@types/node": "^10.12.18",
+    "argparse": "^1.0.10",
+    "jsesc": "^2.5.2",
+    "json-schema": "^0.2.3",
+    "json-schema-ref-parser": "^5.1.3",
+    "mustache": "^2.3.2",
+    "ts-node": "^7.0.1",
+    "typescript": "^3.2.2"
+  },
+  "peerDependencies": {
+    "@angular/core": ">=6.0.0",
+    "rxjs": ">=6.0.0"
+  },
+  "devDependencies": {
+    "@types/jasmine": "^3.3.5",
+    "jasmine": "^3.3.1",
+    "jasmine-spec-reporter": "^4.2.1",
+    "jasmine-ts": "^0.3.0",
+    "tslint": "^5.12.1",
+    "typescript-parser": "^2.6.1"
+  }
+}
