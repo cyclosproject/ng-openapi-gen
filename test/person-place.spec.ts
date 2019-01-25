@@ -1,21 +1,13 @@
-import { OpenAPIObject } from '@loopback/openapi-v3-types';
-import { TypescriptParser, TypeAliasDeclaration, InterfaceDeclaration } from 'typescript-parser';
-import { Globals } from '../src/globals';
-import { Options } from '../src/options';
-import { Templates } from '../src/templates';
+import { InterfaceDeclaration, TypeAliasDeclaration, TypescriptParser } from 'typescript-parser';
+import { NgOpenApiGen } from '../src/ng-openapi-gen';
 import personAndPlaceSpec from './person-place.json';
-import { getModel } from './test-utils';
 
-const personAndPlace = personAndPlaceSpec as OpenAPIObject;
-const options: Options = { input: '' };
-const globals = new Globals(options);
-const templates = new Templates('templates', '');
-templates.setGlobals(globals);
+const gen = new NgOpenApiGen(personAndPlaceSpec, { input: '', ignoreUnusedModels: false });
 
 describe('Generation tests using person-place.json', () => {
   it('Id model', done => {
-    const id = getModel(personAndPlace, 'Id', options);
-    const ts = templates.apply('model', id);
+    const id = gen.models.get('Id');
+    const ts = gen.templates.apply('model', id);
     const parser = new TypescriptParser();
     parser.parseSource(ts).then(ast => {
       expect(ast.declarations.length).toBe(1);
@@ -28,8 +20,8 @@ describe('Generation tests using person-place.json', () => {
   });
 
   it('Entity model', done => {
-    const entity = getModel(personAndPlace, 'Entity', options);
-    const ts = templates.apply('model', entity);
+    const entity = gen.models.get('Entity');
+    const ts = gen.templates.apply('model', entity);
     const parser = new TypescriptParser();
     parser.parseSource(ts).then(ast => {
       expect(ast.imports.find(i => i.libraryName === './id')).withContext('id import').toBeDefined();
@@ -46,8 +38,8 @@ describe('Generation tests using person-place.json', () => {
   });
 
   it('Person model', done => {
-    const person = getModel(personAndPlace, 'Person', options);
-    const ts = templates.apply('model', person);
+    const person = gen.models.get('Person');
+    const ts = gen.templates.apply('model', person);
     const parser = new TypescriptParser();
     parser.parseSource(ts).then(ast => {
       expect(ast.imports.find(i => i.libraryName === './entity')).withContext('entity import').toBeDefined();
@@ -72,8 +64,8 @@ describe('Generation tests using person-place.json', () => {
   });
 
   it('Place model', done => {
-    const place = getModel(personAndPlace, 'Place', options);
-    const ts = templates.apply('model', place);
+    const place = gen.models.get('Place');
+    const ts = gen.templates.apply('model', place);
     const parser = new TypescriptParser();
     parser.parseSource(ts).then(ast => {
       expect(ast.imports.find(i => i.libraryName === './entity')).withContext('entity import').toBeDefined();
@@ -95,8 +87,8 @@ describe('Generation tests using person-place.json', () => {
   });
 
   it('PersonPlace model', done => {
-    const person = getModel(personAndPlace, 'PersonPlace', options);
-    const ts = templates.apply('model', person);
+    const person = gen.models.get('PersonPlace');
+    const ts = gen.templates.apply('model', person);
     const parser = new TypescriptParser();
     parser.parseSource(ts).then(ast => {
       expect(ast.imports.find(i => i.libraryName === './place')).withContext('place import').toBeDefined();

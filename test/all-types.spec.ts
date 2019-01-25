@@ -1,21 +1,14 @@
 import { OpenAPIObject } from '@loopback/openapi-v3-types';
 import { EnumDeclaration, InterfaceDeclaration, TypeAliasDeclaration, TypescriptParser } from 'typescript-parser';
-import { Globals } from '../src/globals';
-import { Options } from '../src/options';
-import { Templates } from '../src/templates';
+import { NgOpenApiGen } from '../src/ng-openapi-gen';
 import allTypesSpec from './all-types.json';
-import { getModel } from './test-utils';
 
-const allTypes = allTypesSpec as OpenAPIObject;
-const options: Options = { input: '' };
-const globals = new Globals(options);
-const templates = new Templates('templates', '');
-templates.setGlobals(globals);
+const gen = new NgOpenApiGen(allTypesSpec as OpenAPIObject, { input: '', ignoreUnusedModels: false });
 
 describe('Generation tests using all-types.json', () => {
   it('RefEnum model', done => {
-    const refString = getModel(allTypes, 'RefEnum', options);
-    const ts = templates.apply('model', refString);
+    const refString = gen.models.get('RefEnum');
+    const ts = gen.templates.apply('model', refString);
     const parser = new TypescriptParser();
     parser.parseSource(ts).then(ast => {
       expect(ast.imports.length).toBe(0);
@@ -23,14 +16,14 @@ describe('Generation tests using all-types.json', () => {
       expect(ast.declarations[0]).toEqual(jasmine.any(EnumDeclaration));
       const decl = ast.declarations[0] as EnumDeclaration;
       expect(decl.name).toBe('RefEnum');
-      expect(decl.members).toEqual(['VALUE_A', 'VALUE_B', 'VALUE_C']);
+      expect(decl.members).toEqual(['ValueA', 'ValueB', 'ValueC']);
       done();
     });
   });
 
   it('RefObject model', done => {
-    const refObject = getModel(allTypes, 'RefObject', options);
-    const ts = templates.apply('model', refObject);
+    const refObject = gen.models.get('RefObject');
+    const ts = gen.templates.apply('model', refObject);
     const parser = new TypescriptParser();
     parser.parseSource(ts).then(ast => {
       expect(ast.imports.length).toBe(0);
@@ -47,8 +40,8 @@ describe('Generation tests using all-types.json', () => {
   });
 
   it('Union model', done => {
-    const union = getModel(allTypes, 'Union', options);
-    const ts = templates.apply('model', union);
+    const union = gen.models.get('Union');
+    const ts = gen.templates.apply('model', union);
     const parser = new TypescriptParser();
     parser.parseSource(ts).then(ast => {
       expect(ast.imports.find(i => i.libraryName === './ref-enum')).withContext('ref-enum import').toBeDefined();
@@ -64,8 +57,8 @@ describe('Generation tests using all-types.json', () => {
   });
 
   it('Container model', done => {
-    const container = getModel(allTypes, 'Container', options);
-    const ts = templates.apply('model', container);
+    const container = gen.models.get('Container');
+    const ts = gen.templates.apply('model', container);
     const parser = new TypescriptParser();
     parser.parseSource(ts).then(ast => {
       expect(ast.imports.length).toBe(2);
@@ -101,8 +94,8 @@ describe('Generation tests using all-types.json', () => {
       assertProperty('arrayOfRefEnumsProp', 'Array<RefEnum>');
       assertProperty('arrayOfRefObjectsProp', 'Array<RefObject>');
       assertProperty('arrayOfAnyProp', 'Array<any>');
-      assertProperty('nestedObject', "{ 'p1': string, 'p2': number, " +
-        "'deeper': { 'd1': RefObject, 'd2': string | Array<RefObject> | number } }");
+      assertProperty('nestedObject', '{ \'p1\': string, \'p2\': number, ' +
+        '\'deeper\': { \'d1\': RefObject, \'d2\': string | Array<RefObject> | number } }');
 
       done();
     });

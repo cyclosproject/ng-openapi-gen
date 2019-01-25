@@ -1,49 +1,68 @@
-import { OperationObject, PathItemObject, OpenAPIObject, ParameterObject, ReferenceObject, RequestBodyObject, ContentObject, MediaTypeObject, ResponseObject } from 'openapi3-ts';
-import { Parameter } from './parameter';
-import { Options } from './options';
-import { resolveRef } from './gen-utils';
+import { ContentObject, MediaTypeObject, OpenAPIObject, OperationObject, ParameterObject, PathItemObject, ReferenceObject, RequestBodyObject, ResponseObject } from 'openapi3-ts';
 import { Content } from './content';
+import { resolveRef, tsComments, upperFirst, enumName } from './gen-utils';
+import { Options } from './options';
+import { Parameter } from './parameter';
 import { Response } from './response';
+import { OperationVariant } from './operation-variant';
+import { RequestBody } from './request-body';
 
 /**
- * An operation
+ * An operation descriptor
  */
 export class Operation {
   tags: string[];
+  pathVar: string;
   parameters: Parameter[] = [];
-  hasBody: boolean;
-  bodyRequired: boolean;
-  bodyContent: Content[] = [];
+  hasParameters: boolean;
+  parametersRequired = false;
+  tsComments: string;
+  requestBody?: RequestBody;
   successResponse?: Response;
   allResponses: Response[] = [];
+  pathExpression: string;
+  variants: OperationVariant[] = [];
 
   constructor(
     public openApi: OpenAPIObject,
     public path: string,
     public pathSpec: PathItemObject,
     public method: string,
+    public id: string,
     public spec: OperationObject,
     public options: Options) {
     this.tags = spec.tags || [];
+
+    this.tsComments = tsComments(spec.description || '', 1);
+    this.pathVar = `${upperFirst(id)}Path`;
 
     // Add both the common and specific parameters
     this.parameters = [
       ...this.collectParameters(pathSpec.parameters),
       ...this.collectParameters(spec.parameters),
     ];
+    if (this.parameters.find(p => p.required)) {
+      this.parametersRequired = true;
+    }
+    this.hasParameters = this.parameters.length > 0;
     let body = spec.requestBody;
-    this.hasBody = !!body;
     if (body) {
       if (body.$ref) {
         body = resolveRef(this.openApi, body.$ref);
       }
       body = body as RequestBodyObject;
-      this.bodyRequired = body.required === true;
-      this.bodyContent = this.collectContent(body.content);
+      this.requestBody = new RequestBody(body, this.collectContent(body.content), this.options);
+      if (body.required) {
+        this.parametersRequired = true;
+      }
     }
     const responses = this.collectResponses();
     this.successResponse = responses.success;
     this.allResponses = responses.all;
+    this.pathExpression = this.toPathExpression();
+
+    // Now calculate the variants: request body content x success response content
+    this.calculateVariants();
   }
 
   private collectParameters(params: (ParameterObject | ReferenceObject)[] | undefined): Parameter[] {
@@ -53,7 +72,12 @@ export class Operation {
         if (param.$ref) {
           param = resolveRef(this.openApi, param.$ref);
         }
-        result.push(new Parameter(param as ParameterObject, this.options));
+        param = param as ParameterObject;
+        if (param.in === 'cookie') {
+          console.warn(`Ignoring cookie parameter ${this.id}.${param.name} as cookie parameters cannot be sent in XmlHttpRequests.`);
+        } else {
+          result.push(new Parameter(param as ParameterObject, this.options));
+        }
       }
     }
     return result;
@@ -88,4 +112,46 @@ export class Operation {
     }
     return { success: successResponse, all: allResponses };
   }
+
+  /**
+   * Returns a path expression to be evaluated, for example:
+   * "/a/{var1}/b/{var2}/" returns "/a/${params.var1}/b/${params.var2}"
+   */
+  private toPathExpression() {
+    return (this.path || '').replace(/\{([^}]+)}/g, (_, pName) => {
+      const param = this.parameters.find(p => p.name === pName);
+      const paramName = param ? param.var : pName;
+      return '${params.' + paramName + '}';
+    });
+  }
+
+  private calculateVariants() {
+    const hasBodyVariants = this.requestBody && this.requestBody.content.length > 1;
+    const hasResponseVariants = this.successResponse && this.successResponse.content.length > 1;
+    const requestBodyVariants: (Content | null)[] = hasBodyVariants && this.requestBody ? this.requestBody.content : [null];
+    const successResponseVariants: (Content | null)[] = hasResponseVariants && this.successResponse ? this.successResponse.content : [null];
+    for (const requestBodyVariant of requestBodyVariants) {
+      const methodPart = this.id + this.variantMethodPart(requestBodyVariant);
+      for (const successResponseVariant of successResponseVariants) {
+        const methodName = methodPart + this.variantMethodPart(successResponseVariant);
+        this.variants.push(new OperationVariant(this, methodName, requestBodyVariant, successResponseVariant));
+      }
+    }
+  }
+
+  /**
+   * Returns how the given content is represented on the method name
+   */
+  private variantMethodPart(content: Content | null): string {
+    if (content) {
+      const type = content.mediaType.replace(/\/\*/, '');
+      if (type === '*' || type === 'application/octet-stream') {
+        return '$Any';
+      }
+      return `$${enumName(type)}`;
+    } else {
+      return '';
+    }
+  }
+
 }

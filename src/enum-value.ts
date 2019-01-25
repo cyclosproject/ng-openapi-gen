@@ -14,5 +14,4 @@ export class EnumValue {
     this.name = enumName(value);
     this.value = `'${jsesc(value)}'`;
   }
-
 }

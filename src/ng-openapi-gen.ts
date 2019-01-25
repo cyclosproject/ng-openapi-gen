@@ -1,7 +1,6 @@
 import { OpenAPIObject, OperationObject, PathItemObject } from '@loopback/openapi-v3-types';
-import $RefParser from 'json-schema-ref-parser';
 import path from 'path';
-import { HTTP_METHODS } from './gen-utils';
+import { HTTP_METHODS, methodName } from './gen-utils';
 import { Globals } from './globals';
 import { Model } from './model';
 import { Operation } from './operation';
@@ -14,29 +13,16 @@ import { Templates } from './templates';
  * Main generator class
  */
 export class NgOpenApiGen {
-
-  openApi: OpenAPIObject;
-  prefix: string;
+  globals: Globals;
   templates: Templates;
   models = new Map<string, Model>();
   services = new Map<string, Service>();
+  operations = new Map<string, Operation>();
 
-  constructor(public options: Options) {
-  }
+  constructor(
+    public openApi: OpenAPIObject,
+    public options: Options) {
 
-  async generate() {
-    const refParser = new $RefParser();
-    const input = this.options.input;
-    try {
-      this.openApi = await refParser.bundle(input, { dereference: { circular: false } }) as OpenAPIObject;
-      this.doGenerate();
-    } catch (err) {
-      console.error(`Error on generation from ${input}: ${err}`);
-    }
-  }
-
-  private doGenerate(): void {
-    this.prefix = this.options.prefix || 'Api';
     this.readTemplates();
     this.readModels();
     this.readServices();
@@ -45,24 +31,47 @@ export class NgOpenApiGen {
     if (this.options.ignoreUnusedModels !== false) {
       this.ignoreUnusedModels();
     }
+  }
 
+  /**
+   * Actually generates the files
+   */
+  generate(): void {
     // Generate each model
-    for (const model of this.models.values()) {
+    const models = [...this.models.values()];
+    for (const model of models) {
       this.templates.write('model', model, model.fileName);
     }
 
     // Generate each service
-    for (const service of this.services.values()) {
+    const services = [...this.services.values()];
+    for (const service of services) {
       this.templates.write('service', service, service.fileName);
     }
+
+    // Generate the general files
+    this.templates.write('configuration', {}, `${this.globals.configurationFile}.ts`);
+    this.templates.write('response', {}, `${this.globals.responseFile}`);
+    this.templates.write('baseService', {}, `${this.globals.baseServiceFile}`);
+    if (this.globals.moduleClass) {
+      this.templates.write('module', {}, `${this.globals.moduleFile}.ts`);
+    }
+    if (this.globals.modelIndexFile) {
+      this.templates.write('modelIndex', { models: models }, `${this.globals.modelIndexFile}.ts`);
+    }
+    if (this.globals.serviceIndexFile) {
+      this.templates.write('serviceIndex', { services: services }, `${this.globals.serviceIndexFile}.ts`);
+    }
+    console.info('Generation from ${options.input} finished with ${models.length} models and ${services.length} services.');
   }
 
   private readTemplates() {
-    const builtInDir = path.join(__dirname, 'templates');
+    const hasSrc = __dirname.endsWith(path.sep + 'src');
+    const builtInDir = path.join(__dirname, hasSrc ? '../templates' : 'templates');
     const customDir = this.options.templates || '';
-    const globals = new Globals(this.options);
+    this.globals = new Globals(this.options);
     this.templates = new Templates(builtInDir, customDir);
-    this.templates.setGlobals(globals);
+    this.templates.setGlobals(this.globals);
   }
 
   private readModels() {
@@ -75,19 +84,35 @@ export class NgOpenApiGen {
   }
 
   private readServices() {
-    const defaultTag = this.options.defaultTag || this.prefix;
+    const defaultTag = this.options.defaultTag || 'Api';
 
     // First read all operations, as tags are by operation
     const operationsByTag = new Map<string, Operation[]>();
-    for (const path of Object.keys(this.openApi.paths)) {
-      const pathSpec = this.openApi.paths[path] as PathItemObject;
+    for (const opPath of Object.keys(this.openApi.paths)) {
+      const pathSpec = this.openApi.paths[opPath] as PathItemObject;
       for (const method of HTTP_METHODS) {
         const methodSpec = pathSpec[method] as OperationObject;
         if (methodSpec) {
-          const operation = new Operation(this.openApi, path, pathSpec, method, methodSpec, this.options);
+          let id = methodSpec.operationId;
+          if (!id) {
+            id = methodName(`${opPath}.${method}`);
+            console.warn(`Operation '${opPath}.${method}' didn't specify an 'operationId'. Assuming '${id}'.`);
+          }
+          if (this.operations.has(id)) {
+            // Duplicated id. Add a suffix
+            let suffix = 0;
+            let newId = id;
+            while (this.operations.has(newId)) {
+              newId = `${id}_${++suffix}`;
+            }
+            console.warn(`Duplicate operation id '${id}'. Assuming id ${newId} for operation '${opPath}.${method}'.`);
+            id = newId;
+          }
+
+          const operation = new Operation(this.openApi, opPath, pathSpec, method, id, methodSpec, this.options);
           // Set a default tag if no tags are found
           if (operation.tags.length === 0) {
-            console.warn(`No tags set on operation '${path}.${method}'. Assuming '${defaultTag}'.`);
+            console.warn(`No tags set on operation '${opPath}.${method}'. Assuming '${defaultTag}'.`);
             operation.tags.push(defaultTag);
           }
           for (const tag of operation.tags) {
@@ -98,6 +123,9 @@ export class NgOpenApiGen {
             }
             operations.push(operation);
           }
+
+          // Store the operation
+          this.operations.set(id, operation);
         }
       }
     }

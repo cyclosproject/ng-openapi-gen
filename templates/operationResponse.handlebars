@@ -1,0 +1,24 @@
+{{{tsComments}}}{{id}}Response(params: {{../typeName}}.{{operationParamsClass}}): __Observable<{{{operationHttpResponseType}}}> {
+    const rb = new __RequestBuilder<any>(this.baseUrl, '{{path}}');
+{{#parameters}}    {{>parameter}}
+{{/parameters}}    return
+    let req = new HttpRequest<any>(
+      '{{operationMethod}}',
+      this.rootUrl + `{{{operationPathExpression}}}`,
+      __body,
+      {
+        headers: __headers,
+        params: __params,
+        responseType: '{{{operationResponseType}}}'
+      });
+
+    return this.http.request<any>(req).pipe(
+      __filter(_r => _r instanceof HttpResponse),
+      __map((_r) => {
+        {{#operationIsVoid}}return (_r as HttpResponse<any>).clone({ body: null }) as {{{operationHttpResponseType}}}{{/operationIsVoid
+        }}{{#operationIsNumber}}return (_r as HttpResponse<any>).clone({ body: parseFloat((_r as HttpResponse<any>).body as string) }) as {{{operationHttpResponseType}}}{{/operationIsNumber
+        }}{{#operationIsBoolean}}return (_r as HttpResponse<any>).clone({ body: (_r as HttpResponse<any>).body === 'true' }) as {{{operationHttpResponseType}}}{{/operationIsBoolean
+        }}{{#operationIsOther}}return _r as {{{operationHttpResponseType}}};{{/operationIsOther}}
+      })
+    );
+  }

@@ -2,14 +2,11 @@
   "editor.rulers": [
     140
   ],
-  "spellright.language": "en_US",
-  "spellright.documentTypes": [
-    "markdown",
-    "latex",
-    "plaintext"
-  ],
+  "tslint.autoFixOnSave": true,
   "typescript.preferences.quoteStyle": "single",
   "typescript.preferences.importModuleSpecifier": "relative",
-  "editor.formatOnSave": true,
-  "typescript.tsdk": "node_modules/typescript/lib"
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "[typescript]": {
+    "editor.formatOnSave": true
+  }
 }

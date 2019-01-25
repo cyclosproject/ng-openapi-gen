@@ -1,5 +1,5 @@
 import fs from 'fs';
-import Mustache from 'mustache';
+import * as Handlebars from 'handlebars';
 import path from 'path';
 import { Globals } from './globals';
 
@@ -8,7 +8,7 @@ import { Globals } from './globals';
  */
 export class Templates {
 
-  private templates: { [key: string]: string } = {};
+  private templates: { [key: string]: HandlebarsTemplateDelegate } = {};
   private globals: { [key: string]: any } = {};
 
   constructor(builtInDir: string, customDir: string) {
@@ -16,18 +16,22 @@ export class Templates {
     const customTemplates = customDir === '' ? [] : fs.readdirSync(customDir);
     // Read all built-in templates, but taking into account an override, if any
     for (const file of builtInTemplates) {
-      const baseName = this.baseName(file);
-      if (baseName) {
-        const dir = customTemplates.includes(file) ? customDir : builtInDir;
-        this.templates[baseName] = fs.readFileSync(path.join(dir, file), 'utf-8');
-      }
+      const dir = customTemplates.includes(file) ? customDir : builtInDir;
+      this.parseTemplate(dir, file);
     }
     // Also read any custom templates which are not built-in
     for (const file of customTemplates) {
-      const baseName = this.baseName(file);
-      if (baseName) {
-        this.templates[baseName] = fs.readFileSync(path.join(customDir, file), 'utf-8');
-      }
+      this.parseTemplate(customDir, file);
+    }
+  }
+
+  private parseTemplate(dir: string, file: string) {
+    const baseName = this.baseName(file);
+    if (baseName) {
+      const text = fs.readFileSync(path.join(dir, file), 'utf-8');
+      const compiled = Handlebars.compile(text);
+      this.templates[baseName] = compiled;
+      Handlebars.registerPartial(baseName, compiled);
     }
   }
 
@@ -42,29 +46,29 @@ export class Templates {
   }
 
   private baseName(file: string): string | null {
-    if (!file.endsWith('.mustache')) {
+    if (!file.endsWith('.handlebars')) {
       return null;
     }
-    return file.substring(0, file.length - '.mustache'.length);
+    return file.substring(0, file.length - '.handlebars'.length);
   }
 
   /**
    * Applies a template with a given model
-   * @param template The template name (file without .mustache extension)
+   * @param templateName The template name (file without .handlebars extension)
    * @param model The model variables to be passed in to the template
    */
-  apply(template: string, model: { [key: string]: any }): string {
-    const actualTemplate = this.templates[template];
-    if (!actualTemplate) {
-      throw new Error(`Template not found: ${template}`);
+  apply(templateName: string, model?: { [key: string]: any }): string {
+    const template = this.templates[templateName];
+    if (!template) {
+      throw new Error(`Template not found: ${templateName}`);
     }
-    const actualModel: { [key: string]: any } = { ...this.globals, ...model };
-    return Mustache.render(actualTemplate, actualModel, this.templates);
+    const actualModel: { [key: string]: any } = { ...this.globals, ...(model || {}) };
+    return template(actualModel);
   }
 
   /**
    * Applies a template with a given model, and then writes the content to a file
-   * @param template The template name (file without .mustache extension)
+   * @param template The template name (file without .handlebars extension)
    * @param model The model variables to be passed in to the template
    * @param file The absolute file name
    */
@@ -73,5 +77,4 @@ export class Templates {
     fs.writeFileSync(file, content, { encoding: 'utf-8' });
     console.info(`Wrote ${file}`);
   }
-
 }

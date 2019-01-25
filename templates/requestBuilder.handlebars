@@ -1,0 +1,106 @@
+/* tslint:disable */
+import { HttpClient, HttpParameterCodec, HttpParams, HttpHeaders } from '@angular/common/http';
+
+/**
+ * Custom parameter codec to correctly handle the plus sign in parameter
+ * values. See https://github.com/angular/angular/issues/18261
+ */
+class ParameterCodec implements HttpParameterCodec {
+  encodeKey(key: string): string {
+    return encodeURIComponent(key);
+  }
+
+  encodeValue(value: string): string {
+    return encodeURIComponent(value);
+  }
+
+  decodeKey(key: string): string {
+    return decodeURIComponent(key);
+  }
+
+  decodeValue(value: string): string {
+    return decodeURIComponent(value);
+  }
+}
+const ParameterCodecInstance = new ParameterCodec();
+
+/**
+ * Helper to build http requests from parameters
+ */
+export class {{ requestBuilderClass }} {
+
+  path = new Map<string, any>();
+  query = new Map<string, any>();
+  headers = new Map<string, any>();
+  body: any | null;
+  bodyContentType: string;
+
+  constructor(
+    public baseUrl,
+    public path: string,
+    public method: string) {
+  }
+
+  /**
+   * Builds the request with the current set parameters
+   */
+  build<T>(options?: {
+    responseType?: 'json', 'text', 'blob', 'arraybuffer';
+    reportProgress?: boolean;
+    }): HttpRequest<T> {
+
+    // Path parameters
+    let url = `${this.baseUrl}${this.path}`;
+    for (const param of this.path.keys()) {
+      url = url.replace(`{${param}}`, (this.path.get(param) || '').toString());
+    }
+
+    // Query parameters
+    const httpParams = new HttpParams({
+      encoder: ParameterCodecInstance
+    });
+    for (const param of this.query.keys()) {
+      const value = this.query.get(param);
+      if (value instanceof Array) {
+        for (const item of value) {
+          httpParams.append(param, (item || '').toString());
+        }
+      } else {
+        httpParams.set(param, (value || '').toString());
+      }
+    }
+
+    // Header parameters
+    const httpHeaders = new HttpHeaders();
+    for (const param of this.header.keys()) {
+      const value = this.header.get(param);
+      if (value instanceof Array) {
+        for (const item of value) {
+          httpHeaders.append(param, (item || '').toString());
+        }
+      } else {
+        httpHeaders.set(param, (value || '').toString());
+      }
+    }
+
+    // Request content type
+    if (this.body instanceof Blob) {
+      httpHeaders.set('Content-Type', this.body.type);
+      httpHeaders.set('Content-Length', this.body.size);
+    } else if (this.bodyContentType) {
+      httpHeaders.set('Content-Type', this.bodyContentType);
+    }
+
+    // Perform the request
+    return new HttpRequest<T>(
+      this.method.toUpperCase(),
+      url,
+      body,
+      {
+        params: httpParams,
+        headers: httpHeaders,
+        ...options
+      }
+    ));
+  }
+}

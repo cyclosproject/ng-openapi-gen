@@ -29,7 +29,7 @@ export class Model extends GenType {
   hasSuperClasses: boolean;
   superClasses: string[];
   properties: Property[];
-  additionalProperties: string;
+  additionalPropertiesType: string;
 
   constructor(name: string, public schema: SchemaObject, options: Options) {
     super(name, options);
@@ -93,9 +93,9 @@ export class Model extends GenType {
         propertiesByName.set(propName, new Property(propName, properties[propName], required.includes(propName), this.options));
       }
       if (schema.additionalProperties === true) {
-        this.additionalProperties = 'any';
+        this.additionalPropertiesType = 'any';
       } else if (schema.additionalProperties) {
-        this.additionalProperties = tsType(schema.additionalProperties, this.options);
+        this.additionalPropertiesType = tsType(schema.additionalProperties, this.options);
       }
     }
   }

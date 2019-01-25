@@ -20,5 +20,4 @@ export class Property {
     const description = (schema as SchemaObject).description || '';
     this.tsComments = tsComments(description, 1);
   }
-
 }

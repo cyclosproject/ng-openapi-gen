@@ -8,9 +8,6 @@ export interface Options {
   /** Where generated files will be written to. Defaults to 'src/app/api'. */
   output?: string;
 
-  /** A prefix to the generated global classes, such as `Configuration` and `Module`. Defaults to 'Api', so the default generated files are `ApiConfiguration` and `ApiModule`. */
-  prefix?: string;
-
   /** Tag name assumed for operations without tags. Defaults to the value of 'prefix', which defaults to 'Api'. */
   defaultTag?: string;
 
@@ -26,10 +23,10 @@ export interface Options {
   /** Whether to remove unexpected files in the output directory */
   removeStaleFiles?: boolean;
 
-  /** File name file that exports all models. Set to false to skip. Defaults to `models.ts`. */
+  /** Typescript file, without '.ts' extension that exports all models. Set to false to skip. Defaults to `models`. */
   modelIndex?: string | boolean;
 
-  /** File file that exports all services. Set to false to skip. Defaults to `services.ts`. */
+  /** Typescript file, without '.ts' extension that exports all services. Set to false to skip. Defaults to `services`. */
   serviceIndex?: string | boolean;
 
   /** Prefix for generated service classes. Defaults to empty. */
@@ -47,7 +44,22 @@ export interface Options {
   /** Whether to generate the module which provides all services */
   apiModule?: boolean;
 
-  /** Custom templates directory. Any `.mustache` files here will be used instead of the corresponding default. */
+  /** Name for the configuration class to generate. Defaults to 'ApiConfiguration'. */
+  configuration?: string;
+
+  /** Name for the base service class to generate. Defaults to 'BaseService'. */
+  baseService?: string;
+
+  /** Name for the request builder class to generate. Defaults to 'RequestBuilder'. */
+  requestBuilder?: string;
+
+  /** Name for the response class to generate. Defaults to 'StrictHttpResponse'. */
+  response?: string;
+
+  /** Class name of the module that provides all services. Set to false to skip. Defaults to `ApiModule`. */
+  module?: string | boolean;
+
+  /** Custom templates directory. Any `.handlebars` files here will be used instead of the corresponding default. */
   templates?: string;
 
 }

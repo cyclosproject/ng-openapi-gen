@@ -1,0 +1,26 @@
+/* tslint:disable */
+import { Injectable } from '@angular/core';
+import { HttpClient, HttpRequest, HttpResponse, HttpHeaders } from '@angular/common/http';
+import { {{baseServiceClass}}  as __BaseService } from '../{{baseServiceFile}}';
+import { {{configurationClass}} as __Configuration } from '../{{configurationFile}}';
+import { {{responseType}} as __Response } from '../{{responseFile}}';
+import { Observable as __Observable } from 'rxjs';
+import { map as __map, filter as __filter } from 'rxjs/operators';
+
+{{#imports}}import { {{{type}}} } from '{{{file}}}';
+{{/imports}}
+
+{{{tsComments}}}@Injectable({
+  providedIn: 'root',
+})
+export class {{typeName}} extends __BaseService {
+  constructor(
+    config: __Configuration,
+    http: HttpClient
+  ) {
+    super(config, http);
+  }
+{{#operations}}
+{{>operationPath}}{{#variants}}{{>operationResponse}}{{>operationBody}}{{/variants}}
+{{/operations}}
+}

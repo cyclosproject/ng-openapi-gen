@@ -63,6 +63,4 @@ export abstract class GenType {
    * Must be implemented to return the relative path to the models, ending with `/`
    */
   protected abstract pathToModels(): string;
-
-
 }

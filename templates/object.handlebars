@@ -2,8 +2,8 @@ export interface {{typeName}} {{#superClass}}extends {{superClass}} {{/superClas
 {{#properties}}
 {{{tsComments}}}{{name}}{{^required}}?{{/required}}: {{{type}}};
 {{/properties}}
-{{#additionalProperties}}
+{{#additionalPropertiesType}}
 
-  [key: string]: {{additionalProperties}};
-{{/additionalProperties}}
+  [key: string]: {{{.}}};
+{{/additionalPropertiesType}}
 }

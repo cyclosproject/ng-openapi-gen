@@ -1,0 +1,5 @@
+params{{^parametersRequired}}?{{/parametersRequired}}: {
+  {{#parameters}}{{tsComments}}{{var}}{{^required}}?{{/required}} {{{type}}}{{^@last}},
+{{/@last}}{{/parameters}}{{#requestBody}}{{#hasParameters}},
+{{/hasParameters}}{{bodyTsComments}}body{{^bodyRequired}}?{{/bodyRequired}}: {{{requestBody.type}}}{{/requestBody}}
+  }

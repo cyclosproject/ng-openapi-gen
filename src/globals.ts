@@ -1,25 +1,44 @@
+import { fileName } from './gen-utils';
 import { Options } from './options';
-import { typeName, fileName } from './gen-utils';
 
 /**
  * Stores the global variables used on generation
  */
 export class Globals {
 
-  prefix: string;
-  moduleClass: string;
-  moduleFile: string;
   configurationClass: string;
   configurationFile: string;
+  baseServiceClass: string;
+  baseServiceFile: string;
+  requestBuilderClass: string;
+  requestBuilderFile: string;
+  responseClass: string;
+  responseFile: string;
+  moduleClass?: string;
+  moduleFile?: string;
+  modelIndexFile?: string;
+  serviceIndexFile?: string;
 
   constructor(options: Options) {
-    // Calculate the globally used names
-    this.prefix = options.prefix || 'Api';
-    this.moduleClass = typeName(this.prefix + 'Module');
-    // Angular's best practices demands xxx.module.ts, not xxx-module.ts
-    this.moduleFile = fileName(this.moduleClass).replace(/\-module$/, '.module');
-    this.configurationClass = typeName(this.prefix + 'Configuration');
+    this.configurationClass = options.configuration || 'ApiConfiguration';
     this.configurationFile = fileName(this.configurationClass);
+    this.baseServiceClass = options.baseService || 'BaseService';
+    this.baseServiceFile = fileName(this.baseServiceClass);
+    this.requestBuilderClass = options.requestBuilder || 'RequestBuilder';
+    this.requestBuilderFile = fileName(this.requestBuilderClass);
+    this.responseClass = options.response || 'StrictHttpResponse';
+    this.responseFile = fileName(this.responseClass);
+    if (options.module !== false && options.module !== '') {
+      this.moduleClass = options.module === true || options.module == undefined ? 'ApiModule' : options.module;
+      // Angular's best practices demands xxx.module.ts, not xxx-module.ts
+      this.moduleFile = fileName(this.moduleClass as string).replace(/\-module$/, '.module');
+    }
+    if (options.serviceIndex !== false && options.serviceIndex !== '') {
+      this.serviceIndexFile = options.serviceIndex === true || options.serviceIndex == undefined ? 'services.ts' : options.serviceIndex;
+    }
+    if (options.modelIndex !== false && options.modelIndex !== '') {
+      this.modelIndexFile = options.modelIndex === true || options.modelIndex == undefined ? 'models.ts' : options.modelIndex;
+    }
   }
 
 }

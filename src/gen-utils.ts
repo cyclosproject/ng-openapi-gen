@@ -39,13 +39,55 @@ export function typeName(name: string): string {
 }
 
 /**
+ * Returns a suitable method name for the given name
+ * @param name The raw name
+ */
+export function methodName(name: string) {
+  return lowerFirst(typeName(name));
+}
+
+/**
+ * Transforms the first character to uppercase
+ */
+export function upperFirst(text: string): string {
+  if (text == null) {
+    return text;
+  }
+  switch (text.length) {
+    case 0:
+      return text;
+    case 1:
+      return text.toUpperCase();
+    default:
+      return text.charAt(0).toUpperCase() + text.substring(1);
+  }
+}
+
+/**
+ * Transforms the first character to lowercase
+ */
+export function lowerFirst(text: string): string {
+  if (text == null) {
+    return text;
+  }
+  switch (text.length) {
+    case 0:
+      return text;
+    case 1:
+      return text.toLowerCase();
+    default:
+      return text.charAt(0).toLowerCase() + text.substring(1);
+  }
+}
+
+/**
  * Returns the file name for a given type name
  */
-export function fileName(typeName: string): string {
+export function fileName(text: string): string {
   let result = '';
   let wasLower = false;
-  for (let i = 0; i < typeName.length; i++) {
-    const c = typeName.charAt(i);
+  for (let i = 0; i < text.length; i++) {
+    const c = text.charAt(i);
     const isLower = /[a-z]/.test(c);
     if (!isLower && wasLower) {
       result += '-';
@@ -59,9 +101,9 @@ export function fileName(typeName: string): string {
 /**
  * Returns the TypeScript comments for the given schema description, in a given indentation level
  */
-export function tsComments(description: string, level: number) {
+export function tsComments(description: string | undefined, level: number) {
   const indent = '  '.repeat(level);
-  if (description == null || description.length === 0) {
+  if (description == undefined || description.length === 0) {
     return indent;
   }
   const lines = description.trim().split('\n');
@@ -102,23 +144,7 @@ export function tsType(schemaOrRef: SchemaObject | ReferenceObject | undefined, 
  * @param value The enum value
  */
 export function enumName(value: string): string {
-  let result = '';
-  let wasLower = false;
-  for (let i = 0; i < value.length; i++) {
-    const c = value.charAt(i);
-    const isLower = /[a-z]/.test(c);
-    if (!isLower && wasLower) {
-      result += '_';
-    }
-    result += c.toUpperCase();
-    wasLower = isLower;
-  }
-  if (/0-9/.test(value.charAt(0))) {
-    result = '_' + result;
-  }
-  result = result.replace(/[^\w]/g, '_');
-  result = result.replace(/_+/g, '_');
-  return result;
+  return upperFirst(methodName(value));
 }
 
 function toType(schemaOrRef: SchemaObject | ReferenceObject | undefined, options: Options): string {
@@ -185,6 +211,12 @@ function toType(schemaOrRef: SchemaObject | ReferenceObject | undefined, options
       return enumValues.map(v => `'${jsesc(v)}'`).join(' | ');
     }
   }
+
+  // A Blob
+  if (type === 'string' && schema.format === 'binary') {
+    return 'Blob';
+  }
+
   // A simple type
   return type === 'integer' ? 'number' : type;
 }
@@ -194,12 +226,13 @@ function toType(schemaOrRef: SchemaObject | ReferenceObject | undefined, options
  * @param ref The reference name, such as #/components/schemas/Name, or just Name
  */
 export function resolveRef(openApi: OpenAPIObject, ref: string): any {
-  if (!ref.startsWith('#/')) {
+  if (!ref.includes('/')) {
     ref = `#/components/schemas/${ref}`;
   }
   let current: any = null;
-  for (const part of ref.split('/')) {
-    if (part === '#') {
+  for (let part of ref.split('/')) {
+    part = part.trim();
+    if (part === '#' || part === '') {
       current = openApi;
     } else if (current == null) {
       break;

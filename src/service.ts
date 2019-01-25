@@ -23,8 +23,10 @@ export class Service extends GenType {
       for (const parameter of operation.parameters) {
         this.collectImports(parameter.spec.schema);
       }
-      for (const content of operation.bodyContent) {
-        this.collectImports(content.spec.schema);
+      if (operation.requestBody) {
+        for (const content of operation.requestBody.content) {
+          this.collectImports(content.spec.schema);
+        }
       }
       for (const response of operation.allResponses) {
         for (const content of response.content) {
