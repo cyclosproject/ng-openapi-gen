@@ -1,6 +1,7 @@
 import jsesc from 'jsesc';
 import { OpenAPIObject, ReferenceObject, SchemaObject } from 'openapi3-ts';
 import { Options } from './options';
+import { upperFirst, kebabCase, deburr, camelCase } from 'lodash';
 
 export const HTTP_METHODS = ['get', 'put', 'post', 'delete', 'options', 'head', 'patch', 'trace'];
 
@@ -16,26 +17,7 @@ export function simpleName(name: string): string {
  * Returns the type (class) name for a given regular name
  */
 export function typeName(name: string): string {
-  let result = '';
-  let upNext = false;
-  for (let i = 0; i < name.length; i++) {
-    const c = name.charAt(i);
-    const valid = /[\w]/.test(c);
-    if (!valid) {
-      upNext = true;
-    } else if (upNext) {
-      result += c.toUpperCase();
-      upNext = false;
-    } else if (result === '') {
-      result = c.toUpperCase();
-    } else {
-      result += c;
-    }
-  }
-  if (/[0-9]/.test(result.charAt(0))) {
-    result = '_' + result;
-  }
-  return result;
+  return upperFirst(methodName(name));
 }
 
 /**
@@ -43,59 +25,18 @@ export function typeName(name: string): string {
  * @param name The raw name
  */
 export function methodName(name: string) {
-  return lowerFirst(typeName(name));
-}
-
-/**
- * Transforms the first character to uppercase
- */
-export function upperFirst(text: string): string {
-  if (text == null) {
-    return text;
+  let result = camelCase(deburr(name));
+  if (/[0-9]/.test(result.charAt(0))) {
+    result = '_' + result;
   }
-  switch (text.length) {
-    case 0:
-      return text;
-    case 1:
-      return text.toUpperCase();
-    default:
-      return text.charAt(0).toUpperCase() + text.substring(1);
-  }
-}
-
-/**
- * Transforms the first character to lowercase
- */
-export function lowerFirst(text: string): string {
-  if (text == null) {
-    return text;
-  }
-  switch (text.length) {
-    case 0:
-      return text;
-    case 1:
-      return text.toLowerCase();
-    default:
-      return text.charAt(0).toLowerCase() + text.substring(1);
-  }
+  return result;
 }
 
 /**
  * Returns the file name for a given type name
  */
 export function fileName(text: string): string {
-  let result = '';
-  let wasLower = false;
-  for (let i = 0; i < text.length; i++) {
-    const c = text.charAt(i);
-    const isLower = /[a-z]/.test(c);
-    if (!isLower && wasLower) {
-      result += '-';
-    }
-    result += c.toLowerCase();
-    wasLower = isLower;
-  }
-  return result.replace(/\-+/g, '-');
+  return kebabCase(deburr(text));
 }
 
 /**
@@ -109,7 +50,7 @@ export function tsComments(description: string | undefined, level: number) {
   const lines = description.trim().split('\n');
   let result = '\n' + indent + '/**\n';
   lines.forEach(line => {
-    result += indent + ' *' + (line === '' ? '' : ' ' + line) + '\n';
+    result += indent + ' *' + (line === '' ? '' : ' ' + line.replace(/\*\//g, '* / ')) + '\n';
   });
   result += indent + ' */\n' + indent;
   return result;
@@ -126,7 +67,7 @@ export function modelClass(baseName: string, options: Options) {
  * Applies the prefix and suffix to a service class name
  */
 export function serviceClass(baseName: string, options: Options) {
-  return `${options.servicePrefix || ''}${baseName}${options.serviceSuffix || ''}`;
+  return `${options.servicePrefix || ''}${baseName}${options.serviceSuffix || 'Service'}`;
 }
 
 /**
@@ -137,14 +78,6 @@ export function tsType(schemaOrRef: SchemaObject | ReferenceObject | undefined, 
     return `null | ${toType(schemaOrRef, options)}`;
   }
   return toType(schemaOrRef, options);
-}
-
-/**
- * Returns the name of the enumerated value
- * @param value The enum value
- */
-export function enumName(value: string): string {
-  return upperFirst(methodName(value));
 }
 
 function toType(schemaOrRef: SchemaObject | ReferenceObject | undefined, options: Options): string {

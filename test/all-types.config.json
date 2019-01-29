@@ -1,0 +1,6 @@
+{
+  "$schema": "../ng-openapi-gen-schema.json",
+  "input": "all-types.json",
+  "output": "out/all-types",
+  "ignoreUnusedModels": false
+}

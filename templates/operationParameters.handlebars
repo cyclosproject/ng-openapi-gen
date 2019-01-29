@@ -1,5 +1,6 @@
-params{{^parametersRequired}}?{{/parametersRequired}}: {
-  {{#parameters}}{{tsComments}}{{var}}{{^required}}?{{/required}} {{{type}}}{{^@last}},
-{{/@last}}{{/parameters}}{{#requestBody}}{{#hasParameters}},
-{{/hasParameters}}{{bodyTsComments}}body{{^bodyRequired}}?{{/bodyRequired}}: {{{requestBody.type}}}{{/requestBody}}
+params{{^operation.parametersRequired}}?{{/operation.parametersRequired}}: {
+{{#operation.parameters}}{{tsComments}}{{var}}{{^required}}?{{/required}}: {{{type}}};{{#tsComments}}
+{{/tsComments}}{{/operation.parameters}}{{#requestBody}}
+  {{{../operation.requestBody.tsComments}}}body{{^../operation.requestBody.required}}?{{/../operation.requestBody.required
+  }}: {{{type}}}{{/requestBody}}
   }

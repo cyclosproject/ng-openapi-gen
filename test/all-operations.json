@@ -184,7 +184,7 @@
                 "type": "string"
               }
             },
-            "image/*": {
+            "*/*": {
               "schema": {
                 "type": "string",
                 "format": "binary"

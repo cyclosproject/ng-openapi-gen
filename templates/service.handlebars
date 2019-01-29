@@ -1,9 +1,10 @@
 /* tslint:disable */
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpRequest, HttpResponse, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 import { {{baseServiceClass}}  as __BaseService } from '../{{baseServiceFile}}';
 import { {{configurationClass}} as __Configuration } from '../{{configurationFile}}';
-import { {{responseType}} as __Response } from '../{{responseFile}}';
+import { {{responseClass}} as __Response } from '../{{responseFile}}';
+import { {{requestBuilderClass}} as __RequestBuilder } from '../{{requestBuilderFile}}';
 import { Observable as __Observable } from 'rxjs';
 import { map as __map, filter as __filter } from 'rxjs/operators';
 
@@ -20,7 +21,9 @@ export class {{typeName}} extends __BaseService {
   ) {
     super(config, http);
   }
+
 {{#operations}}
-{{>operationPath}}{{#variants}}{{>operationResponse}}{{>operationBody}}{{/variants}}
+{{>operationPath}}
+{{#variants}}{{>operationResponse}}{{>operationBody}}{{/variants}}
 {{/operations}}
 }

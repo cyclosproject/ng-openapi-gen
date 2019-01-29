@@ -1,8 +1,12 @@
 import { OpenAPIObject } from 'openapi3-ts';
+import { ClassDeclaration, TypescriptParser } from 'typescript-parser';
+import { Content } from '../src/content';
 import { NgOpenApiGen } from '../src/ng-openapi-gen';
+import options from './all-operations.config.json';
 import allOperationsSpec from './all-operations.json';
 
-const gen = new NgOpenApiGen(allOperationsSpec as OpenAPIObject, { input: '', defaultTag: 'noTag' });
+const gen = new NgOpenApiGen(allOperationsSpec as OpenAPIObject, options);
+gen.generate();
 
 describe('Generation tests using all-operations.json', () => {
 
@@ -10,25 +14,135 @@ describe('Generation tests using all-operations.json', () => {
     expect(gen.services.size).toBe(3);
   });
 
-  it('Tag 1', () => {
+  it('Tag 1', done => {
     const tag1 = gen.services.get('tag1');
     expect(tag1).toBeDefined();
     if (!tag1) return;
     expect(tag1.operations.length).toBe(2);
+    const ts = gen.templates.apply('service', tag1);
+    const parser = new TypescriptParser();
+    parser.parseSource(ts).then(ast => {
+      expect(ast.declarations.length).toBe(1);
+      expect(ast.declarations[0]).toEqual(jasmine.any(ClassDeclaration));
+      const cls = ast.declarations[0] as ClassDeclaration;
+      function assertPath1Get(name: string) {
+        const method = cls.methods.find(m => m.name === name);
+        expect(method).withContext(`method ${name}`).toBeDefined();
+        if (method) {
+          expect(method.parameters.length).toBe(1);
+          const type = method.parameters[0].type;
+          expect(type).toContain('common1?: RefString');
+          expect(type).toContain('common2: RefObject');
+          expect(type).toContain('get1?: RefString');
+          expect(type).toContain('get2?: number');
+          expect(type).toContain('get3?: boolean');
+        }
+      }
+      assertPath1Get('path1Get$Json$Response');
+      assertPath1Get('path1Get$Json');
+      assertPath1Get('path1Get$Image$Response');
+      assertPath1Get('path1Get$Image');
+
+      function assertPath2Get(name: string) {
+        const method = cls.methods.find(m => m.name === name);
+        expect(method).withContext(`method ${name}`).toBeDefined();
+        if (method) {
+          expect(method.parameters.length).toBe(1);
+          const type = method.parameters[0].type;
+          expect(type).toContain('param1?: RefString');
+          expect(type).toContain('param2?: string');
+          expect(type).not.toContain('param3'); // Cookie parameter ignored
+        }
+      }
+      assertPath2Get('path2Get$Response');
+      assertPath2Get('path2Get');
+
+      done();
+    });
   });
 
-  it('Tag 2', () => {
+  it('Tag 2', done => {
     const tag2 = gen.services.get('tag2');
     expect(tag2).toBeDefined();
     if (!tag2) return;
     expect(tag2.operations.length).toBe(1);
+
+    const ts = gen.templates.apply('service', tag2);
+    const parser = new TypescriptParser();
+    parser.parseSource(ts).then(ast => {
+      expect(ast.declarations.length).toBe(1);
+      expect(ast.declarations[0]).toEqual(jasmine.any(ClassDeclaration));
+      const cls = ast.declarations[0] as ClassDeclaration;
+      function assertPath1Post(name: string, bodyType: string) {
+        const method = cls.methods.find(m => m.name === name);
+        expect(method).withContext(`method ${name}`).toBeDefined();
+        if (method) {
+          expect(method.parameters.length).toBe(1);
+          const type = method.parameters[0].type;
+          expect(type).toContain('common1?: RefString');
+          expect(type).toContain('common2: RefObject');
+          expect(type).toContain('post1?: number');
+          expect(type).toContain('body: ' + bodyType);
+        }
+      }
+      assertPath1Post('path1Post$Json$Response', 'RefObject');
+      assertPath1Post('path1Post$Json', 'RefObject');
+      assertPath1Post('path1Post$Plain$Response', 'string');
+      assertPath1Post('path1Post$Plain', 'string');
+
+      done();
+    });
   });
 
-  it('No tag', () => {
+  it('No tag', done => {
     const noTag = gen.services.get('noTag');
     expect(noTag).toBeDefined();
     if (!noTag) return;
     expect(noTag.operations.length).toBe(2);
+
+    const ts = gen.templates.apply('service', noTag);
+    const parser = new TypescriptParser();
+    parser.parseSource(ts).then(ast => {
+      expect(ast.declarations.length).toBe(1);
+      expect(ast.declarations[0]).toEqual(jasmine.any(ClassDeclaration));
+      const cls = ast.declarations[0] as ClassDeclaration;
+      function assertPath3Del(name: string) {
+        const method = cls.methods.find(m => m.name === name);
+        expect(method).withContext(`method ${name}`).toBeDefined();
+        if (method) {
+          expect(method.parameters.length).toBe(1);
+          const type = method.parameters[0].type;
+          expect(type).toContain('id: number');
+        }
+      }
+      assertPath3Del('path3Del$Response');
+      assertPath3Del('path3Del');
+
+      function assertPath4Put(name: string, bodyType: string) {
+        const method = cls.methods.find(m => m.name === name);
+        expect(method).withContext(`method ${name}`).toBeDefined();
+        if (method) {
+          expect(method.parameters.length).toBe(1);
+          const type = method.parameters[0].type;
+          expect(type).toContain('body?: ' + bodyType);
+        }
+      }
+      assertPath4Put('path4Put$Json$Plain$Response', 'RefObject');
+      assertPath4Put('path4Put$Json$Plain', 'RefObject');
+      assertPath4Put('path4Put$Plain$Plain$Response', 'string');
+      assertPath4Put('path4Put$Plain$Plain', 'string');
+      assertPath4Put('path4Put$Any$Plain$Response', 'Blob');
+      assertPath4Put('path4Put$Any$Plain', 'Blob');
+
+      assertPath4Put('path4Put$Json$Image$Response', 'RefObject');
+      assertPath4Put('path4Put$Json$Image', 'RefObject');
+      assertPath4Put('path4Put$Plain$Image$Response', 'string');
+      assertPath4Put('path4Put$Plain$Image', 'string');
+      assertPath4Put('path4Put$Any$Image$Response', 'Blob');
+      assertPath4Put('path4Put$Any$Image', 'Blob');
+
+      done();
+    });
   });
 
   it('GET /path1', () => {
@@ -182,28 +296,27 @@ describe('Generation tests using all-operations.json', () => {
       if (plain) {
         expect(plain.type).toBe('string');
       }
-      const image = operation.requestBody.content.find(c => c.mediaType === 'image/*');
-      expect(image).withContext('image/* request').toBeDefined();
-      if (image) {
-        expect(image.type).toBe('Blob');
+      const _any = operation.requestBody.content.find(c => c.mediaType === '*/*');
+      expect(_any).withContext('*/* request').toBeDefined();
+      if (_any) {
+        expect(_any.type).toBe('Blob');
       }
     }
-    expect(operation.variants.length).toBe(6); // 3 request bodies x 2 success responses
     expect(operation.allResponses.length).toBe(4);
     const success = operation.successResponse;
-    expect(success).toBeDefined();
+    expect(success).withContext('success response').toBeDefined();
     if (success) {
       expect(success.statusCode).toBe('200');
       expect(success.content.length).toBe(2);
       const plain = success.content.find(c => c.mediaType === 'text/plain');
-      expect(plain).toBeDefined();
+      expect(plain).withContext('plain response').toBeDefined();
       if (plain) {
         expect(plain.type).toBe('string');
       }
-      const image = success.content.find(c => c.mediaType === 'image/*');
-      expect(image).toBeDefined();
-      if (image) {
-        expect(image.type).toBe('Blob');
+      const _any = success.content.find(c => c.mediaType === 'image/*');
+      expect(_any).withContext('image response').toBeDefined();
+      if (_any) {
+        expect(_any.type).toBe('Blob');
       }
     }
     const resp200 = operation.allResponses.find(r => r.statusCode === '200');
@@ -226,5 +339,46 @@ describe('Generation tests using all-operations.json', () => {
       expect(resp500.content.length).toBe(1);
       expect(resp500.content[0].type).toBe('Error');
     }
+
+    // Assert each variant
+    const vars = operation.variants;
+    expect(vars.length).toBe(6); // 3 request bodies x 2 success responses
+
+    expect(vars[0].methodName).toBe('path4Put$Json$Plain');
+    expect((vars[0].requestBody as Content).mediaType).toBe('application/json');
+    expect((vars[0].requestBody as Content).type).toBe('RefObject');
+    expect((vars[0].successResponse as Content).mediaType).toBe('text/plain');
+    expect((vars[0].successResponse as Content).type).toBe('string');
+
+    expect(vars[1].methodName).toBe('path4Put$Json$Image');
+    expect((vars[1].requestBody as Content).mediaType).toBe('application/json');
+    expect((vars[1].requestBody as Content).type).toBe('RefObject');
+    expect((vars[1].successResponse as Content).mediaType).toBe('image/*');
+    expect((vars[1].successResponse as Content).type).toBe('Blob');
+
+    expect(vars[2].methodName).toBe('path4Put$Plain$Plain');
+    expect((vars[2].requestBody as Content).mediaType).toBe('text/plain');
+    expect((vars[2].requestBody as Content).type).toBe('string');
+    expect((vars[2].successResponse as Content).mediaType).toBe('text/plain');
+    expect((vars[2].successResponse as Content).type).toBe('string');
+
+    expect(vars[3].methodName).toBe('path4Put$Plain$Image');
+    expect((vars[3].requestBody as Content).mediaType).toBe('text/plain');
+    expect((vars[3].requestBody as Content).type).toBe('string');
+    expect((vars[3].successResponse as Content).mediaType).toBe('image/*');
+    expect((vars[3].successResponse as Content).type).toBe('Blob');
+
+    expect(vars[4].methodName).toBe('path4Put$Any$Plain');
+    expect((vars[4].requestBody as Content).mediaType).toBe('*/*');
+    expect((vars[4].requestBody as Content).type).toBe('Blob');
+    expect((vars[4].successResponse as Content).mediaType).toBe('text/plain');
+    expect((vars[4].successResponse as Content).type).toBe('string');
+
+    expect(vars[5].methodName).toBe('path4Put$Any$Image');
+    expect((vars[5].requestBody as Content).mediaType).toBe('*/*');
+    expect((vars[5].requestBody as Content).type).toBe('Blob');
+    expect((vars[5].successResponse as Content).mediaType).toBe('image/*');
+    expect((vars[5].successResponse as Content).type).toBe('Blob');
+
   });
 });

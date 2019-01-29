@@ -1,5 +1,5 @@
 /* tslint:disable */
-import { HttpClient, HttpParameterCodec, HttpParams, HttpHeaders } from '@angular/common/http';
+import { HttpRequest, HttpParameterCodec, HttpParams, HttpHeaders } from '@angular/common/http';
 
 /**
  * Custom parameter codec to correctly handle the plus sign in parameter
@@ -29,38 +29,81 @@ const ParameterCodecInstance = new ParameterCodec();
  */
 export class {{ requestBuilderClass }} {
 
-  path = new Map<string, any>();
-  query = new Map<string, any>();
-  headers = new Map<string, any>();
-  body: any | null;
-  bodyContentType: string;
+  private _path = new Map<string, any>();
+  private _query = new Map<string, any>();
+  private _header = new Map<string, any>();
+  _bodyContent: any | null;
+  _bodyContentType?: string;
+  _bodyContentLength?: number;
 
   constructor(
-    public baseUrl,
-    public path: string,
+    public rootUrl: string,
+    public operationPath: string,
     public method: string) {
+  }
+
+  /**
+   * Sets a path parameter
+   */
+  path(name: string, value: any): void {
+    this._path.set(name, value);
+  }
+
+  /**
+   * Sets a query parameter
+   */
+  query(name: string, value: any): void {
+    this._query.set(name, value);
+  }
+
+  /**
+   * Sets a header parameter
+   */
+  header(name: string, value: any): void {
+    this._header.set(name, value);
+  }
+
+  /**
+   * Sets the body content, along with the content type
+   */
+  body(value: any, contentType = 'application/json', contentLength?: number): void {
+    this._bodyContent = value;
+    if (value instanceof Blob) {
+      this._bodyContentType = value.type;
+      this._bodyContentLength = value.size;
+    } else {
+      this._bodyContentType = contentType;
+      this._bodyContentLength = contentLength;
+    }
   }
 
   /**
    * Builds the request with the current set parameters
    */
-  build<T>(options?: {
-    responseType?: 'json', 'text', 'blob', 'arraybuffer';
+  build<T=any>(options?: {
+    /** Which content types to accept */
+    accept?: string;
+
+    /** The expected response type */
+    responseType?: 'json' | 'text' | 'blob' | 'arraybuffer';
+
+    /** Whether to report progress on uploads / downloads */
     reportProgress?: boolean;
     }): HttpRequest<T> {
 
     // Path parameters
-    let url = `${this.baseUrl}${this.path}`;
-    for (const param of this.path.keys()) {
-      url = url.replace(`{${param}}`, (this.path.get(param) || '').toString());
+    let path = this.operationPath;
+    for (const param of this._path.keys()) {
+      path = path.replace(`{${param}}`, (this._path.get(param) || '').toString());
     }
+    const url = this.rootUrl + path;
 
     // Query parameters
     const httpParams = new HttpParams({
       encoder: ParameterCodecInstance
     });
-    for (const param of this.query.keys()) {
-      const value = this.query.get(param);
+    for (const param of this._query.keys()) {
+      const value = this._query.get(param);
       if (value instanceof Array) {
         for (const item of value) {
           httpParams.append(param, (item || '').toString());
@@ -72,8 +115,8 @@ export class {{ requestBuilderClass }} {
 
     // Header parameters
     const httpHeaders = new HttpHeaders();
-    for (const param of this.header.keys()) {
-      const value = this.header.get(param);
+    for (const param of this._header.keys()) {
+      const value = this._header.get(param);
       if (value instanceof Array) {
         for (const item of value) {
           httpHeaders.append(param, (item || '').toString());
@@ -83,24 +126,19 @@ export class {{ requestBuilderClass }} {
       }
     }
 
-    // Request content type
-    if (this.body instanceof Blob) {
-      httpHeaders.set('Content-Type', this.body.type);
-      httpHeaders.set('Content-Length', this.body.size);
-    } else if (this.bodyContentType) {
-      httpHeaders.set('Content-Type', this.bodyContentType);
+    // Request body-related headers
+    if (this._bodyContentType) {
+      httpHeaders.set('Content-Type', this._bodyContentType);
+    }
+    if (this._bodyContentLength) {
+      httpHeaders.set('Content-Length', this._bodyContentLength);
     }
 
     // Perform the request
-    return new HttpRequest<T>(
-      this.method.toUpperCase(),
-      url,
-      body,
-      {
-        params: httpParams,
-        headers: httpHeaders,
-        ...options
-      }
-    ));
+    return new HttpRequest<T>(this.method.toUpperCase(), url, this._bodyContent, {
+      params: httpParams,
+      headers: httpHeaders,
+      ...options
+    });
   }
 }

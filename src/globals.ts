@@ -34,10 +34,10 @@ export class Globals {
       this.moduleFile = fileName(this.moduleClass as string).replace(/\-module$/, '.module');
     }
     if (options.serviceIndex !== false && options.serviceIndex !== '') {
-      this.serviceIndexFile = options.serviceIndex === true || options.serviceIndex == undefined ? 'services.ts' : options.serviceIndex;
+      this.serviceIndexFile = options.serviceIndex === true || options.serviceIndex == undefined ? 'services' : options.serviceIndex;
     }
     if (options.modelIndex !== false && options.modelIndex !== '') {
-      this.modelIndexFile = options.modelIndex === true || options.modelIndex == undefined ? 'models.ts' : options.modelIndex;
+      this.modelIndexFile = options.modelIndex === true || options.modelIndex == undefined ? 'models' : options.modelIndex;
     }
   }
 

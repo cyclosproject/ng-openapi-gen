@@ -2,3 +2,4 @@ node_modules
 .directory
 ng-openapi-gen.json
 dist
+out

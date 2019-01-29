@@ -16,7 +16,7 @@ export class RequestBody {
     public content: Content[],
     public options: Options) {
 
-    this.tsComments = tsComments(spec.description, 2);
+    this.tsComments = tsComments(spec.description, 1);
     this.required = spec.required === true;
   }
 

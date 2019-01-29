@@ -8,14 +8,15 @@ import { NgOpenApiGen } from './ng-openapi-gen';
  */
 function readOptions(): Options {
   return {
-    input: 'dummy'
+    input: 'test/all-operations.json',
+    output: 'out/all-operations'
   };
 }
 
 /**
  * Main generator function.
  */
-export async function ngOpenApiGen() {
+async function ngOpenApiGen() {
   const options = readOptions();
   const refParser = new $RefParser();
   const input = options.input;
@@ -27,3 +28,7 @@ export async function ngOpenApiGen() {
     console.error(`Error on generation from ${input}: ${err}`);
   }
 }
+
+// Run the main function
+ngOpenApiGen()
+  .catch(err => console.error(`Error on generation from: ${err}`));

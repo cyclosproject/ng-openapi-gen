@@ -1,9 +1,11 @@
 import { OpenAPIObject } from '@loopback/openapi-v3-types';
-import { EnumDeclaration, InterfaceDeclaration, TypeAliasDeclaration, TypescriptParser } from 'typescript-parser';
+import { InterfaceDeclaration, TypeAliasDeclaration, TypescriptParser } from 'typescript-parser';
 import { NgOpenApiGen } from '../src/ng-openapi-gen';
+import options from './all-types.config.json';
 import allTypesSpec from './all-types.json';
 
-const gen = new NgOpenApiGen(allTypesSpec as OpenAPIObject, { input: '', ignoreUnusedModels: false });
+const gen = new NgOpenApiGen(allTypesSpec as OpenAPIObject, options);
+gen.generate();
 
 describe('Generation tests using all-types.json', () => {
   it('RefEnum model', done => {
@@ -13,10 +15,11 @@ describe('Generation tests using all-types.json', () => {
     parser.parseSource(ts).then(ast => {
       expect(ast.imports.length).toBe(0);
       expect(ast.declarations.length).toBe(1);
-      expect(ast.declarations[0]).toEqual(jasmine.any(EnumDeclaration));
-      const decl = ast.declarations[0] as EnumDeclaration;
+      expect(ast.declarations[0]).toEqual(jasmine.any(TypeAliasDeclaration));
+      const decl = ast.declarations[0] as TypeAliasDeclaration;
       expect(decl.name).toBe('RefEnum');
-      expect(decl.members).toEqual(['ValueA', 'ValueB', 'ValueC']);
+      const text = ts.substring(decl.start || 0, decl.end || ts.length);
+      expect(text).toBe(`export type RefEnum = 'valueA' | 'valueB' | 'valueC';`);
       done();
     });
   });

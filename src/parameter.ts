@@ -17,7 +17,7 @@ export class Parameter {
   constructor(public spec: ParameterObject, options: Options) {
     this.name = spec.name;
     this.var = methodName(this.name);
-    this.tsComments = tsComments(spec.description || '', 1);
+    this.tsComments = tsComments(spec.description || '', 2);
     this.in = spec.in || 'query';
     this.required = this.in === 'path' || spec.required || false;
     this.type = tsType(spec.schema, options);

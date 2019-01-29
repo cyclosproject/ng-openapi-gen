@@ -1,0 +1,27 @@
+/* tslint:disable */
+import { NgModule } from '@angular/core';
+import { HttpClientModule } from '@angular/common/http';
+import { {{configurationClass}} } from './{{configurationFile}}';
+
+{{#services}}import { {{typeName}} } from './services/{{fileName}}';
+{{/services}}
+
+/**
+ * Module that provides all services and configuration.
+ * Also exports Angular's `HttpClientModule`, as it is required for all services.
+ */
+@NgModule({
+  imports: [
+    HttpClientModule
+  ],
+  exports: [
+    HttpClientModule
+  ],
+  declarations: [],
+  providers: [
+{{#services}}    {{typeName}},
+{{/services}}
+    {{configurationClass}}
+  ],
+})
+export class {{moduleClass}} { }

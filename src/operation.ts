@@ -1,11 +1,12 @@
+import { capitalize, last } from 'lodash';
 import { ContentObject, MediaTypeObject, OpenAPIObject, OperationObject, ParameterObject, PathItemObject, ReferenceObject, RequestBodyObject, ResponseObject } from 'openapi3-ts';
 import { Content } from './content';
-import { resolveRef, tsComments, upperFirst, enumName } from './gen-utils';
+import { resolveRef, tsComments, typeName } from './gen-utils';
+import { OperationVariant } from './operation-variant';
 import { Options } from './options';
 import { Parameter } from './parameter';
-import { Response } from './response';
-import { OperationVariant } from './operation-variant';
 import { RequestBody } from './request-body';
+import { Response } from './response';
 
 /**
  * An operation descriptor
@@ -34,7 +35,7 @@ export class Operation {
     this.tags = spec.tags || [];
 
     this.tsComments = tsComments(spec.description || '', 1);
-    this.pathVar = `${upperFirst(id)}Path`;
+    this.pathVar = `${capitalize(id)}Path`;
 
     // Add both the common and specific parameters
     this.parameters = [
@@ -134,7 +135,7 @@ export class Operation {
       const methodPart = this.id + this.variantMethodPart(requestBodyVariant);
       for (const successResponseVariant of successResponseVariants) {
         const methodName = methodPart + this.variantMethodPart(successResponseVariant);
-        this.variants.push(new OperationVariant(this, methodName, requestBodyVariant, successResponseVariant));
+        this.variants.push(new OperationVariant(this, methodName, requestBodyVariant, successResponseVariant, this.options));
       }
     }
   }
@@ -144,11 +145,12 @@ export class Operation {
    */
   private variantMethodPart(content: Content | null): string {
     if (content) {
-      const type = content.mediaType.replace(/\/\*/, '');
+      let type = content.mediaType.replace(/\/\*/, '');
       if (type === '*' || type === 'application/octet-stream') {
         return '$Any';
       }
-      return `$${enumName(type)}`;
+      type = last(type.split('/')) as string;
+      return `$${typeName(type)}`;
     } else {
       return '';
     }

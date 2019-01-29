@@ -1,6 +1,6 @@
 import { TagObject } from 'openapi3-ts';
 import { GenType } from './gen-type';
-import { fileName, serviceClass, tsComments } from './gen-utils';
+import { fileName, serviceClass, tsComments, typeName } from './gen-utils';
 import { Operation } from './operation';
 import { Options } from './options';
 
@@ -14,8 +14,12 @@ export class Service extends GenType {
   constructor(tag: TagObject, public operations: Operation[], options: Options) {
     super(tag.name, options);
 
-    this.typeName = serviceClass(tag.name, options);
+    this.typeName = serviceClass(typeName(tag.name), options);
     this.fileName = fileName(this.typeName);
+    // Angular standards demmand that services have a period separating them
+    if (this.fileName.endsWith('-service')) {
+      this.fileName = this.fileName.substring(0, this.fileName.length - '-service'.length) + '.service';
+    }
     this.tsComments = tsComments(tag.description || '', 0);
 
     // Collect the imports
@@ -29,8 +33,9 @@ export class Service extends GenType {
         }
       }
       for (const response of operation.allResponses) {
+        const additional = response === operation.successResponse ? undefined : true;
         for (const content of response.content) {
-          this.collectImports(content.spec.schema);
+          this.collectImports(content.spec.schema, additional);
         }
       }
     }

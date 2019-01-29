@@ -1,8 +1,10 @@
 import { InterfaceDeclaration, TypeAliasDeclaration, TypescriptParser } from 'typescript-parser';
 import { NgOpenApiGen } from '../src/ng-openapi-gen';
+import options from './person-place.config.json';
 import personAndPlaceSpec from './person-place.json';
 
-const gen = new NgOpenApiGen(personAndPlaceSpec, { input: '', ignoreUnusedModels: false });
+const gen = new NgOpenApiGen(personAndPlaceSpec, options);
+gen.generate();
 
 describe('Generation tests using person-place.json', () => {
   it('Id model', done => {

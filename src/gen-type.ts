@@ -19,6 +19,8 @@ export abstract class GenType {
 
   private _imports: Imports = new Imports();
   public imports: Import[];
+  private _additionalDependencies = new Set<string>();
+  public additionalDependencies: string[];
 
   constructor(
     public name: string,
@@ -35,25 +37,31 @@ export abstract class GenType {
 
   protected updateImports() {
     this.imports = this._imports.toArray();
+    this.additionalDependencies = [...this._additionalDependencies];
   }
 
-  protected collectImports(schema: SchemaObject | ReferenceObject | undefined): void {
+  protected collectImports(schema: SchemaObject | ReferenceObject | undefined, additional?: true): void {
     if (!schema) {
       return;
     } else if (schema.$ref) {
-      this.addImport(simpleName(schema.$ref));
+      const dep = simpleName(schema.$ref);
+      if (additional) {
+        this._additionalDependencies.add(dep);
+      } else {
+        this.addImport(dep);
+      }
     } else {
       schema = schema as SchemaObject;
-      (schema.allOf || []).forEach(i => this.collectImports(i));
-      (schema.anyOf || []).forEach(i => this.collectImports(i));
-      (schema.oneOf || []).forEach(i => this.collectImports(i));
+      (schema.allOf || []).forEach(i => this.collectImports(i, additional));
+      (schema.anyOf || []).forEach(i => this.collectImports(i, additional));
+      (schema.oneOf || []).forEach(i => this.collectImports(i, additional));
       if (schema.type === 'array') {
-        this.collectImports(schema.items);
+        this.collectImports(schema.items, additional);
       } else if (schema.type === 'object') {
         const properties = schema.properties || {};
-        Object.keys(properties).forEach(p => this.collectImports(properties[p]));
+        Object.keys(properties).forEach(p => this.collectImports(properties[p], additional));
         if (typeof schema.additionalProperties === 'object') {
-          this.collectImports(schema.additionalProperties);
+          this.collectImports(schema.additionalProperties, additional);
         }
       }
     }

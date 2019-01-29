@@ -66,15 +66,4 @@ export class Templates {
     return template(actualModel);
   }
 
-  /**
-   * Applies a template with a given model, and then writes the content to a file
-   * @param template The template name (file without .handlebars extension)
-   * @param model The model variables to be passed in to the template
-   * @param file The absolute file name
-   */
-  write(template: string, model: { [key: string]: any }, file: string) {
-    const content = this.apply(template, model);
-    fs.writeFileSync(file, content, { encoding: 'utf-8' });
-    console.info(`Wrote ${file}`);
-  }
 }

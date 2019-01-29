@@ -1,5 +1,4 @@
 import { SchemaObject } from 'openapi3-ts';
-import { EnumValue } from './enum-value';
 import { GenType } from './gen-type';
 import { fileName, modelClass, simpleName, tsComments, tsType } from './gen-utils';
 import { Options } from './options';
@@ -12,15 +11,11 @@ export class Model extends GenType {
 
   // General type
   isSimple: boolean;
-  isEnum: boolean; // only true for strings. Numbers can have enumerated values, but they don't generate an enum
   isArray: boolean;
   isObject: boolean;
 
   // Simple properties
   simpleType: string;
-
-  // Enum properties
-  enumValues: EnumValue[];
 
   // Array properties
   elementType: string;
@@ -43,14 +38,9 @@ export class Model extends GenType {
     const type = schema.type || 'any';
     this.isArray = type === 'array';
     this.isObject = type === 'object' || (schema.allOf || []).length > 0;
-    this.isEnum = type === 'string' && (schema.enum || []).length > 0;
-    this.isSimple = !this.isEnum && !this.isArray && !this.isObject;
+    this.isSimple = !this.isArray && !this.isObject;
 
-    if (this.isEnum) {
-      // Enum of string values
-      this.enumValues = (schema.enum || []).map(value => new EnumValue(value));
-      this.enumValues[this.enumValues.length - 1].last = true;
-    } else if (this.isArray) {
+    if (this.isArray) {
       // Array
       this.elementType = tsType(schema.items, options);
     } else if (this.isObject) {

@@ -7,6 +7,7 @@ import { Operation } from './operation';
 import { Options } from './options';
 import { Service } from './service';
 import { Templates } from './templates';
+import fs from 'fs';
 
 
 /**
@@ -40,29 +41,45 @@ export class NgOpenApiGen {
     // Generate each model
     const models = [...this.models.values()];
     for (const model of models) {
-      this.templates.write('model', model, model.fileName);
+      this.write('model', model, model.fileName, 'models');
     }
 
     // Generate each service
     const services = [...this.services.values()];
     for (const service of services) {
-      this.templates.write('service', service, service.fileName);
+      this.write('service', service, service.fileName, 'services');
     }
 
+    // Context object passed to general templates
+    const general = {
+      services: services,
+      models: models
+    };
+
     // Generate the general files
-    this.templates.write('configuration', {}, `${this.globals.configurationFile}.ts`);
-    this.templates.write('response', {}, `${this.globals.responseFile}`);
-    this.templates.write('baseService', {}, `${this.globals.baseServiceFile}`);
-    if (this.globals.moduleClass) {
-      this.templates.write('module', {}, `${this.globals.moduleFile}.ts`);
+    this.write('configuration', general, this.globals.configurationFile);
+    this.write('response', general, this.globals.responseFile);
+    this.write('requestBuilder', general, this.globals.requestBuilderFile);
+    this.write('baseService', general, this.globals.baseServiceFile);
+    if (this.globals.moduleClass && this.globals.moduleFile) {
+      this.write('module', general, this.globals.moduleFile);
     }
     if (this.globals.modelIndexFile) {
-      this.templates.write('modelIndex', { models: models }, `${this.globals.modelIndexFile}.ts`);
+      this.write('modelIndex', general, this.globals.modelIndexFile);
     }
     if (this.globals.serviceIndexFile) {
-      this.templates.write('serviceIndex', { services: services }, `${this.globals.serviceIndexFile}.ts`);
+      this.write('serviceIndex', general, this.globals.serviceIndexFile);
     }
-    console.info('Generation from ${options.input} finished with ${models.length} models and ${services.length} services.');
+    console.info(`Generation from ${this.options.input} finished with ${models.length} models and ${services.length} services.`);
+  }
+
+  private write(template: string, model: any, baseName: string, subDir?: string) {
+    const baseDir = this.options.output || 'src/app/api';
+    const ts = this.templates.apply(template, model);
+    const file = path.join(baseDir, subDir || '.', `${baseName}.ts`);
+    fs.mkdirSync(path.dirname(file), { recursive: true });
+    fs.writeFileSync(file, ts, { encoding: 'utf-8' });
+    console.info(`Wrote ${file}`);
   }
 
   private readTemplates() {
@@ -156,6 +173,9 @@ export class NgOpenApiGen {
     for (const service of this.services.values()) {
       for (const imp of service.imports) {
         usedModels.add(imp.type);
+      }
+      for (const imp of service.additionalDependencies) {
+        usedModels.add(imp);
       }
     }
     // Then delete all models that are not imported
