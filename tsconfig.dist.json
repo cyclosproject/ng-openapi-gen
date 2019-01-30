@@ -11,7 +11,7 @@
     "noUnusedParameters": true,
     "resolveJsonModule": true,
     "outDir": "dist",
-    "baseUrl": ".",
+    "baseUrl": "./",
     "paths": {
       "*": [
         "node_modules/*",
@@ -19,15 +19,13 @@
       ]
     },
     "types": [
-      "node",
-      "jasmine"
+      "node"
     ],
     "lib": [
       "es2017"
     ]
   },
   "include": [
-    "src/**/*",
-    "test/**/*"
+    "src/**/*"
   ]
 }

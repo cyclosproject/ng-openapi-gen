@@ -9,21 +9,7 @@
       "args": [
         "${workspaceFolder}/tsconfig.json",
         "--config=jasmine.json"
-      ],
-      "console": "integratedTerminal",
-      "internalConsoleOptions": "neverOpen"
-    },
-    {
-      "type": "node",
-      "request": "launch",
-      "name": "Run generator",
-      "program": "${workspaceFolder}/node_modules/ts-node/dist/bin.js",
-      "args": [
-        "--project",
-        "${workspaceFolder}/tsconfig.json",
-        "src/index"
-      ],
-      "console": "integratedTerminal"
+      ]
     }
   ]
 }

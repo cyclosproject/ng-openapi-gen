@@ -15,18 +15,19 @@
     "url": "git+https://github.com/cyclosproject/ng-openapi-gen.git"
   },
   "bin": {
-    "ng-openapi-gen": "./ng-openapi-gen"
+    "ng-openapi-gen": "dist/src/index.js"
   },
   "scripts": {
     "start": "npm run serve",
-    "build": "tsc && npm run tslint && npm test",
-    "watch": "tsc -w",
+    "compile": "tsc --project tsconfig.dist.json && cpx \"templates/*\" dist/templates",
+    "build": "npm run tslint && npm run compile && npm test",
     "tslint": "tslint -c tslint.json -p tsconfig.json",
     "test": "jasmine-ts tsconfig.json --config=jasmine.json",
     "watch-test": "npm run test -- --watchAll"
   },
   "dependencies": {
     "@loopback/openapi-v3-types": "^1.0.4",
+    "@types/argparse": "^1.0.35",
     "@types/handlebars": "^4.0.40",
     "@types/jsesc": "^0.4.29",
     "@types/json-schema": "^7.0.1",
@@ -47,6 +48,7 @@
   },
   "devDependencies": {
     "@types/jasmine": "^3.3.5",
+    "cpx": "^1.5.0",
     "jasmine": "^3.3.1",
     "jasmine-spec-reporter": "^4.2.1",
     "jasmine-ts": "^0.3.0",
