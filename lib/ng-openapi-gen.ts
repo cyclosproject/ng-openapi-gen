@@ -12,22 +12,6 @@ import { parseOptions } from './cmd-args';
 import $RefParser from 'json-schema-ref-parser';
 
 /**
- * Parses the command-line arguments, reads the configuration file and run the generation
- */
-export async function runNgOpenApiGen() {
-  const options = parseOptions();
-  const refParser = new $RefParser();
-  const input = options.input;
-  try {
-    const openApi = await refParser.bundle(input, { dereference: { circular: false } }) as OpenAPIObject;
-    const gen = new NgOpenApiGen(openApi, options);
-    gen.generate();
-  } catch (err) {
-    console.error(`Error on API generation from ${input}: ${err}`);
-  }
-}
-
-/**
  * Main generator class
  */
 export class NgOpenApiGen {
@@ -248,5 +232,23 @@ export class NgOpenApiGen {
       }
     }
     return result;
+  }
+}
+
+///////////////////////////////////////////////////////////////////////////
+
+/**
+ * Parses the command-line arguments, reads the configuration file and run the generation
+ */
+export async function runNgOpenApiGen() {
+  const options = parseOptions();
+  const refParser = new $RefParser();
+  const input = options.input;
+  try {
+    const openApi = await refParser.bundle(input, { dereference: { circular: false } }) as OpenAPIObject;
+    const gen = new NgOpenApiGen(openApi, options);
+    gen.generate();
+  } catch (err) {
+    console.error(`Error on API generation from ${input}: ${err}`);
   }
 }

@@ -1,10 +1,9 @@
 {
   "name": "ng-openapi-gen",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "license": "MIT",
   "author": "Cyclos development team",
   "description": "An OpenAPI 3 codegen for Angular 6+",
-  "private": false,
   "keywords": [
     "angular",
     "openapi",
@@ -14,12 +13,15 @@
     "type": "git",
     "url": "git+https://github.com/cyclosproject/ng-openapi-gen.git"
   },
+  "private": true,
   "bin": {
     "ng-openapi-gen": "lib/index.js"
   },
   "scripts": {
+    "test": "jasmine-ts tsconfig.json --config=jasmine.json",
     "tslint": "tslint -c tslint.json -p tsconfig.json",
-    "test": "jasmine-ts tsconfig.json --config=jasmine.json"
+    "compile": "tsc --project tsconfig.json && cpx \".npmignore\" dist && cpx \"LICENSE\" dist && cpx \"README.md\" dist && cpx \"lib/index.js\" dist/lib && cpx \"templates/*\" dist/templates && replace-in-file \"\\\"private\\\": true\" \"\\\"private\\\": false\" dist/package.json",
+    "build": "npm run tslint && npm run compile && npm test"
   },
   "dependencies": {
     "@loopback/openapi-v3-types": "^1.0.4",
@@ -30,6 +32,7 @@
     "@types/lodash": "^4.14.120",
     "@types/node": "^10.12.18",
     "argparse": "^1.0.10",
+    "esm": "^3.2.1",
     "handlebars": "^4.0.12",
     "jsesc": "^2.5.2",
     "json-schema": "^0.2.3",
@@ -48,6 +51,7 @@
     "jasmine": "^3.3.1",
     "jasmine-spec-reporter": "^4.2.1",
     "jasmine-ts": "^0.3.0",
+    "replace-in-file": "^3.4.3",
     "tslint": "^5.12.1",
     "typescript-parser": "^2.6.1"
   }
