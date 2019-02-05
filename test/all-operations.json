@@ -167,7 +167,21 @@
       ],
       "delete": {
         "operationId": "path3Del",
-        "summary": "DELETE on path3"
+        "summary": "DELETE on path3",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/path4": {

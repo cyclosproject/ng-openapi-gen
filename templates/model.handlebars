@@ -1,8 +1,7 @@
 /* tslint:disable */
 {{#imports}}import { {{{type}}} } from '{{{file}}}';
 {{/imports}}
-{{{tsComments}}}
-{{#isObject}}{{>object}}{{/isObject
-}}{{#isArray}}{{>array}}{{/isArray
+{{{tsComments}}}{{#isObject}}{{>object}}{{/isObject
+}}{{#isEnum}}{{>enum}}{{/isEnum
 }}{{#isSimple}}{{>simple}}{{/isSimple
 }}

@@ -1,6 +1,6 @@
 import { OpenAPIObject } from '@loopback/openapi-v3-types';
 import { InterfaceDeclaration, TypeAliasDeclaration, TypescriptParser } from 'typescript-parser';
-import { NgOpenApiGen } from '../src/ng-openapi-gen';
+import { NgOpenApiGen } from '../lib/ng-openapi-gen';
 import options from './all-types.config.json';
 import allTypesSpec from './all-types.json';
 
@@ -64,14 +64,15 @@ describe('Generation tests using all-types.json', () => {
     const ts = gen.templates.apply('model', container);
     const parser = new TypescriptParser();
     parser.parseSource(ts).then(ast => {
-      expect(ast.imports.length).toBe(2);
+      expect(ast.imports.length).toBe(3);
       expect(ast.imports.find(i => i.libraryName === './ref-enum')).withContext('ref-enum import').toBeDefined();
       expect(ast.imports.find(i => i.libraryName === './ref-object')).withContext('ref-object import').toBeDefined();
+      expect(ast.imports.find(i => i.libraryName === './union')).withContext('union import').toBeDefined();
       expect(ast.declarations.length).toBe(1);
       expect(ast.declarations[0]).toEqual(jasmine.any(InterfaceDeclaration));
       const decl = ast.declarations[0] as InterfaceDeclaration;
       expect(decl.name).toBe('Container');
-      expect(decl.properties.length).toBe(16);
+      expect(decl.properties.length).toBe(17);
 
       // Assert the simple types
       function assertProperty(name: string, type: string) {
@@ -89,6 +90,7 @@ describe('Generation tests using all-types.json', () => {
 
       assertProperty('refEnumProp', 'RefEnum');
       assertProperty('refObjectProp', 'RefObject');
+      assertProperty('unionProp', 'Union');
       assertProperty('containerProp', 'Container');
       assertProperty('arrayOfStringsProp', 'Array<string>');
       assertProperty('arrayOfIntegersProp', 'Array<number>');

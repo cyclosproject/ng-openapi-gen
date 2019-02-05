@@ -3,6 +3,7 @@ import { GenType } from './gen-type';
 import { fileName, modelClass, simpleName, tsComments, tsType } from './gen-utils';
 import { Options } from './options';
 import { Property } from './property';
+import { EnumValue } from './enum-value';
 
 /**
  * Context to generate a model
@@ -11,11 +12,13 @@ export class Model extends GenType {
 
   // General type
   isSimple: boolean;
-  isArray: boolean;
+  isEnum: boolean;
   isObject: boolean;
 
   // Simple properties
   simpleType: string;
+  enumValues: EnumValue[];
+  enumModule: boolean;
 
   // Array properties
   elementType: string;
@@ -36,11 +39,18 @@ export class Model extends GenType {
     this.tsComments = tsComments(description, 0);
 
     const type = schema.type || 'any';
-    this.isArray = type === 'array';
-    this.isObject = type === 'object' || (schema.allOf || []).length > 0;
-    this.isSimple = !this.isArray && !this.isObject;
 
-    if (this.isArray) {
+    // When enumModule is 'alias' it is handled as a simple type.
+    if (options.enumModule !== 'alias' && (schema.enum || []).length > 0 && ['string', 'number', 'integer'].includes(type)) {
+      this.enumValues = (schema.enum || []).map(v => new EnumValue(type, v, options));
+      this.enumModule = true;
+    }
+
+    this.isObject = type === 'object' || (schema.allOf || []).length > 0;
+    this.isEnum = (this.enumValues || []).length > 0;
+    this.isSimple = !this.isObject && !this.isEnum;
+
+    if (type === 'array') {
       // Array
       this.elementType = tsType(schema.items, options);
     } else if (this.isObject) {
@@ -48,11 +58,12 @@ export class Model extends GenType {
       this.superClasses = [];
       const propertiesByName = new Map<string, Property>();
       this.collectObject(schema, propertiesByName);
+      this.hasSuperClasses = this.superClasses.length > 0;
       const sortedNames = [...propertiesByName.keys()];
       sortedNames.sort();
       this.properties = sortedNames.map(propName => propertiesByName.get(propName) as Property);
     } else {
-      // Simple / union
+      // Simple / enum / union
       this.simpleType = tsType(schema, options);
     }
     this.collectImports(schema);

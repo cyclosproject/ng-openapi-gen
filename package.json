@@ -1,6 +1,6 @@
 {
   "name": "ng-openapi-gen",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "license": "MIT",
   "author": "Cyclos development team",
   "description": "An OpenAPI 3 codegen for Angular 6+",
@@ -15,15 +15,11 @@
     "url": "git+https://github.com/cyclosproject/ng-openapi-gen.git"
   },
   "bin": {
-    "ng-openapi-gen": "dist/src/index.js"
+    "ng-openapi-gen": "lib/index.js"
   },
   "scripts": {
-    "start": "npm run serve",
-    "compile": "tsc --project tsconfig.dist.json && cpx \"templates/*\" dist/templates",
-    "build": "npm run tslint && npm run compile && npm test",
     "tslint": "tslint -c tslint.json -p tsconfig.json",
-    "test": "jasmine-ts tsconfig.json --config=jasmine.json",
-    "watch-test": "npm run test -- --watchAll"
+    "test": "jasmine-ts tsconfig.json --config=jasmine.json"
   },
   "dependencies": {
     "@loopback/openapi-v3-types": "^1.0.4",

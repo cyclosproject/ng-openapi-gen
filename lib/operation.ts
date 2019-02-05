@@ -127,14 +127,23 @@ export class Operation {
   }
 
   private calculateVariants() {
-    const hasBodyVariants = this.requestBody && this.requestBody.content.length > 1;
+    const hasRequestBodyVariants = this.requestBody && this.requestBody.content.length > 1;
     const hasResponseVariants = this.successResponse && this.successResponse.content.length > 1;
-    const requestBodyVariants: (Content | null)[] = hasBodyVariants && this.requestBody ? this.requestBody.content : [null];
-    const successResponseVariants: (Content | null)[] = hasResponseVariants && this.successResponse ? this.successResponse.content : [null];
+    const contentOrNull = (hasContent?: { content?: Content[] }): (Content | null)[] => {
+      if (hasContent) {
+        const content = hasContent.content;
+        if (content && content.length > 0) {
+          return content;
+        }
+      }
+      return [null];
+    };
+    const requestBodyVariants = contentOrNull(this.requestBody);
+    const successResponseVariants = contentOrNull(this.successResponse);
     for (const requestBodyVariant of requestBodyVariants) {
-      const methodPart = this.id + this.variantMethodPart(requestBodyVariant);
+      const methodPart = this.id + (hasRequestBodyVariants ? this.variantMethodPart(requestBodyVariant) : '');
       for (const successResponseVariant of successResponseVariants) {
-        const methodName = methodPart + this.variantMethodPart(successResponseVariant);
+        const methodName = methodPart + (hasResponseVariants ? this.variantMethodPart(successResponseVariant) : '');
         this.variants.push(new OperationVariant(this, methodName, requestBodyVariant, successResponseVariant, this.options));
       }
     }

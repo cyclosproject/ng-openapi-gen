@@ -4,7 +4,23 @@
     "title": "Test with all types",
     "version": "1.0"
   },
-  "paths": {},
+  "paths": {
+    "/test": {
+      "get": {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Container"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
   "components": {
     "schemas": {
       "RefEnum": {
@@ -72,6 +88,10 @@
               "refObjectProp": {
                 "$ref": "#/components/schemas/RefObject",
                 "description": "Property which references an object"
+              },
+              "unionProp": {
+                "$ref": "#/components/schemas/Union",
+                "description": "Property which references an Union object"
               },
               "containerProp": {
                 "$ref": "#/components/schemas/Container",

@@ -59,6 +59,17 @@ export interface Options {
   /** Class name of the module that provides all services. Set to false to skip. Defaults to `ApiModule`. */
   module?: string | boolean;
 
+  /**
+   * Determines how root enums will be generated. Possible values are:
+   *
+   * - `alias`: just generate a type alias with the possible values;
+   * - `upper` for an enum with UPPER_CASE names, and;
+   * - `pascal` for enum PascalCase names.
+   *
+   * Defaults to 'pascal'.
+   */
+  enumModule?: 'alias' | 'upper' | 'pascal';
+
   /** Custom templates directory. Any `.handlebars` files here will be used instead of the corresponding default. */
   templates?: string;
 

@@ -1,7 +1,7 @@
 import { OpenAPIObject } from 'openapi3-ts';
 import { ClassDeclaration, TypescriptParser } from 'typescript-parser';
-import { Content } from '../src/content';
-import { NgOpenApiGen } from '../src/ng-openapi-gen';
+import { Content } from '../lib/content';
+import { NgOpenApiGen } from '../lib/ng-openapi-gen';
 import options from './all-operations.config.json';
 import allOperationsSpec from './all-operations.json';
 
@@ -271,7 +271,14 @@ describe('Generation tests using all-operations.json', () => {
     expect(params[0].in).toBe('path');
     expect(operation.requestBody).withContext('request body').toBeUndefined();
     expect(operation.variants.length).toBe(1);
-    expect(operation.allResponses.length).toBe(0);
+    expect(operation.allResponses.length).toBe(1);
+    const success = operation.successResponse;
+    expect(success).withContext('success response').toBeDefined();
+    const resp200 = operation.allResponses.find(r => r.statusCode === '200');
+    expect(resp200).toBe(success);
+    if (resp200) {
+      expect(resp200.content[0].type).toBe('Array<string>');
+    }
   });
 
   it('PUT /path4', () => {

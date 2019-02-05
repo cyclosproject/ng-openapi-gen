@@ -1,0 +1,8 @@
+{
+  "$schema": "../ng-openapi-gen-schema.json",
+  "input": "cyclos.yaml",
+  "output": "out/cyclos",
+  "includeTags": [
+    "Auth", "UI", "Tickets", "Payments"
+  ]
+}

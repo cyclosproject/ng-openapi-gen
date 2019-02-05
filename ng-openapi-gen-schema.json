@@ -40,12 +40,12 @@
     "ignoreUnusedModels": {
       "description": "Indicates whether or not to ignore model files that are not referenced by any operation. Defaults to true.",
       "type": "boolean",
-      "default": "true"
+      "default": true
     },
     "removeStaleFiles": {
       "description": "Indicates whether or not to remove any files in the output folder that were not generated. Defaults to true.",
       "type": "boolean",
-      "default": "false"
+      "default": true
     },
     "modelIndex": {
       "description": "Typescript file, without '.ts' extension that exports all models. Set to false to skip. Defaults to `models`.",
@@ -121,6 +121,15 @@
         {
           "type": "boolean"
         }
+      ]
+    },
+    "enumStyle": {
+      "description": "Determines how root enums will be generated. Possible values are:\n\n- `alias`: just generate a type alias with the possible values;\n- `upper` for an enum with UPPER_CASE names, and;\n- `pascal` for enum PascalCase names. Defaults to 'pascal'.",
+      "default": "pascal",
+      "enum": [
+        "alias",
+        "upper",
+        "pascal"
       ]
     },
     "templates": {

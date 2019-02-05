@@ -1,7 +1,7 @@
 import jsesc from 'jsesc';
 import { OpenAPIObject, ReferenceObject, SchemaObject } from 'openapi3-ts';
 import { Options } from './options';
-import { upperFirst, kebabCase, deburr, camelCase } from 'lodash';
+import { upperFirst, kebabCase, upperCase, deburr, camelCase } from 'lodash';
 
 export const HTTP_METHODS = ['get', 'put', 'post', 'delete', 'options', 'head', 'patch', 'trace'];
 
@@ -21,22 +21,43 @@ export function typeName(name: string): string {
 }
 
 /**
+ * Returns the name of the enum constant for a given value
+ */
+export function enumName(value: string, options: Options): string {
+  const name = toBasicChars(value, true);
+  if (options.enumModule === 'upper') {
+    return upperCase(name).replace(/\s+/g, '_');
+  } else {
+    return upperFirst(camelCase(name));
+  }
+}
+
+/**
  * Returns a suitable method name for the given name
  * @param name The raw name
  */
 export function methodName(name: string) {
-  let result = camelCase(deburr(name));
-  if (/[0-9]/.test(result.charAt(0))) {
-    result = '_' + result;
-  }
-  return result;
+  return camelCase(toBasicChars(name, true));
 }
 
 /**
  * Returns the file name for a given type name
  */
 export function fileName(text: string): string {
-  return kebabCase(deburr(text));
+  return kebabCase(toBasicChars(text));
+}
+
+/**
+ * Converts a text to a basic, letters / numbers / underscore representation.
+ * When firstNonDigit is true, prepends the result with an uderscore if the first char is a digit.
+ */
+export function toBasicChars(text: string, firstNonDigit = false): string {
+  text = deburr((text || '').trim());
+  text = text.replace(/[^\w]+/g, '_');
+  if (firstNonDigit && /[0-9]/.test(text.charAt(0))) {
+    text = '_' + text;
+  }
+  return text;
 }
 
 /**

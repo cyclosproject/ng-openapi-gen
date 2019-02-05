@@ -34,7 +34,6 @@ export class {{ requestBuilderClass }} {
   private _header = new Map<string, any>();
   _bodyContent: any | null;
   _bodyContentType?: string;
-  _bodyContentLength?: number;
 
   constructor(
     public rootUrl: string,
@@ -66,14 +65,12 @@ export class {{ requestBuilderClass }} {
   /**
    * Sets the body content, along with the content type
    */
-  body(value: any, contentType = 'application/json', contentLength?: number): void {
+  body(value: any, contentType = 'application/json'): void {
     this._bodyContent = value;
     if (value instanceof Blob) {
       this._bodyContentType = value.type;
-      this._bodyContentLength = value.size;
     } else {
       this._bodyContentType = contentType;
-      this._bodyContentLength = contentLength;
     }
   }
 
@@ -93,45 +90,42 @@ export class {{ requestBuilderClass }} {
 
     // Path parameters
     let path = this.operationPath;
-    for (const param of this._path.keys()) {
+    for (const param of Array.from(this._path.keys())) {
       path = path.replace(`{${param}}`, (this._path.get(param) || '').toString());
     }
     const url = this.rootUrl + path;
 
     // Query parameters
-    const httpParams = new HttpParams({
+    let httpParams = new HttpParams({
       encoder: ParameterCodecInstance
     });
-    for (const param of this._query.keys()) {
+    for (const param of Array.from(this._query.keys())) {
       const value = this._query.get(param);
       if (value instanceof Array) {
         for (const item of value) {
-          httpParams.append(param, (item || '').toString());
+          httpParams = httpParams.append(param, (item || '').toString());
         }
       } else {
-        httpParams.set(param, (value || '').toString());
+        httpParams = httpParams.set(param, (value || '').toString());
       }
     }
 
     // Header parameters
-    const httpHeaders = new HttpHeaders();
-    for (const param of this._header.keys()) {
+    let httpHeaders = new HttpHeaders();
+    for (const param of Array.from(this._header.keys())) {
       const value = this._header.get(param);
       if (value instanceof Array) {
         for (const item of value) {
-          httpHeaders.append(param, (item || '').toString());
+          httpHeaders = httpHeaders.append(param, (item || '').toString());
         }
       } else {
-        httpHeaders.set(param, (value || '').toString());
+        httpHeaders = httpHeaders.set(param, (value || '').toString());
       }
     }
 
-    // Request body-related headers
+    // Request content headers
     if (this._bodyContentType) {
-      httpHeaders.set('Content-Type', this._bodyContentType);
-    }
-    if (this._bodyContentLength) {
-      httpHeaders.set('Content-Length', this._bodyContentLength);
+      httpHeaders = httpHeaders.set('Content-Type', this._bodyContentType);
     }
 
     // Perform the request

@@ -1,14 +1,31 @@
-import { OpenAPIObject, OperationObject, PathItemObject } from '@loopback/openapi-v3-types';
+import { OpenAPIObject, OperationObject, PathItemObject, ReferenceObject, SchemaObject } from '@loopback/openapi-v3-types';
+import fs from 'fs';
 import path from 'path';
-import { HTTP_METHODS, methodName } from './gen-utils';
+import { HTTP_METHODS, methodName, simpleName } from './gen-utils';
 import { Globals } from './globals';
 import { Model } from './model';
 import { Operation } from './operation';
 import { Options } from './options';
 import { Service } from './service';
 import { Templates } from './templates';
-import fs from 'fs';
+import { parseOptions } from './cmd-args';
+import $RefParser from 'json-schema-ref-parser';
 
+/**
+ * Parses the command-line arguments, reads the configuration file and run the generation
+ */
+export async function runNgOpenApiGen() {
+  const options = parseOptions();
+  const refParser = new $RefParser();
+  const input = options.input;
+  try {
+    const openApi = await refParser.bundle(input, { dereference: { circular: false } }) as OpenAPIObject;
+    const gen = new NgOpenApiGen(openApi, options);
+    gen.generate();
+  } catch (err) {
+    console.error(`Error on API generation from ${input}: ${err}`);
+  }
+}
 
 /**
  * Main generator class
@@ -83,8 +100,8 @@ export class NgOpenApiGen {
   }
 
   private readTemplates() {
-    const hasSrc = __dirname.endsWith(path.sep + 'src');
-    const builtInDir = path.join(__dirname, hasSrc ? '../templates' : 'templates');
+    const hasLib = __dirname.endsWith(path.sep + 'lib');
+    const builtInDir = path.join(__dirname, hasLib ? '../templates' : 'templates');
     const customDir = this.options.templates || '';
     this.globals = new Globals(this.options);
     this.templates = new Templates(builtInDir, customDir);
@@ -169,20 +186,67 @@ export class NgOpenApiGen {
 
   private ignoreUnusedModels() {
     // First, collect all type names used by services
-    const usedModels = new Set<string>();
+    const usedNames = new Set<string>();
     for (const service of this.services.values()) {
       for (const imp of service.imports) {
-        usedModels.add(imp.type);
+        usedNames.add(imp.type);
       }
       for (const imp of service.additionalDependencies) {
-        usedModels.add(imp);
+        usedNames.add(imp);
       }
     }
-    // Then delete all models that are not imported
+
+    // Collect dependencies on models themselves
+    const referencedModels = Array.from(usedNames);
+    usedNames.clear();
+    referencedModels.forEach(name => this.collectDependencies(name, usedNames));
+
+    // Then delete all unused models
     for (const model of this.models.values()) {
-      if (!usedModels.has(model.typeName)) {
+      if (!usedNames.has(model.typeName)) {
         this.models.delete(model.name);
       }
     }
+  }
+
+  private collectDependencies(name: string, usedNames: Set<string>) {
+    const model = this.models.get(name);
+    if (!model || usedNames.has(model.name)) {
+      return;
+    }
+
+    // Add the model name itself
+    usedNames.add(model.name);
+    // Then find all referenced names and recurse
+    this.allReferencedNames(model.schema).forEach(n => this.collectDependencies(n, usedNames));
+  }
+
+  private allReferencedNames(schema: SchemaObject | ReferenceObject | undefined): string[] {
+    if (!schema) {
+      return [];
+    }
+    if (schema.$ref) {
+      return [simpleName(schema.$ref)];
+    }
+    schema = schema as SchemaObject;
+    const result: string[] = [];
+    (schema.allOf || []).forEach(s => Array.prototype.push.apply(result, this.allReferencedNames(s)));
+    (schema.anyOf || []).forEach(s => Array.prototype.push.apply(result, this.allReferencedNames(s)));
+    (schema.oneOf || []).forEach(s => Array.prototype.push.apply(result, this.allReferencedNames(s)));
+    if (schema.type === 'object') {
+      if (schema.properties) {
+        for (const prop of Object.keys(schema.properties)) {
+          Array.prototype.push.apply(result, this.allReferencedNames(schema.properties[prop]));
+        }
+        if (typeof schema.additionalProperties === 'object') {
+          Array.prototype.push.apply(result, this.allReferencedNames(schema.additionalProperties));
+        }
+      }
+    } else if (schema.type === 'array') {
+      if (schema.items) {
+        Array.prototype.push.apply(result, this.allReferencedNames(schema.items));
+      }
+    }
+    return result;
   }
 }
