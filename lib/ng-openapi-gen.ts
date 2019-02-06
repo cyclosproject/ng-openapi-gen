@@ -78,7 +78,10 @@ export class NgOpenApiGen {
     const baseDir = this.options.output || 'src/app/api';
     const ts = this.templates.apply(template, model);
     const file = path.join(baseDir, subDir || '.', `${baseName}.ts`);
-    fs.mkdirSync(path.dirname(file), { recursive: true });
+    const dir = path.dirname(file);
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+    }
     fs.writeFileSync(file, ts, { encoding: 'utf-8' });
     console.info(`Wrote ${file}`);
   }
