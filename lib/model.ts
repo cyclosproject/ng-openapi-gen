@@ -18,7 +18,6 @@ export class Model extends GenType {
   // Simple properties
   simpleType: string;
   enumValues: EnumValue[];
-  enumModule: boolean;
 
   // Array properties
   elementType: string;
@@ -40,10 +39,9 @@ export class Model extends GenType {
 
     const type = schema.type || 'any';
 
-    // When enumModule is 'alias' it is handled as a simple type.
-    if (options.enumModule !== 'alias' && (schema.enum || []).length > 0 && ['string', 'number', 'integer'].includes(type)) {
+    // When enumStyle is 'alias' it is handled as a simple type.
+    if (options.enumStyle !== 'alias' && (schema.enum || []).length > 0 && ['string', 'number', 'integer'].includes(type)) {
       this.enumValues = (schema.enum || []).map(v => new EnumValue(type, v, options));
-      this.enumModule = true;
     }
 
     this.isObject = type === 'object' || (schema.allOf || []).length > 0;

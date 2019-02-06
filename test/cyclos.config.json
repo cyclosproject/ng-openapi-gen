@@ -1,6 +1,6 @@
 {
   "$schema": "../ng-openapi-gen-schema.json",
-  "input": "cyclos.yaml",
+  "input": "cyclos.json",
   "output": "out/cyclos",
   "includeTags": [
     "Auth",
@@ -23,5 +23,6 @@
     "Captcha",
     "Files",
     "Images"
-  ]
+  ],
+  "enumStyle": "upper"
 }

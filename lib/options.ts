@@ -68,7 +68,7 @@ export interface Options {
    *
    * Defaults to 'pascal'.
    */
-  enumModule?: 'alias' | 'upper' | 'pascal';
+  enumStyle?: 'alias' | 'upper' | 'pascal';
 
   /** Custom templates directory. Any `.handlebars` files here will be used instead of the corresponding default. */
   templates?: string;
