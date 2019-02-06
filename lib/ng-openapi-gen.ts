@@ -10,6 +10,7 @@ import { Service } from './service';
 import { Templates } from './templates';
 import { parseOptions } from './cmd-args';
 import $RefParser from 'json-schema-ref-parser';
+import mkdirp from 'mkdirp';
 
 /**
  * Main generator class
@@ -79,9 +80,7 @@ export class NgOpenApiGen {
     const ts = this.templates.apply(template, model);
     const file = path.join(baseDir, subDir || '.', `${baseName}.ts`);
     const dir = path.dirname(file);
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir, { recursive: true });
-    }
+    mkdirp.sync(dir);
     fs.writeFileSync(file, ts, { encoding: 'utf-8' });
     console.info(`Wrote ${file}`);
   }
