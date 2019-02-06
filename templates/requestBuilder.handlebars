@@ -66,11 +66,30 @@ export class {{ requestBuilderClass }} {
    * Sets the body content, along with the content type
    */
   body(value: any, contentType = 'application/json'): void {
-    this._bodyContent = value;
     if (value instanceof Blob) {
       this._bodyContentType = value.type;
     } else {
       this._bodyContentType = contentType;
+    }
+    if ((this._bodyContentType || '').startsWith('multipart/form-data')) {
+      // Handle multipart form data
+      const formData = new FormData();
+      if (value != null) {
+        for (const key of Object.keys(value)) {
+          const val = value[key]
+          if (val instanceof Array) {
+            for (const v of val) {
+              formData.append(key, v);
+            }
+          } else {
+            formData.set(key, val);
+          }
+        }
+      }
+      this._bodyContent = formData;
+    } else {
+      // The body is the plain content
+      this._bodyContent = value;
     }
   }
 
