@@ -225,9 +225,9 @@ export class NgOpenApiGen {
         for (const prop of Object.keys(schema.properties)) {
           Array.prototype.push.apply(result, this.allReferencedNames(schema.properties[prop]));
         }
-        if (typeof schema.additionalProperties === 'object') {
-          Array.prototype.push.apply(result, this.allReferencedNames(schema.additionalProperties));
-        }
+      }
+      if (typeof schema.additionalProperties === 'object') {
+        Array.prototype.push.apply(result, this.allReferencedNames(schema.additionalProperties));
       }
     } else if (schema.type === 'array') {
       if (schema.items) {

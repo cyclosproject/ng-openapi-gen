@@ -33,7 +33,25 @@
       },
       "RefObject": {
         "type": "object",
-        "additionalProperties": true
+        "required": [
+          "id"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          }
+        }
+      },
+      "OtherObject": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/RefObject"
+          },
+          {
+            "type": "object",
+            "additionalProperties": true
+          }
+        ]
       },
       "Union": {
         "anyOf": [
@@ -179,6 +197,9 @@
                   }
                 }
               }
+            },
+            "additionalProperties": {
+              "$ref": "#/components/schemas/OtherObject"
             }
           }
         ]

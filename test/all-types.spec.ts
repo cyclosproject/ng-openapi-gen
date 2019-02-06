@@ -37,6 +37,23 @@ describe('Generation tests using all-types.json', () => {
       expect(ast.declarations[0]).toEqual(jasmine.any(InterfaceDeclaration));
       const decl = ast.declarations[0] as InterfaceDeclaration;
       expect(decl.name).toBe('RefObject');
+      expect(decl.properties.length).toBe(1);
+      expect(decl.properties[0].type).toBe('string');
+      done();
+    });
+  });
+
+  it('OtherObject model', done => {
+    const otherObject = gen.models.get('OtherObject');
+    const ts = gen.templates.apply('model', otherObject);
+    const parser = new TypescriptParser();
+    parser.parseSource(ts).then(ast => {
+      expect(ast.imports.length).toBe(1);
+      expect(ast.imports.find(i => i.libraryName === './ref-object')).withContext('ref-object import').toBeDefined();
+      expect(ast.declarations.length).toBe(1);
+      expect(ast.declarations[0]).toEqual(jasmine.any(InterfaceDeclaration));
+      const decl = ast.declarations[0] as InterfaceDeclaration;
+      expect(decl.name).toBe('OtherObject');
       expect(decl.properties.length).toBe(0);
       // There's no support for additional properties in typescript-parser. Check as text.
       const text = ts.substring(decl.start || 0, decl.end || ts.length);
@@ -67,9 +84,10 @@ describe('Generation tests using all-types.json', () => {
     const ts = gen.templates.apply('model', container);
     const parser = new TypescriptParser();
     parser.parseSource(ts).then(ast => {
-      expect(ast.imports.length).toBe(3);
+      expect(ast.imports.length).toBe(4);
       expect(ast.imports.find(i => i.libraryName === './ref-enum')).withContext('ref-enum import').toBeDefined();
       expect(ast.imports.find(i => i.libraryName === './ref-object')).withContext('ref-object import').toBeDefined();
+      expect(ast.imports.find(i => i.libraryName === './other-object')).withContext('other-object import').toBeDefined();
       expect(ast.imports.find(i => i.libraryName === './union')).withContext('union import').toBeDefined();
       expect(ast.declarations.length).toBe(1);
       expect(ast.declarations[0]).toEqual(jasmine.any(InterfaceDeclaration));
@@ -104,6 +122,10 @@ describe('Generation tests using all-types.json', () => {
       assertProperty('arrayOfAnyProp', 'Array<any>');
       assertProperty('nestedObject', '{ \'p1\': string, \'p2\': number, ' +
         '\'deeper\': { \'d1\': RefObject, \'d2\': string | Array<RefObject> | number } }');
+
+      // There's no support for additional properties in typescript-parser. Check as text.
+      const text = ts.substring(decl.start || 0, decl.end || ts.length);
+      expect(text).toContain('[key: string]: OtherObject');
 
       done();
     });

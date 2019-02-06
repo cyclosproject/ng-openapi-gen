@@ -3,6 +3,25 @@
   "input": "cyclos.yaml",
   "output": "out/cyclos",
   "includeTags": [
-    "Auth", "UI", "Tickets", "Payments"
+    "Auth",
+    "Passwords",
+    "Agreements",
+    "Users",
+    "Phones",
+    "Addresses",
+    "Contacts",
+    "ContactInfos",
+    "Transactions",
+    "ScheduledPayments",
+    "RecurringPayments",
+    "PendingPayments",
+    "Transfers",
+    "Payments",
+    "Accounts",
+    "Marketplace",
+    "UI",
+    "Captcha",
+    "Files",
+    "Images"
   ]
 }
