@@ -1,4 +1,4 @@
-import { capitalize, last } from 'lodash';
+import { upperFirst, last } from 'lodash';
 import { ContentObject, MediaTypeObject, OpenAPIObject, OperationObject, ParameterObject, PathItemObject, ReferenceObject, RequestBodyObject, ResponseObject } from 'openapi3-ts';
 import { Content } from './content';
 import { resolveRef, tsComments, typeName } from './gen-utils';
@@ -35,7 +35,7 @@ export class Operation {
     this.tags = spec.tags || [];
 
     this.tsComments = tsComments(spec.description || '', 1);
-    this.pathVar = `${capitalize(id)}Path`;
+    this.pathVar = `${upperFirst(id)}Path`;
 
     // Add both the common and specific parameters
     this.parameters = [
