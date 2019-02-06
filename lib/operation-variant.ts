@@ -10,7 +10,6 @@ export class OperationVariant {
   responseMethodName: string;
   resultType: string;
   responseType: string;
-  httpResponseType: string;
   accept: string;
   isVoid: boolean;
   isNumber: boolean;
@@ -40,7 +39,6 @@ export class OperationVariant {
     this.isNumber = this.resultType === 'number';
     this.isBoolean = this.resultType === 'boolean';
     this.isOther = !this.isVoid && !this.isNumber && !this.isBoolean;
-    this.httpResponseType = this.isVoid ? `__Response<undefined>` : `__Response<${this.resultType}>`;
     let description = (operation.spec.description || '').trim();
     if (description !== '') {
       description += '\n\n';

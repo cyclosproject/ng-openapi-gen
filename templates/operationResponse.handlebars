@@ -1,6 +1,6 @@
-{{{responseMethodTsComments}}}{{responseMethodName}}({{>operationParameters}}): __Observable<{{{httpResponseType}}}> {
+{{{responseMethodTsComments}}}{{responseMethodName}}({{>operationParameters}}): Observable<{{@root.responseClass}}<{{{resultType}}}>> {
 
-    const rb = new __RequestBuilder(this.rootUrl, '{{operation.path}}', '{{operation.method}}');
+    const rb = new {{@root.requestBuilderClass}}(this.rootUrl, '{{operation.path}}', '{{operation.method}}');
     if (params) {
 
 {{#operation.parameters}}
@@ -12,8 +12,8 @@
       responseType: '{{responseType}}',
       accept: '{{accept}}'
     })).pipe(
-      __filter((r: any) => r instanceof HttpResponse),
-      __map((r: HttpResponse<any>) => {
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
         {{> handleResponse}}
       })
     );

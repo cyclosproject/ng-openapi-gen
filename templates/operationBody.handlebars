@@ -1,6 +1,6 @@
-{{{bodyMethodTsComments}}}{{methodName}}({{>operationParameters}}): __Observable<{{{resultType}}}> {
+{{{bodyMethodTsComments}}}{{methodName}}({{>operationParameters}}): Observable<{{{resultType}}}> {
 
     return this.{{responseMethodName}}(params).pipe(
-      __map((r: {{{httpResponseType}}}) => r.body as {{{resultType}}})
+      map((r: {{@root.responseClass}}<{{{resultType}}}>) => r.body as {{{resultType}}})
     );
   }
