@@ -121,7 +121,7 @@ function toType(schemaOrRef: SchemaObject | ReferenceObject | undefined, options
   // All the types
   const allOf = schema.allOf || [];
   if (allOf.length > 0) {
-    return union.map(u => toType(u, options)).join(' & ');
+    return allOf.map(u => toType(u, options)).join(' & ');
   }
 
   const type = schema.type || 'any';

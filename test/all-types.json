@@ -104,8 +104,12 @@
                 "description": "Property which references an enumerated string"
               },
               "refObjectProp": {
-                "$ref": "#/components/schemas/RefObject",
-                "description": "Property which references an object"
+                "description": "Property which references an object",
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/RefObject"
+                  }
+                ]
               },
               "unionProp": {
                 "$ref": "#/components/schemas/Union",
