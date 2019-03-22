@@ -5,6 +5,7 @@ import { Options } from './options.js';
 import fs from 'fs';
 import { kebabCase } from 'lodash';
 
+const Mnemonics: { [key: string]: string } = { 'input': 'i', 'output': 'o' };
 const DefaultConfig = 'ng-openapi-gen.json';
 
 function createParser() {
@@ -41,7 +42,12 @@ ${DefaultConfig} in the current directory`.trim(),
     }
     const kebab = kebabCase(key);
     const desc = (props as any)[key];
-    const names = ['--' + key];
+    const names = [];
+    const mnemonic = Mnemonics[key];
+    if (mnemonic) {
+      names.push('-' + mnemonic);
+    }
+    names.push('--' + key);
     if (kebab !== key) {
       names.push('--' + kebab);
     }
@@ -61,7 +67,16 @@ export function parseOptions(sysArgs?: string[]): Options {
   const args = argParser.parseArgs(sysArgs);
   let options: any = {};
   if (args.config) {
-    options = JSON.parse(fs.readFileSync(args.config, { encoding: 'utf-8' }));
+    if (fs.existsSync(args.config)) {
+      options = JSON.parse(fs.readFileSync(args.config, { encoding: 'utf-8' }));
+    } else if (args.config === `./${DefaultConfig}`) {
+      if ((args.input || '').length === 0) {
+        throw new Error(`No input is given, and the file ${DefaultConfig} doesn't exist.
+For help, run ng-openapi-gen --help`);
+      }
+    } else {
+      throw new Error(`The given configuration file doesn't exist: ${args.config}.`);
+    }
   }
   const props = schema.properties;
   for (const key of Object.keys(args)) {

@@ -64,7 +64,7 @@ This will expect the file `my-api.yaml` to be in the current directory, and will
 
 ## Configuration file and CLI arguments
 
-If the file `ng-openapi-gen.json` exists in the current directory, it will be read. Alternatively, you can run `ng-openapi-gen --config my-config.json` to specify a different configuration file.
+If the file `ng-openapi-gen.json` exists in the current directory, it will be read. Alternatively, you can run `ng-openapi-gen --config my-config.json` to specify a different configuration file, or even specify the input / output as `ng-openapi-gen -i input.yaml` or `ng-openapi-gen -i input.yaml -o /tmp/generation`.
 The only required configuration property is `input`, which specified the `OpenAPI` specification file. The default `output` is `src/app/api`.
 
 For a list with all possible configuration options, see the [JSON schema file](https://raw.githubusercontent.com/cyclosproject/ng-openapi-gen/master/ng-openapi-gen-schema.json).
