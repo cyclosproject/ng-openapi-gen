@@ -12,7 +12,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Container"
+                  "$ref": "#/components/schemas/Containers"
                 }
               }
             }
@@ -66,6 +66,12 @@
             "$ref": "#/components/schemas/Container"
           }
         ]
+      },
+      "Containers": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/Container"
+        }
       },
       "Container": {
         "allOf": [

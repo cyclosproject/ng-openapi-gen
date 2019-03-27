@@ -20,7 +20,7 @@
   "scripts": {
     "test": "jasmine-ts tsconfig.json --config=jasmine.json",
     "tslint": "tslint -c tslint.json -p tsconfig.json",
-    "compile": "tsc --project tsconfig.json && ncp \".npmignore\" dist && ncp \"LICENSE\" dist && ncp \"README.md\" dist && ncp \"templates\" dist && ncp \"lib/index.js\" dist/lib && replace-in-file \"\\\"private\\\": true\" \"\\\"private\\\": false\" dist/package.json",
+    "compile": "tsc --project tsconfig.json && ncp \".npmignore\" dist && ncp \"LICENSE\" dist && ncp \"README.md\" dist && ncp \"templates\" \"dist/templates\" && ncp \"node_modules\" \"dist/node_modules\" && replace-in-file \"\\\"private\\\": true\" \"\\\"private\\\": false\" dist/package.json",
     "build": "npm run tslint && npm run compile && npm test"
   },
   "dependencies": {
