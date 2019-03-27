@@ -48,10 +48,7 @@ export class Model extends GenType {
     this.isEnum = (this.enumValues || []).length > 0;
     this.isSimple = !this.isObject && !this.isEnum;
 
-    if (type === 'array') {
-      // Array
-      this.elementType = tsType(schema.items, options);
-    } else if (this.isObject) {
+    if (this.isObject) {
       // Object
       this.superClasses = [];
       const propertiesByName = new Map<string, Property>();
@@ -61,7 +58,7 @@ export class Model extends GenType {
       sortedNames.sort();
       this.properties = sortedNames.map(propName => propertiesByName.get(propName) as Property);
     } else {
-      // Simple / enum / union
+      // Simple / array / enum / union
       this.simpleType = tsType(schema, options);
     }
     this.collectImports(schema);
