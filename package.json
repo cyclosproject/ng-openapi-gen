@@ -1,6 +1,6 @@
 {
   "name": "ng-openapi-gen",
-  "version": "0.2.2",
+  "version": "0.2.2-a",
   "license": "MIT",
   "author": "Cyclos development team",
   "description": "An OpenAPI 3 codegen for Angular 6+",
@@ -20,7 +20,7 @@
   "scripts": {
     "test": "jasmine-ts tsconfig.json --config=jasmine.json",
     "tslint": "tslint -c tslint.json -p tsconfig.json",
-    "compile": "tsc --project tsconfig.json && ncp \".npmignore\" dist && ncp \"LICENSE\" dist && ncp \"README.md\" dist && ncp \"templates\" \"dist/templates\" && ncp \"node_modules\" \"dist/node_modules\" && replace-in-file \"\\\"private\\\": true\" \"\\\"private\\\": false\" dist/package.json",
+    "compile": "tsc --project tsconfig.json && ncp \"LICENSE\" dist && ncp \"README.md\" dist && ncp \"templates\" \"dist/templates\" && ncp \"node_modules\" \"dist/node_modules\" && rimraf \"dist/test\" && replace-in-file \"\\\"private\\\": true\" \"\\\"private\\\": false\" dist/package.json",
     "build": "npm run tslint && npm run compile && npm test"
   },
   "dependencies": {
@@ -53,6 +53,7 @@
     "jasmine-ts": "^0.3.0",
     "ncp": "^2.0.0",
     "replace-in-file": "^3.4.4",
+    "rimraf": "^2.6.3",
     "tslint": "^5.15.0",
     "typescript-parser": "^2.6.1"
   }
