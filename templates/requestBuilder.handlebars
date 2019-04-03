@@ -45,21 +45,27 @@ export class {{ requestBuilderClass }} {
    * Sets a path parameter
    */
   path(name: string, value: any): void {
-    this._path.set(name, value);
+    if (value !== null && value !== undefined) {
+      this._path.set(name, value);
+    }
   }
 
   /**
    * Sets a query parameter
    */
   query(name: string, value: any): void {
-    this._query.set(name, value);
+    if (value !== null && value !== undefined) {
+      this._query.set(name, value);
+    }
   }
 
   /**
    * Sets a header parameter
    */
   header(name: string, value: any): void {
-    this._header.set(name, value);
+    if (value !== null && value !== undefined) {
+      this._header.set(name, value);
+    }
   }
 
   /**
