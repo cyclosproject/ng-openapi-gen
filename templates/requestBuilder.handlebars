@@ -85,10 +85,16 @@ export class {{ requestBuilderClass }} {
           const val = value[key]
           if (val instanceof Array) {
             for (const v of val) {
-              formData.append(key, v);
+              const toAppend = this.formDataValue(v);
+              if (toAppend !== null) {
+                formData.append(key, toAppend);
+              }
             }
           } else {
-            formData.set(key, val);
+            const toAppend = this.formDataValue(val);
+            if (toAppend !== null) {
+              formData.set(key, toAppend);
+            }
           }
         }
       }
@@ -97,6 +103,19 @@ export class {{ requestBuilderClass }} {
       // The body is the plain content
       this._bodyContent = value;
     }
+  }
+
+  private formDataValue(value: any): any {
+    if (value === null || value === undefined) {
+      return null;
+    }
+    if (value instanceof Blob) {
+      return value;
+    }
+    if (typeof value === 'object') {
+      return new Blob([JSON.stringify(value)], { type: 'application/json' });
+    }
+    return new Blob([String(value)], { type: 'text/plain' });
   }
 
   /**
@@ -111,7 +130,7 @@ export class {{ requestBuilderClass }} {
 
     /** Whether to report progress on uploads / downloads */
     reportProgress?: boolean;
-    }): HttpRequest<T> {
+  }): HttpRequest<T> {
 
     // Path parameters
     let path = this.operationPath;
@@ -149,7 +168,7 @@ export class {{ requestBuilderClass }} {
     }
 
     // Request content headers
-    if (this._bodyContentType) {
+    if (this._bodyContentType && !(this._bodyContent instanceof FormData)) {
       httpHeaders = httpHeaders.set('Content-Type', this._bodyContentType);
     }
 
@@ -161,3 +180,4 @@ export class {{ requestBuilderClass }} {
     });
   }
 }
+
