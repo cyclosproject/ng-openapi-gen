@@ -27,8 +27,7 @@ export class OperationVariant {
     this.responseMethodName = `${methodName}$Response`;
     if (successResponse) {
       this.resultType = successResponse.type;
-      this.responseType = successResponse.mediaType === 'application/json' ? 'json' :
-        successResponse.mediaType.startsWith('text/') ? 'text' : 'blob';
+      this.responseType = this.inferResponseType(successResponse.mediaType);
       this.accept = successResponse.mediaType;
     } else {
       this.resultType = 'void';
@@ -45,6 +44,16 @@ export class OperationVariant {
     }
     this.responseMethodTsComments = tsComments(this.responseMethodDescription(), 1);
     this.bodyMethodTsComments = tsComments(this.bodyMethodDescription(), 1);
+  }
+
+  private inferResponseType(mediaType: string): string {
+    if (mediaType.startsWith('application/') && mediaType.includes('json')) {
+      return 'json';
+    } else if (mediaType.startsWith('text/')) {
+      return 'text';
+    } else {
+      return 'blob';
+    }
   }
 
   private responseMethodDescription() {
