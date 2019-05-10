@@ -47,7 +47,8 @@ export class OperationVariant {
   }
 
   private inferResponseType(mediaType: string): string {
-    if (mediaType.startsWith('application/') && mediaType.endsWith('+json')) {
+    mediaType = mediaType.toLowerCase();
+    if (mediaType === 'application/json' || mediaType.startsWith('application/') && mediaType.endsWith('+json')) {
       return 'json';
     } else if (mediaType.startsWith('text/')) {
       return 'text';
