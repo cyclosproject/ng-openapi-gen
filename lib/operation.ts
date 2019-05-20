@@ -70,20 +70,28 @@ export class Operation {
     const result: Parameter[] = [];
     if (params) {
       for (let param of params) {
-        if (param.$ref) {
-          param = resolveRef(this.openApi, param.$ref);
+
+          if (param.$ref) {
+            param = resolveRef(this.openApi, param.$ref);
+          }
+          param = param as ParameterObject;
+
+          if (param.in === 'cookie') {
+            console.warn(`Ignoring cookie parameter ${this.id}.${param.name} as cookie parameters cannot be sent in XmlHttpRequests.`);
+          } else if (this.paramIsNotExcluded(param)) {
+            result.push(new Parameter(param as ParameterObject, this.options));
+          }
         }
-        param = param as ParameterObject;
-        if (param.in === 'cookie') {
-          console.warn(`Ignoring cookie parameter ${this.id}.${param.name} as cookie parameters cannot be sent in XmlHttpRequests.`);
-        } else {
-          result.push(new Parameter(param as ParameterObject, this.options));
-        }
-      }
+
     }
     return result;
   }
 
+  private paramIsNotExcluded (param: ParameterObject): boolean {
+    const excludedParameters = this.options.excludeParameters || [];
+
+    return !excludedParameters.includes(param.name);
+  }
   private collectContent(desc: ContentObject | undefined): Content[] {
     const result: Content[] = [];
     if (desc) {
