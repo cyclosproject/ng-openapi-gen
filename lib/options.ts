@@ -73,4 +73,7 @@ export interface Options {
   /** Custom templates directory. Any `.handlebars` files here will be used instead of the corresponding default. */
   templates?: string;
 
+  /**  When specified, filters the generated services, excluding any param corresponding to this list of params. */
+  excludeParameters?: string[];
+
 }
