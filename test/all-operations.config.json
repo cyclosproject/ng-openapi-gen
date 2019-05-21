@@ -2,5 +2,6 @@
   "$schema": "../ng-openapi-gen-schema.json",
   "input": "all-operations.json",
   "output": "out/all-operations",
-  "defaultTag": "noTag"
+  "defaultTag": "noTag",
+  "excludeParameters": ["X-Exclude"]
 }

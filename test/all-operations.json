@@ -35,6 +35,15 @@
           "schema": {
             "$ref": "#/components/schemas/RefObject"
           }
+        },
+        {
+          "name": "X-Exclude",
+          "description": "Should be excluded",
+          "in": "header",
+          "required": false,
+          "schema": {
+            "type": "string"
+          }
         }
       ],
       "get": {

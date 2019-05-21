@@ -1,6 +1,6 @@
 {
   "name": "ng-openapi-gen",
-  "version": "0.2.6",
+  "version": "0.3.0",
   "license": "MIT",
   "author": "Cyclos development team",
   "description": "An OpenAPI 3 codegen for Angular 6+",
@@ -24,15 +24,15 @@
     "build": "npm run tslint && npm run compile && npm test"
   },
   "dependencies": {
-    "@loopback/openapi-v3-types": "^1.0.16",
+    "@loopback/openapi-v3-types": "^1.0.18",
     "@types/argparse": "^1.0.36",
     "@types/jsesc": "^0.4.29",
     "@types/json-schema": "^7.0.3",
-    "@types/lodash": "^4.14.125",
+    "@types/lodash": "^4.14.130",
     "@types/mkdirp": "^0.5.2",
-    "@types/node": "^10.14.6",
+    "@types/node": "^10.14.7",
     "argparse": "^1.0.10",
-    "esm": "^3.2.22",
+    "esm": "^3.2.25",
     "handlebars": "^4.1.2",
     "jsesc": "^2.5.2",
     "json-schema": "^0.2.3",
