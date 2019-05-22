@@ -8,7 +8,7 @@
   "components": {
     "schemas": {
       "Id": {
-        "type": "integer"
+        "type": "string"
       },
       "Entity": {
         "type": "object",

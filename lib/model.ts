@@ -31,7 +31,7 @@ export class Model extends GenType {
   constructor(name: string, public schema: SchemaObject, options: Options) {
     super(name, options);
 
-    this.typeName = modelClass(name, options);
+    this.typeName = name;
     this.fileName = fileName(this.typeName);
 
     const description = schema.description || '';
@@ -75,7 +75,7 @@ export class Model extends GenType {
       for (const part of allOf) {
         if (part.$ref) {
           // A superclass
-          this.superClasses.push(simpleName(part.$ref));
+          this.superClasses.push(modelClass(simpleName(part.$ref), this.options));
         } else {
           this.collectObject(part, propertiesByName);
         }

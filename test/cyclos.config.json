@@ -24,5 +24,9 @@
     "Files",
     "Images"
   ],
-  "enumStyle": "upper"
+  "enumStyle": "upper",
+  "modelPrefix": "Cyclos",
+  "modelSuffix": "Model",
+  "servicePrefix": "Api",
+  "serviceSuffix": "Service"
 }

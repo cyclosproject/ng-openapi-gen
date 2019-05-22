@@ -2,5 +2,7 @@
   "$schema": "../ng-openapi-gen-schema.json",
   "input": "person-place.json",
   "output": "out/person-place",
-  "ignoreUnusedModels": false
+  "ignoreUnusedModels": false,
+  "modelPrefix": "PP",
+  "modelSuffix": "Model"
 }

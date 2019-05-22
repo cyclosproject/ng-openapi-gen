@@ -1,7 +1,7 @@
 import { OpenAPIObject, OperationObject, PathItemObject, ReferenceObject, SchemaObject } from '@loopback/openapi-v3-types';
 import fs from 'fs';
 import path from 'path';
-import { HTTP_METHODS, methodName, simpleName } from './gen-utils';
+import { HTTP_METHODS, methodName, simpleName, modelClass } from './gen-utils';
 import { Globals } from './globals';
 import { Model } from './model';
 import { Operation } from './operation';
@@ -98,8 +98,9 @@ export class NgOpenApiGen {
     const schemas = (this.openApi.components || {}).schemas || {};
     for (const name of Object.keys(schemas)) {
       const schema = schemas[name];
-      const model = new Model(name, schema, this.options);
-      this.models.set(name, model);
+      const clazz = modelClass(name, this.options);
+      const model = new Model(clazz, schema, this.options);
+      this.models.set(clazz, model);
     }
   }
 
@@ -166,7 +167,7 @@ export class NgOpenApiGen {
       const operations = operationsByTag.get(tagName) || [];
       const tag = tags.find(t => t.name === tagName) || { name: tagName };
       const service = new Service(tag, operations, this.options);
-      this.services.set(tagName, service);
+      this.services.set(service.typeName, service);
     }
   }
 

@@ -1,5 +1,5 @@
 import { ReferenceObject, SchemaObject } from 'openapi3-ts';
-import { fileName, simpleName } from './gen-utils';
+import { fileName, simpleName, modelClass } from './gen-utils';
 import { Import, Imports } from './imports';
 import { Options } from './options';
 
@@ -29,6 +29,7 @@ export abstract class GenType {
   }
 
   protected addImport(type: string) {
+    type = modelClass(type, this.options);
     if (type && this.typeName !== type) {
       // Don't add an import to this own file
       this._imports.add(type, `${this.pathToModels()}${fileName(type)}`);
