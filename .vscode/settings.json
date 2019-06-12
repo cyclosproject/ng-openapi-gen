@@ -2,11 +2,16 @@
   "editor.rulers": [
     140
   ],
-  "tslint.autoFixOnSave": true,
+  "editor.insertSpaces": true,
+  "editor.detectIndentation": false,
+  "editor.tabSize": 2,
   "typescript.preferences.quoteStyle": "single",
   "typescript.preferences.importModuleSpecifier": "relative",
   "typescript.tsdk": "node_modules/typescript/lib",
   "[typescript]": {
+    "editor.formatOnSave": true
+  },
+  "[json]": {
     "editor.formatOnSave": true
   }
 }
