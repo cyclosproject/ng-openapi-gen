@@ -127,12 +127,12 @@ function toType(schemaOrRef: SchemaObject | ReferenceObject | undefined, options
   const type = schema.type || 'any';
 
   // An array
-  if (type === 'array') {
+  if (type === 'array' || schema.items) {
     return `Array<${toType(schema.items || {}, options)}>`;
   }
 
   // An object
-  if (type === 'object') {
+  if (type === 'object' || schema.properties) {
     let result = '{ ';
     let first = true;
     const properties = schema.properties || {};

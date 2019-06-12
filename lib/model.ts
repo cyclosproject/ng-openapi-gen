@@ -44,7 +44,7 @@ export class Model extends GenType {
       this.enumValues = (schema.enum || []).map(v => new EnumValue(type, v, options));
     }
 
-    this.isObject = type === 'object' || (schema.allOf || []).length > 0;
+    this.isObject = type === 'object' || !!schema.properties || (schema.allOf || []).length > 0;
     this.isEnum = (this.enumValues || []).length > 0;
     this.isSimple = !this.isObject && !this.isEnum;
 
@@ -80,7 +80,7 @@ export class Model extends GenType {
           this.collectObject(part, propertiesByName);
         }
       }
-    } else if (schema.type === 'object') {
+    } else if (schema.type === 'object' || !!schema.properties) {
       // An object definition
       const properties = schema.properties || {};
       const required = schema.required || [];
