@@ -1,5 +1,5 @@
 import { OpenAPIObject, OperationObject, PathItemObject, ReferenceObject, SchemaObject } from '@loopback/openapi-v3-types';
-import fs from 'fs';
+import fs from 'fs-extra';
 import path from 'path';
 import { HTTP_METHODS, methodName, simpleName, modelClass } from './gen-utils';
 import { Globals } from './globals';
@@ -21,11 +21,13 @@ export class NgOpenApiGen {
   models = new Map<string, Model>();
   services = new Map<string, Service>();
   operations = new Map<string, Operation>();
+  outDir: string;
 
   constructor(
     public openApi: OpenAPIObject,
     public options: Options) {
 
+    this.outDir = this.options.output || 'src/app/api';
 
     this.readTemplates();
     this.readModels();
@@ -41,6 +43,11 @@ export class NgOpenApiGen {
    * Actually generates the files
    */
   generate(): void {
+    if (this.options.removeStaleFiles !== false) {
+      // Clear the output directory
+      fs.emptyDirSync(this.outDir);
+    }
+
     // Generate each model
     const models = [...this.models.values()];
     for (const model of models) {
@@ -77,9 +84,8 @@ export class NgOpenApiGen {
   }
 
   private write(template: string, model: any, baseName: string, subDir?: string) {
-    const baseDir = this.options.output || 'src/app/api';
     const ts = this.templates.apply(template, model);
-    const file = path.join(baseDir, subDir || '.', `${baseName}.ts`);
+    const file = path.join(this.outDir, subDir || '.', `${baseName}.ts`);
     const dir = path.dirname(file);
     mkdirp.sync(dir);
     fs.writeFileSync(file, ts, { encoding: 'utf-8' });
