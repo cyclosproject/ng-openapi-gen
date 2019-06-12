@@ -26,6 +26,7 @@ export class NgOpenApiGen {
     public openApi: OpenAPIObject,
     public options: Options) {
 
+
     this.readTemplates();
     this.readModels();
     this.readServices();
@@ -191,6 +192,7 @@ export class NgOpenApiGen {
     // Then delete all unused models
     for (const model of this.models.values()) {
       if (!usedNames.has(model.typeName)) {
+        console.debug(`Ignoring model ${model.name} because it is not used anywhere`);
         this.models.delete(model.name);
       }
     }
@@ -213,26 +215,23 @@ export class NgOpenApiGen {
       return [];
     }
     if (schema.$ref) {
-      return [simpleName(schema.$ref)];
+      return [modelClass(simpleName(schema.$ref), this.options)];
     }
     schema = schema as SchemaObject;
     const result: string[] = [];
     (schema.allOf || []).forEach(s => Array.prototype.push.apply(result, this.allReferencedNames(s)));
     (schema.anyOf || []).forEach(s => Array.prototype.push.apply(result, this.allReferencedNames(s)));
     (schema.oneOf || []).forEach(s => Array.prototype.push.apply(result, this.allReferencedNames(s)));
-    if (schema.type === 'object') {
-      if (schema.properties) {
-        for (const prop of Object.keys(schema.properties)) {
-          Array.prototype.push.apply(result, this.allReferencedNames(schema.properties[prop]));
-        }
+    if (schema.properties) {
+      for (const prop of Object.keys(schema.properties)) {
+        Array.prototype.push.apply(result, this.allReferencedNames(schema.properties[prop]));
       }
-      if (typeof schema.additionalProperties === 'object') {
-        Array.prototype.push.apply(result, this.allReferencedNames(schema.additionalProperties));
-      }
-    } else if (schema.type === 'array') {
-      if (schema.items) {
-        Array.prototype.push.apply(result, this.allReferencedNames(schema.items));
-      }
+    }
+    if (typeof schema.additionalProperties === 'object') {
+      Array.prototype.push.apply(result, this.allReferencedNames(schema.additionalProperties));
+    }
+    if (schema.items) {
+      Array.prototype.push.apply(result, this.allReferencedNames(schema.items));
     }
     return result;
   }

@@ -2,7 +2,6 @@
   "$schema": "../ng-openapi-gen-schema.json",
   "input": "petstore.json",
   "output": "out/petstore",
-  "ignoreUnusedModels": false,
   "modelPrefix": "Petstore",
   "modelSuffix": "Model"
 }

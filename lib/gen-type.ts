@@ -47,7 +47,7 @@ export abstract class GenType {
     } else if (schema.$ref) {
       const dep = simpleName(schema.$ref);
       if (additional) {
-        this._additionalDependencies.add(dep);
+        this._additionalDependencies.add(modelClass(dep, this.options));
       } else {
         this.addImport(dep);
       }
@@ -56,14 +56,15 @@ export abstract class GenType {
       (schema.allOf || []).forEach(i => this.collectImports(i, additional));
       (schema.anyOf || []).forEach(i => this.collectImports(i, additional));
       (schema.oneOf || []).forEach(i => this.collectImports(i, additional));
-      if (schema.type === 'array') {
+      if (schema.items) {
         this.collectImports(schema.items, additional);
-      } else if (schema.type === 'object') {
-        const properties = schema.properties || {};
+      }
+      if (schema.properties) {
+        const properties = schema.properties;
         Object.keys(properties).forEach(p => this.collectImports(properties[p], additional));
-        if (typeof schema.additionalProperties === 'object') {
-          this.collectImports(schema.additionalProperties, additional);
-        }
+      }
+      if (typeof schema.additionalProperties === 'object') {
+        this.collectImports(schema.additionalProperties, additional);
       }
     }
   }
