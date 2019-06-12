@@ -10,3 +10,10 @@ import { Injectable } from '@angular/core';
 export class {{configurationClass}} {
   rootUrl: string = '{{{rootUrl}}}';
 }
+
+/**
+ * Parameters for `{{moduleClass}}.forRoot()`
+ */
+export interface {{configurationParams}} {
+  rootUrl?: string;
+}

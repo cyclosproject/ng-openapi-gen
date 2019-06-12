@@ -8,6 +8,7 @@ export class Globals {
 
   configurationClass: string;
   configurationFile: string;
+  configurationParams: string;
   baseServiceClass: string;
   baseServiceFile: string;
   requestBuilderClass: string;
@@ -22,6 +23,7 @@ export class Globals {
   constructor(options: Options) {
     this.configurationClass = options.configuration || 'ApiConfiguration';
     this.configurationFile = fileName(this.configurationClass);
+    this.configurationParams = `${this.configurationClass}Params`;
     this.baseServiceClass = options.baseService || 'BaseService';
     this.baseServiceFile = fileName(this.baseServiceClass);
     this.requestBuilderClass = options.requestBuilder || 'RequestBuilder';

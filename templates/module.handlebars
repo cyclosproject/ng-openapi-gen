@@ -1,7 +1,7 @@
 /* tslint:disable */
-import { NgModule } from '@angular/core';
+import { NgModule, ModuleWithProviders } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
-import { {{configurationClass}} } from './{{configurationFile}}';
+import { {{configurationClass}}, {{configurationParams}} } from './{{configurationFile}}';
 
 {{#services}}import { {{typeName}} } from './services/{{fileName}}';
 {{/services}}
@@ -24,4 +24,16 @@ import { {{configurationClass}} } from './{{configurationFile}}';
     {{configurationClass}}
   ],
 })
-export class {{moduleClass}} { }
+export class {{moduleClass}} {
+  static forRoot(params: {{configurationParams}}): ModuleWithProviders {
+    return {
+      ngModule: {{moduleClass}},
+      providers: [
+        {
+          provide: {{configurationClass}},
+          useValue: params
+        }
+      ]
+    }
+  }
+}
