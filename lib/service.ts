@@ -27,9 +27,8 @@ export class Service extends GenType {
       for (const parameter of operation.parameters) {
         this.collectImports(parameter.spec.schema);
       }
-      // console.log(operation);
-      for (const security of operation.security) {
-        this.collectImports(security.spec.schema);
+      for (const securityGroup of operation.security) {
+        securityGroup.forEach(security => this.collectImports(security.spec.schema));
       }
       if (operation.requestBody) {
         for (const content of operation.requestBody.content) {

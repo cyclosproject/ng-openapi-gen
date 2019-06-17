@@ -18,7 +18,7 @@ export class Operation {
   parameters: Parameter[] = [];
   hasParameters: boolean;
   parametersRequired = false;
-  security: Security[] = [];
+  security: Security[][] = [];
 
   tsComments: string;
   requestBody?: RequestBody;
@@ -50,9 +50,7 @@ export class Operation {
     }
     this.hasParameters = this.parameters.length > 0;
 
-    this.security = [
-      ...this.collectSecurity(spec.security),
-    ];
+    this.security = spec.security ? this.collectSecurity(spec.security) : this.collectSecurity(openApi.security);
 
     let body = spec.requestBody;
     if (body) {
@@ -95,18 +93,15 @@ export class Operation {
     return result;
   }
 
-  private collectSecurity(params: (SecurityRequirementObject | ReferenceObject)[] | undefined): Security[] {
-    const result: Security[] = [];
-    if (params) {
-      for (const param of params) {
-        const keys = Object.keys(param);
-        keys.forEach((key) => {
-          const security: SecuritySchemeObject = resolveRef(this.openApi, `#/components/securitySchemes/${key}`);
-          result.push(new Security(key, security, this.options));
-        });
-      }
-    }
-    return result;
+  private collectSecurity(params: (SecurityRequirementObject | ReferenceObject)[] | undefined): Security[][] {
+    if (!params) { return []; }
+
+    return params.map(param => {
+      return Object.keys(param).map(key => {
+        const security: SecuritySchemeObject = resolveRef(this.openApi, `#/components/securitySchemes/${key}`);
+        return new Security(key, security, this.options);
+      });
+    });
   }
 
   private paramIsNotExcluded(param: ParameterObject): boolean {
