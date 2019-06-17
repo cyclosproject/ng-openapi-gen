@@ -1,10 +1,11 @@
 import { upperFirst, last } from 'lodash';
-import { ContentObject, MediaTypeObject, OpenAPIObject, OperationObject, ParameterObject, PathItemObject, ReferenceObject, RequestBodyObject, ResponseObject } from 'openapi3-ts';
+import { ContentObject, MediaTypeObject, OpenAPIObject, OperationObject, ParameterObject, PathItemObject, ReferenceObject, RequestBodyObject, ResponseObject, SecurityRequirementObject, SecuritySchemeObject } from 'openapi3-ts';
 import { Content } from './content';
 import { resolveRef, tsComments, typeName } from './gen-utils';
 import { OperationVariant } from './operation-variant';
 import { Options } from './options';
 import { Parameter } from './parameter';
+import { Security } from './security';
 import { RequestBody } from './request-body';
 import { Response } from './response';
 
@@ -17,6 +18,8 @@ export class Operation {
   parameters: Parameter[] = [];
   hasParameters: boolean;
   parametersRequired = false;
+  security: Security[] = [];
+
   tsComments: string;
   requestBody?: RequestBody;
   successResponse?: Response;
@@ -46,6 +49,11 @@ export class Operation {
       this.parametersRequired = true;
     }
     this.hasParameters = this.parameters.length > 0;
+
+    this.security = [
+      ...this.collectSecurity(spec.security),
+    ];
+
     let body = spec.requestBody;
     if (body) {
       if (body.$ref) {
@@ -83,6 +91,20 @@ export class Operation {
         }
       }
 
+    }
+    return result;
+  }
+
+  private collectSecurity(params: (SecurityRequirementObject | ReferenceObject)[] | undefined): Security[] {
+    const result: Security[] = [];
+    if (params) {
+      for (const param of params) {
+        const keys = Object.keys(param);
+        keys.forEach((key) => {
+          const security: SecuritySchemeObject = resolveRef(this.openApi, `#/components/securitySchemes/${key}`);
+          result.push(new Security(security, this.options));
+        });
+      }
     }
     return result;
   }

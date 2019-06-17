@@ -16,7 +16,7 @@ export class Service extends GenType {
 
     this.typeName = serviceClass(typeName(tag.name), options);
     this.fileName = fileName(this.typeName);
-    // Angular standards demmand that services have a period separating them
+    // Angular standards demand that services have a period separating them
     if (this.fileName.endsWith('-service')) {
       this.fileName = this.fileName.substring(0, this.fileName.length - '-service'.length) + '.service';
     }
@@ -26,6 +26,10 @@ export class Service extends GenType {
     for (const operation of operations) {
       for (const parameter of operation.parameters) {
         this.collectImports(parameter.spec.schema);
+      }
+      // console.log(operation);
+      for (const security of operation.security) {
+        this.collectImports(security.spec.schema);
       }
       if (operation.requestBody) {
         for (const content of operation.requestBody.content) {
