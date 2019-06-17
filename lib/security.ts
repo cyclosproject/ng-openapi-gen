@@ -6,11 +6,24 @@ import { Options } from './options';
  * An operation security
  */
 export class Security {
-
+  /**
+   * variable name
+   */
   var: string;
+
+  /**
+   * Header Name
+   */
   name: string;
+
+  /**
+   * Property Description
+   */
   tsComments: string;
-  required: boolean;
+
+  /**
+   * Location of security parameter
+   */
   in: string;
   type: string;
 
@@ -19,7 +32,6 @@ export class Security {
     this.var = methodName(key);
     this.tsComments = tsComments(spec.description || '', 2);
     this.in = spec.in || 'header';
-    this.required = this.in === 'path' || spec.required || false;
     this.type = tsType(spec.schema, options);
   }
 }
