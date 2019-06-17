@@ -3,7 +3,7 @@ import { tsComments, tsType, methodName } from './gen-utils';
 import { Options } from './options';
 
 /**
- * An operation parameter
+ * An operation security
  */
 export class Security {
 
