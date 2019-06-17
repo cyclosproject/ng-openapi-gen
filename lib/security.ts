@@ -27,7 +27,7 @@ export class Security {
   in: string;
   type: string;
 
-  constructor(key: string, public spec: SecuritySchemeObject, options: Options) {
+  constructor(key: string, public spec: SecuritySchemeObject, public scope: string[] = [], options: Options) {
     this.name = spec.name || '';
     this.var = methodName(key);
     this.tsComments = tsComments(spec.description || '', 2);

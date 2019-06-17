@@ -93,13 +93,14 @@ export class Operation {
     return result;
   }
 
-  private collectSecurity(params: (SecurityRequirementObject | ReferenceObject)[] | undefined): Security[][] {
+  private collectSecurity(params: (SecurityRequirementObject)[] | undefined): Security[][] {
     if (!params) { return []; }
 
-    return params.map(param => {
+    return params.map((param) => {
       return Object.keys(param).map(key => {
+        const scope = param[key];
         const security: SecuritySchemeObject = resolveRef(this.openApi, `#/components/securitySchemes/${key}`);
-        return new Security(key, security, this.options);
+        return new Security(key, security, scope, this.options);
       });
     });
   }
