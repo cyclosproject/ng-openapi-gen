@@ -14,9 +14,9 @@ export class Security {
   in: string;
   type: string;
 
-  constructor(public spec: SecuritySchemeObject, options: Options) {
+  constructor(key: string, public spec: SecuritySchemeObject, options: Options) {
     this.name = spec.name || '';
-    this.var = methodName(this.name);
+    this.var = methodName(key);
     this.tsComments = tsComments(spec.description || '', 2);
     this.in = spec.in || 'header';
     this.required = this.in === 'path' || spec.required || false;

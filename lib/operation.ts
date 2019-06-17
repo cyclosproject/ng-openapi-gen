@@ -102,7 +102,7 @@ export class Operation {
         const keys = Object.keys(param);
         keys.forEach((key) => {
           const security: SecuritySchemeObject = resolveRef(this.openApi, `#/components/securitySchemes/${key}`);
-          result.push(new Security(security, this.options));
+          result.push(new Security(key, security, this.options));
         });
       }
     }
