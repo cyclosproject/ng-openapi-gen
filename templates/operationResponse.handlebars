@@ -5,7 +5,10 @@
 
 {{#operation.parameters}}
       rb.{{in}}('{{{name}}}', params.{{var}});
-{{/operation.parameters}}{{#requestBody}}      rb.body(params.body, '{{{mediaType}}}');
+{{/operation.parameters}}
+
+{{#requestBody}}
+      rb.body(params.body, '{{{mediaType}}}');
 {{/requestBody}}
     }
     return this.http.request(rb.build({
