@@ -17,7 +17,6 @@
     "eofline": true,
     "forin": true,
     "no-shadowed-variable": true,
-    "no-use-before-declare": true,
     "no-string-throw": true,
     "no-var-keyword": true,
     "quotemark": [
