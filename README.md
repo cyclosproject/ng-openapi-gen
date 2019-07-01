@@ -83,6 +83,7 @@ Here is an example of a configuration file:
 ```
 
 ## Specifying the root URL / web service endpoint
+
 The easiest way to specify a custom root URL (web service endpoint URL) is to
 use `forRoot` method of `ApiModule` and set the `rootUrl` property from there.
 
@@ -106,6 +107,7 @@ Alternatively, you can inject the `ApiConfiguration` instance in some service
 or component, such as the `AppComponent` and set the `rootUrl` property there.
 
 ## Passing request headers / customizing the request
+
 To pass request headers, such as authorization or API keys, as well as having a
 centralized error handling, a standard
 [HttpInterceptor](https://angular.io/guide/http#intercepting-all-requests-or-responses) should
@@ -222,6 +224,7 @@ And, of course, add `ApiRequestConfiguration` to your module `providers` and
 inject it on your components or services.
 
 ## Setting up a node script
+
 Regardless If your Angular project was generated or is managed by
 [Angular CLI](https://cli.angular.io/), or you have started your project with
 some other seed (for example, using [webpack](https://webpack.js.org/)
@@ -256,3 +259,19 @@ the call to `ng-openapi-gen`, like:
   }
 }
 ```
+
+## Developing and contributing
+
+The generator itself is written in TypeScript. When building, the code is transpiled to JavaScript in the `dist` folder. And the `dist` folder is the one that gets published to NPM. Even to prevent publishing from the wrong path, the `package.json` file has `"private": true`, which gets replaced by `false` in the build process.
+
+On the other hand, for developing / running tests, `jasmine-ts` is used, so the tests run directly from TypeScript. There's even a committed VisualStudio Code debug configuration for tests.
+
+After developing the changes, to `link` the module and test it with other node projects, run the following:
+
+```bash
+npm run build
+cd dist
+npm link
+```
+
+At that point, the globally available ng-openapi-gen will be the one compiled to the `dist` folder.
