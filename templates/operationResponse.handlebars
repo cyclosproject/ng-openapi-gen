@@ -1,6 +1,6 @@
 {{{responseMethodTsComments}}}{{responseMethodName}}({{>operationParameters}}): Observable<{{@root.responseClass}}<{{{resultType}}}>> {
 
-    const rb = new {{@root.requestBuilderClass}}(this.rootUrl, '{{operation.path}}', '{{operation.method}}');
+    const rb = new {{@root.requestBuilderClass}}(this.rootUrl, {{@root.typeName}}.{{operation.pathVar}}, '{{operation.method}}');
     if (params) {
 
 {{#operation.parameters}}
