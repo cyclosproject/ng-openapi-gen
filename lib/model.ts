@@ -70,8 +70,8 @@ export class Model extends GenType {
   }
 
   private collectObject(schema: SchemaObject, propertiesByName: Map<string, Property>) {
-    const allOf = schema.allOf;
-    if (allOf) {
+    const allOf = schema.allOf || [];
+    if (allOf.length > 0) {
       for (const part of allOf) {
         if (part.$ref) {
           // A superclass

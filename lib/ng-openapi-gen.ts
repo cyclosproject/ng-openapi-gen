@@ -227,7 +227,6 @@ export class NgOpenApiGen {
     const result: string[] = [];
     (schema.allOf || []).forEach(s => Array.prototype.push.apply(result, this.allReferencedNames(s)));
     (schema.anyOf || []).forEach(s => Array.prototype.push.apply(result, this.allReferencedNames(s)));
-    (schema.oneOf || []).forEach(s => Array.prototype.push.apply(result, this.allReferencedNames(s)));
     if (schema.properties) {
       for (const prop of Object.keys(schema.properties)) {
         Array.prototype.push.apply(result, this.allReferencedNames(schema.properties[prop]));
