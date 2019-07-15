@@ -33,11 +33,11 @@ export class {{moduleClass}} {
   }
 
   constructor( 
-    @Optional() @SkipSelf() parentModule: ApiModule,
+    @Optional() @SkipSelf() parentModule: {{moduleClass}},
     @Optional() http: HttpClient
   ) {
     if (parentModule) {
-      throw new Error('ApiModule is already loaded. Import in your base AppModule only.');
+      throw new Error('{{moduleClass}} is already loaded. Import in your base AppModule only.');
     }
     if (!http) {
       throw new Error('You need to import the HttpClientModule in your AppModule! \n' +
