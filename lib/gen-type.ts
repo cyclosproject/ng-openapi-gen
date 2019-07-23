@@ -55,7 +55,6 @@ export abstract class GenType {
       schema = schema as SchemaObject;
       (schema.allOf || []).forEach(i => this.collectImports(i, additional));
       (schema.anyOf || []).forEach(i => this.collectImports(i, additional));
-      (schema.oneOf || []).forEach(i => this.collectImports(i, additional));
       if (schema.items) {
         this.collectImports(schema.items, additional);
       }
