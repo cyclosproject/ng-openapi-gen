@@ -90,6 +90,25 @@ describe('Generation tests using all-types.json', () => {
       const decl = ast.declarations[0] as InterfaceDeclaration;
       expect(decl.name).toBe('Disjunct');
       expect(decl.properties.length).toBe(1);
+      expect(decl.properties[0].name).toBe('id');
+      expect(decl.properties[0].type).toBe('string');
+      done();
+    });
+  });
+
+
+  it('ReferencedInOneOf model', done => {
+    const ref = gen.models.get('ReferencedInOneOf');
+    const ts = gen.templates.apply('model', ref);
+    const parser = new TypescriptParser();
+    parser.parseSource(ts).then(ast => {
+      expect(ast.imports.length).toBe(0);
+      expect(ast.declarations.length).toBe(1);
+      expect(ast.declarations[0]).toEqual(jasmine.any(InterfaceDeclaration));
+      const decl = ast.declarations[0] as InterfaceDeclaration;
+      expect(decl.name).toBe('ReferencedInOneOf');
+      expect(decl.properties.length).toBe(1);
+      expect(decl.properties[0].name).toBe('name');
       expect(decl.properties[0].type).toBe('string');
       done();
     });

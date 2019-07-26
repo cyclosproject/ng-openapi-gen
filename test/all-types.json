@@ -1,233 +1,250 @@
 {
-    "openapi": "3.0",
-    "info": {
-        "title": "Test with all types",
-        "version": "1.0"
-    },
-    "paths": {
-        "/test": {
-            "get": {
-                "responses": {
-                    "200": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Containers"
-                                }
-                            }
-                        }
-                    }
+  "openapi": "3.0",
+  "info": {
+    "title": "Test with all types",
+    "version": "1.0"
+  },
+  "paths": {
+    "/test": {
+      "get": {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Containers"
                 }
+              }
             }
+          }
         }
-    },
-    "components": {
-        "schemas": {
-            "RefEnum": {
-                "type": "string",
-                "enum": ["valueA", "valueB", "valueC"]
-            },
-            "RefObject": {
-                "type": "object",
-                "required": ["id"],
-                "properties": {
-                    "id": {
-                        "type": "string"
-                    }
-                }
-            },
-            "OtherObject": {
-                "allOf": [
-                    {
-                        "$ref": "#/components/schemas/RefObject"
-                    },
-                    {
-                        "type": "object",
-                        "additionalProperties": true
-                    }
-                ]
-            },
-            "Union": {
-                "anyOf": [
-                    {
-                        "type": "object",
-                        "additionalProperties": true
-                    },
-                    {
-                        "$ref": "#/components/schemas/RefEnum"
-                    },
-                    {
-                        "$ref": "#/components/schemas/Container"
-                    }
-                ]
-            },
-            "Disjunct": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "type": "string"
-                    }
-                },
-                "oneOf": [
-                    {
-                        "$ref": "#/components/schemas/RefObject"
-                    },
-                    {
-                        "$ref": "#/components/schemas/OtherObject"
-                    }
-                ]
-            },
-            "Containers": {
-                "type": "array",
-                "items": {
-                    "$ref": "#/components/schemas/Container"
-                }
-            },
-            "Container": {
-                "allOf": [
-                    {
-                        "type": "object",
-                        "properties": {
-                            "stringProp": {
-                                "type": "string",
-                                "description": "Property of type string"
-                            },
-                            "integerProp": {
-                                "type": "integer",
-                                "description": "Property of type integer"
-                            },
-                            "numberProp": {
-                                "type": "number",
-                                "description": "Property of type number"
-                            },
-                            "booleanProp": {
-                                "type": "boolean",
-                                "description": "Property of type boolean"
-                            },
-                            "anyProp": {
-                                "description": "Property of type any"
-                            }
-                        }
-                    },
-                    {
-                        "$ref": "#/components/schemas/RefObject"
-                    },
-                    {
-                        "type": "object",
-                        "properties": {
-                            "refEnumProp": {
-                                "$ref": "#/components/schemas/RefEnum",
-                                "description": "Property which references an enumerated string"
-                            },
-                            "refObjectProp": {
-                                "description": "Property which references an object",
-                                "allOf": [
-                                    {
-                                        "$ref": "#/components/schemas/RefObject"
-                                    }
-                                ]
-                            },
-                            "unionProp": {
-                                "$ref": "#/components/schemas/Union",
-                                "description": "Property which references an Union object"
-                            },
-                            "disjunctProp": {
-                                "$ref": "#/components/schemas/Disjunct",
-                                "decription": "Property wich references an Disjunct object"
-                            },
-                            "containerProp": {
-                                "$ref": "#/components/schemas/Container",
-                                "description": "Property which references another container"
-                            },
-                            "arrayOfStringsProp": {
-                                "type": "array",
-                                "description": "Property of type array of string",
-                                "items": {
-                                    "type": "string"
-                                }
-                            },
-                            "arrayOfIntegersProp": {
-                                "type": "array",
-                                "description": "Property of type array of integers",
-                                "items": {
-                                    "type": "integer"
-                                }
-                            },
-                            "arrayOfNumbersProp": {
-                                "type": "array",
-                                "description": "Property of type array of numbers",
-                                "items": {
-                                    "type": "number"
-                                }
-                            },
-                            "arrayOfBooleansProp": {
-                                "type": "array",
-                                "description": "Property of type array of booleans",
-                                "items": {
-                                    "type": "boolean"
-                                }
-                            },
-                            "arrayOfRefEnumsProp": {
-                                "type": "array",
-                                "description": "Property of type array of enums",
-                                "items": {
-                                    "$ref": "#/components/schemas/RefEnum"
-                                }
-                            },
-                            "arrayOfRefObjectsProp": {
-                                "type": "array",
-                                "description": "Property of type array of references an object",
-                                "items": {
-                                    "$ref": "#/components/schemas/RefObject"
-                                }
-                            },
-                            "arrayOfAnyProp": {
-                                "type": "array",
-                                "description": "Property of type array of any type",
-                                "items": {}
-                            },
-                            "nestedObject": {
-                                "type": "object",
-                                "properties": {
-                                    "p1": {
-                                        "type": "string"
-                                    },
-                                    "p2": {
-                                        "type": "integer"
-                                    },
-                                    "deeper": {
-                                        "type": "object",
-                                        "properties": {
-                                            "d1": {
-                                                "$ref": "#/components/schemas/RefObject"
-                                            },
-                                            "d2": {
-                                                "anyOf": [
-                                                    {
-                                                        "type": "string"
-                                                    },
-                                                    {
-                                                        "type": "array",
-                                                        "items": {
-                                                            "$ref": "#/components/schemas/RefObject"
-                                                        }
-                                                    },
-                                                    {
-                                                        "type": "integer"
-                                                    }
-                                                ]
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        },
-                        "additionalProperties": {
-                            "$ref": "#/components/schemas/OtherObject"
-                        }
-                    }
-                ]
-            }
-        }
+      }
     }
+  },
+  "components": {
+    "schemas": {
+      "RefEnum": {
+        "type": "string",
+        "enum": [
+          "valueA",
+          "valueB",
+          "valueC"
+        ]
+      },
+      "RefObject": {
+        "type": "object",
+        "required": [
+          "id"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          }
+        }
+      },
+      "OtherObject": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/RefObject"
+          },
+          {
+            "type": "object",
+            "additionalProperties": true
+          }
+        ]
+      },
+      "Union": {
+        "anyOf": [
+          {
+            "type": "object",
+            "additionalProperties": true
+          },
+          {
+            "$ref": "#/components/schemas/RefEnum"
+          },
+          {
+            "$ref": "#/components/schemas/Container"
+          }
+        ]
+      },
+      "Disjunct": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          }
+        },
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/RefObject"
+          },
+          {
+            "$ref": "#/components/schemas/OtherObject"
+          },
+          {
+            "$ref": "#/components/schemas/ReferencedInOneOf"
+          }
+        ]
+      },
+      "ReferencedInOneOf": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "Containers": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/Container"
+        }
+      },
+      "Container": {
+        "allOf": [
+          {
+            "type": "object",
+            "properties": {
+              "stringProp": {
+                "type": "string",
+                "description": "Property of type string"
+              },
+              "integerProp": {
+                "type": "integer",
+                "description": "Property of type integer"
+              },
+              "numberProp": {
+                "type": "number",
+                "description": "Property of type number"
+              },
+              "booleanProp": {
+                "type": "boolean",
+                "description": "Property of type boolean"
+              },
+              "anyProp": {
+                "description": "Property of type any"
+              }
+            }
+          },
+          {
+            "$ref": "#/components/schemas/RefObject"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "refEnumProp": {
+                "$ref": "#/components/schemas/RefEnum",
+                "description": "Property which references an enumerated string"
+              },
+              "refObjectProp": {
+                "description": "Property which references an object",
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/RefObject"
+                  }
+                ]
+              },
+              "unionProp": {
+                "$ref": "#/components/schemas/Union",
+                "description": "Property which references an Union object"
+              },
+              "disjunctProp": {
+                "$ref": "#/components/schemas/Disjunct",
+                "decription": "Property wich references an Disjunct object"
+              },
+              "containerProp": {
+                "$ref": "#/components/schemas/Container",
+                "description": "Property which references another container"
+              },
+              "arrayOfStringsProp": {
+                "type": "array",
+                "description": "Property of type array of string",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "arrayOfIntegersProp": {
+                "type": "array",
+                "description": "Property of type array of integers",
+                "items": {
+                  "type": "integer"
+                }
+              },
+              "arrayOfNumbersProp": {
+                "type": "array",
+                "description": "Property of type array of numbers",
+                "items": {
+                  "type": "number"
+                }
+              },
+              "arrayOfBooleansProp": {
+                "type": "array",
+                "description": "Property of type array of booleans",
+                "items": {
+                  "type": "boolean"
+                }
+              },
+              "arrayOfRefEnumsProp": {
+                "type": "array",
+                "description": "Property of type array of enums",
+                "items": {
+                  "$ref": "#/components/schemas/RefEnum"
+                }
+              },
+              "arrayOfRefObjectsProp": {
+                "type": "array",
+                "description": "Property of type array of references an object",
+                "items": {
+                  "$ref": "#/components/schemas/RefObject"
+                }
+              },
+              "arrayOfAnyProp": {
+                "type": "array",
+                "description": "Property of type array of any type",
+                "items": {}
+              },
+              "nestedObject": {
+                "type": "object",
+                "properties": {
+                  "p1": {
+                    "type": "string"
+                  },
+                  "p2": {
+                    "type": "integer"
+                  },
+                  "deeper": {
+                    "type": "object",
+                    "properties": {
+                      "d1": {
+                        "$ref": "#/components/schemas/RefObject"
+                      },
+                      "d2": {
+                        "anyOf": [
+                          {
+                            "type": "string"
+                          },
+                          {
+                            "type": "array",
+                            "items": {
+                              "$ref": "#/components/schemas/RefObject"
+                            }
+                          },
+                          {
+                            "type": "integer"
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "additionalProperties": {
+              "$ref": "#/components/schemas/OtherObject"
+            }
+          }
+        ]
+      }
+    }
+  }
 }
