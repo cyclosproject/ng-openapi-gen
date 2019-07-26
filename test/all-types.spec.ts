@@ -79,12 +79,28 @@ describe('Generation tests using all-types.json', () => {
     });
   });
 
+  it('Disjunct model', done => {
+    const disjunct = gen.models.get('Disjunct');
+    const ts = gen.templates.apply('model', disjunct);
+    const parser = new TypescriptParser();
+    parser.parseSource(ts).then(ast => {
+      expect(ast.imports.length).toBe(0);
+      expect(ast.declarations.length).toBe(1);
+      expect(ast.declarations[0]).toEqual(jasmine.any(InterfaceDeclaration));
+      const decl = ast.declarations[0] as InterfaceDeclaration;
+      expect(decl.name).toBe('Disjunct');
+      expect(decl.properties.length).toBe(1);
+      expect(decl.properties[0].type).toBe('string');
+      done();
+    });
+  });
+
   it('Container model', done => {
     const container = gen.models.get('Container');
     const ts = gen.templates.apply('model', container);
     const parser = new TypescriptParser();
     parser.parseSource(ts).then(ast => {
-      expect(ast.imports.length).toBe(4);
+      expect(ast.imports.length).toBe(5);
       expect(ast.imports.find(i => i.libraryName === './ref-enum')).withContext('ref-enum import').toBeDefined();
       expect(ast.imports.find(i => i.libraryName === './ref-object')).withContext('ref-object import').toBeDefined();
       expect(ast.imports.find(i => i.libraryName === './other-object')).withContext('other-object import').toBeDefined();
@@ -93,7 +109,7 @@ describe('Generation tests using all-types.json', () => {
       expect(ast.declarations[0]).toEqual(jasmine.any(InterfaceDeclaration));
       const decl = ast.declarations[0] as InterfaceDeclaration;
       expect(decl.name).toBe('Container');
-      expect(decl.properties.length).toBe(17);
+      expect(decl.properties.length).toBe(18);
 
       // Assert the simple types
       function assertProperty(name: string, type: string) {
