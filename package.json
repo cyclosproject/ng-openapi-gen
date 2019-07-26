@@ -1,6 +1,6 @@
 {
   "name": "ng-openapi-gen",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "license": "MIT",
   "author": "Cyclos development team",
   "description": "An OpenAPI 3 codegen for Angular 6+",
@@ -20,28 +20,28 @@
   "scripts": {
     "test": "jasmine-ts tsconfig.json --config=jasmine.json",
     "tslint": "tslint -c tslint.json -p tsconfig.json",
-    "compile": "tsc --project tsconfig.json && ncp \"LICENSE\" dist && ncp \"README.md\" dist && ncp \"templates\" \"dist/templates\" && ncp \"node_modules\" \"dist/node_modules\" && rimraf \"dist/test\" && replace-in-file \"\\\"private\\\": true\" \"\\\"private\\\": false\" dist/package.json",
+    "compile": "tsc --project tsconfig.json && ncp \"LICENSE\" dist && ncp \"README.md\" \"dist/README.md\" && ncp \"templates\" \"dist/templates\" && ncp \"node_modules\" \"dist/node_modules\" && rimraf \"dist/test\" && replace-in-file \"\\\"private\\\": true\" \"\\\"private\\\": false\" dist/package.json",
     "build": "npm run tslint && npm run compile && npm test"
   },
   "dependencies": {
     "@loopback/openapi-v3-types": "^1.2.1",
     "@types/argparse": "^1.0.36",
-    "@types/fs-extra": "^7.0.0",
+    "@types/fs-extra": "^8.0.0",
     "@types/jsesc": "^0.4.29",
     "@types/json-schema": "^7.0.3",
     "@types/lodash": "^4.14.136",
     "@types/mkdirp": "^0.5.2",
-    "@types/node": "^10.14.13",
+    "@types/node": "^12.6.8",
     "argparse": "^1.0.10",
     "esm": "^3.2.25",
     "fs-extra": "^8.1.0",
     "handlebars": "^4.1.2",
     "jsesc": "^2.5.2",
     "json-schema": "^0.2.3",
-    "json-schema-ref-parser": "^5.1.3",
+    "json-schema-ref-parser": "^7.1.0",
     "lodash": "^4.17.15",
     "mkdirp": "^0.5.1",
-    "ts-node": "^7.0.1",
+    "ts-node": "^8.3.0",
     "typescript": "^3.5.3"
   },
   "peerDependencies": {
@@ -55,7 +55,7 @@
     "jasmine-ts": "^0.3.0",
     "mem": "^5.1.1",
     "ncp": "^2.0.0",
-    "replace-in-file": "^3.4.4",
+    "replace-in-file": "^4.1.1",
     "rimraf": "^2.6.3",
     "tslint": "^5.18.0",
     "typescript-parser": "^2.6.1"
