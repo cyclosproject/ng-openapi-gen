@@ -19,6 +19,27 @@
           }
         }
       }
+    },
+    "/test2": {
+      "get": {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "nullabe": true,
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/ReferencedInOneOfPath"
+                    }
+                  ]
+                  
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -87,6 +108,14 @@
         ]
       },
       "ReferencedInOneOf": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "ReferencedInOneOfPath": {
         "type": "object",
         "properties": {
           "name": {
