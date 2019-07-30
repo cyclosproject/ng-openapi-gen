@@ -27,7 +27,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "nullabe": true,
+                  "nullable": true,
                   "oneOf": [
                     {
                       "$ref": "#/components/schemas/ReferencedInOneOfPath"
