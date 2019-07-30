@@ -41,6 +41,10 @@ export abstract class GenType {
     this.additionalDependencies = [...this._additionalDependencies];
   }
 
+  protected isNullableType(schema: SchemaObject) {
+    return schema.oneOf && schema.oneOf.length === 1 && schema.nullable;
+  }
+
   protected collectImports(schema: SchemaObject | ReferenceObject | undefined, additional?: true): void {
     if (!schema) {
       return;
@@ -55,6 +59,10 @@ export abstract class GenType {
       schema = schema as SchemaObject;
       (schema.allOf || []).forEach(i => this.collectImports(i, additional));
       (schema.anyOf || []).forEach(i => this.collectImports(i, additional));
+      // Specific work-around for nullable types
+      if (this.isNullableType(schema)) {
+        this.collectImports((schema.oneOf as ReferenceObject[])[0], additional);
+      }
       if (schema.items) {
         this.collectImports(schema.items, additional);
       }
