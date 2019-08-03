@@ -149,10 +149,10 @@ export class {{ requestBuilderClass }} {
       const value = this._query.get(param);
       if (value instanceof Array) {
         for (const item of value) {
-          httpParams = httpParams.append(param, (item || '').toString());
+          httpParams = httpParams.append(param, (item !== undefined && item !== null ? item : '').toString());
         }
       } else {
-        httpParams = httpParams.set(param, (value || '').toString());
+        httpParams = httpParams.set(param, (value !== undefined && value !== null ? value : '').toString());
       }
     }
 
@@ -165,10 +165,10 @@ export class {{ requestBuilderClass }} {
       const value = this._header.get(param);
       if (value instanceof Array) {
         for (const item of value) {
-          httpHeaders = httpHeaders.append(param, (item || '').toString());
+          httpHeaders = httpHeaders.append(param, (item !== undefined && item !== null ? item || '').toString());
         }
       } else {
-        httpHeaders = httpHeaders.set(param, (value || '').toString());
+        httpHeaders = httpHeaders.set(param, (value !== undefined && value !== null ? value : '').toString());
       }
     }
 
