@@ -1,12 +1,33 @@
 import { OpenAPIObject } from '@loopback/openapi-v3-types';
-import { InterfaceDeclaration, TypeAliasDeclaration, TypescriptParser, EnumDeclaration } from 'typescript-parser';
+import { ClassDeclaration, EnumDeclaration, InterfaceDeclaration, TypeAliasDeclaration, TypescriptParser } from 'typescript-parser';
 import { NgOpenApiGen } from '../lib/ng-openapi-gen';
+import { Options } from '../lib/options';
 import options from './all-types.config.json';
 import allTypesSpec from './all-types.json';
-import { Options } from '../lib/options';
 
 const gen = new NgOpenApiGen(allTypesSpec as OpenAPIObject, options as Options);
 gen.generate();
+
+it('Api', done => {
+  const api = gen.services.get('ApiService');
+  expect(api).toBeDefined();
+  if (api) {
+    const ts = gen.templates.apply('service', api);
+    const parser = new TypescriptParser();
+    parser.parseSource(ts).then(ast => {
+      expect(ast.declarations.length).toBe(1);
+      expect(ast.declarations[0]).toEqual(jasmine.any(ClassDeclaration));
+      const cls = ast.declarations[0] as ClassDeclaration;
+      expect(cls.methods.length).toEqual(3 * 2); // foo, bar, baz, in 2 variants each
+      // Should have imported referenced-in-service-one-of-1/2
+      expect(ast.imports.find(i => i.libraryName === '../models/referenced-in-service-one-of-1')).withContext('ref1 import').toBeDefined();
+      expect(ast.imports.find(i => i.libraryName === '../models/referenced-in-service-one-of-2')).withContext('ref2 import').toBeDefined();
+      // But not referenced-in-one-of, as it is nested within an object schema
+      expect(ast.imports.find(i => i.libraryName === '../models/referenced-in-one-of')).withContext('ref import').toBeUndefined();
+      done();
+    });
+  }
+});
 
 describe('Generation tests using all-types.json', () => {
   it('RefEnum model', done => {
@@ -96,7 +117,6 @@ describe('Generation tests using all-types.json', () => {
     });
   });
 
-
   it('ReferencedInOneOf model', done => {
     const ref = gen.models.get('ReferencedInOneOf');
     const ts = gen.templates.apply('model', ref);
@@ -107,6 +127,40 @@ describe('Generation tests using all-types.json', () => {
       expect(ast.declarations[0]).toEqual(jasmine.any(InterfaceDeclaration));
       const decl = ast.declarations[0] as InterfaceDeclaration;
       expect(decl.name).toBe('ReferencedInOneOf');
+      expect(decl.properties.length).toBe(1);
+      expect(decl.properties[0].name).toBe('name');
+      expect(decl.properties[0].type).toBe('string');
+      done();
+    });
+  });
+
+  it('ReferencedInServiceOneOf1 model', done => {
+    const ref = gen.models.get('ReferencedInServiceOneOf1');
+    const ts = gen.templates.apply('model', ref);
+    const parser = new TypescriptParser();
+    parser.parseSource(ts).then(ast => {
+      expect(ast.imports.length).toBe(0);
+      expect(ast.declarations.length).toBe(1);
+      expect(ast.declarations[0]).toEqual(jasmine.any(InterfaceDeclaration));
+      const decl = ast.declarations[0] as InterfaceDeclaration;
+      expect(decl.name).toBe('ReferencedInServiceOneOf1');
+      expect(decl.properties.length).toBe(1);
+      expect(decl.properties[0].name).toBe('name');
+      expect(decl.properties[0].type).toBe('string');
+      done();
+    });
+  });
+
+  it('ReferencedInServiceOneOf2 model', done => {
+    const ref = gen.models.get('ReferencedInServiceOneOf2');
+    const ts = gen.templates.apply('model', ref);
+    const parser = new TypescriptParser();
+    parser.parseSource(ts).then(ast => {
+      expect(ast.imports.length).toBe(0);
+      expect(ast.declarations.length).toBe(1);
+      expect(ast.declarations[0]).toEqual(jasmine.any(InterfaceDeclaration));
+      const decl = ast.declarations[0] as InterfaceDeclaration;
+      expect(decl.name).toBe('ReferencedInServiceOneOf2');
       expect(decl.properties.length).toBe(1);
       expect(decl.properties[0].name).toBe('name');
       expect(decl.properties[0].type).toBe('string');

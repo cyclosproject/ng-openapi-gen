@@ -5,7 +5,7 @@
     "version": "1.0"
   },
   "paths": {
-    "/test": {
+    "/foo": {
       "get": {
         "responses": {
           "200": {
@@ -13,6 +13,47 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Containers"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/bar": {
+      "get": {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/ReferencedInServiceOneOf1"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ReferencedInServiceOneOf2"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/baz": {
+      "get": {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/Disjunct"
+                    }
+                  ]
                 }
               }
             }
@@ -87,6 +128,22 @@
         ]
       },
       "ReferencedInOneOf": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "ReferencedInServiceOneOf1": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "ReferencedInServiceOneOf2": {
         "type": "object",
         "properties": {
           "name": {
