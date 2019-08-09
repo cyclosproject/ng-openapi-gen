@@ -27,6 +27,7 @@
             "content": {
               "application/json": {
                 "schema": {
+                  "nullable": true,
                   "oneOf": [
                     {
                       "$ref": "#/components/schemas/ReferencedInServiceOneOf1"
@@ -111,8 +112,13 @@
       "Disjunct": {
         "type": "object",
         "properties": {
-          "id": {
-            "type": "string"
+          "ref": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/ReferencedInNullableOneOf"
+              }
+            ]
           }
         },
         "oneOf": [
@@ -128,6 +134,14 @@
         ]
       },
       "ReferencedInOneOf": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "ReferencedInNullableOneOf": {
         "type": "object",
         "properties": {
           "name": {
@@ -260,6 +274,12 @@
                 "description": "Property of type array of any type",
                 "items": {}
               },
+              "dynamic": {
+                "type": "object",
+                "additionalProperties": {
+                  "$ref": "#/components/schemas/OtherObject"
+                }
+              },
               "nestedObject": {
                 "type": "object",
                 "properties": {
@@ -295,9 +315,6 @@
                   }
                 }
               }
-            },
-            "additionalProperties": {
-              "$ref": "#/components/schemas/OtherObject"
             }
           }
         ]

@@ -63,7 +63,10 @@ export abstract class GenType {
       }
       if (schema.properties) {
         const properties = schema.properties;
-        Object.keys(properties).forEach(p => this.collectImports(properties[p], additional));
+        Object.keys(properties).forEach(p => {
+          const prop = properties[p];
+          this.collectImports(prop, additional, true);
+        });
       }
       if (typeof schema.additionalProperties === 'object') {
         this.collectImports(schema.additionalProperties, additional);

@@ -105,14 +105,15 @@ describe('Generation tests using all-types.json', () => {
     const ts = gen.templates.apply('model', disjunct);
     const parser = new TypescriptParser();
     parser.parseSource(ts).then(ast => {
-      expect(ast.imports.length).toBe(0);
+      expect(ast.imports.length).toBe(1);
+      expect(ast.imports.find(i => i.libraryName === './referenced-in-nullable-one-of')).withContext('referenced-in-nullable-one-of import').toBeDefined();
       expect(ast.declarations.length).toBe(1);
       expect(ast.declarations[0]).toEqual(jasmine.any(InterfaceDeclaration));
       const decl = ast.declarations[0] as InterfaceDeclaration;
       expect(decl.name).toBe('Disjunct');
       expect(decl.properties.length).toBe(1);
-      expect(decl.properties[0].name).toBe('id');
-      expect(decl.properties[0].type).toBe('string');
+      expect(decl.properties[0].name).toBe('ref');
+      expect(decl.properties[0].type).toBe('null | ReferencedInNullableOneOf');
       done();
     });
   });
@@ -127,6 +128,23 @@ describe('Generation tests using all-types.json', () => {
       expect(ast.declarations[0]).toEqual(jasmine.any(InterfaceDeclaration));
       const decl = ast.declarations[0] as InterfaceDeclaration;
       expect(decl.name).toBe('ReferencedInOneOf');
+      expect(decl.properties.length).toBe(1);
+      expect(decl.properties[0].name).toBe('name');
+      expect(decl.properties[0].type).toBe('string');
+      done();
+    });
+  });
+
+  it('ReferencedInNullableOneOf model', done => {
+    const ref = gen.models.get('ReferencedInNullableOneOf');
+    const ts = gen.templates.apply('model', ref);
+    const parser = new TypescriptParser();
+    parser.parseSource(ts).then(ast => {
+      expect(ast.imports.length).toBe(0);
+      expect(ast.declarations.length).toBe(1);
+      expect(ast.declarations[0]).toEqual(jasmine.any(InterfaceDeclaration));
+      const decl = ast.declarations[0] as InterfaceDeclaration;
+      expect(decl.name).toBe('ReferencedInNullableOneOf');
       expect(decl.properties.length).toBe(1);
       expect(decl.properties[0].name).toBe('name');
       expect(decl.properties[0].type).toBe('string');
@@ -176,13 +194,14 @@ describe('Generation tests using all-types.json', () => {
       expect(ast.imports.length).toBe(5);
       expect(ast.imports.find(i => i.libraryName === './ref-enum')).withContext('ref-enum import').toBeDefined();
       expect(ast.imports.find(i => i.libraryName === './ref-object')).withContext('ref-object import').toBeDefined();
-      expect(ast.imports.find(i => i.libraryName === './other-object')).withContext('other-object import').toBeDefined();
       expect(ast.imports.find(i => i.libraryName === './union')).withContext('union import').toBeDefined();
+      expect(ast.imports.find(i => i.libraryName === './disjunct')).withContext('disjunct import').toBeDefined();
+      expect(ast.imports.find(i => i.libraryName === './other-object')).withContext('other-object import').toBeDefined();
       expect(ast.declarations.length).toBe(1);
       expect(ast.declarations[0]).toEqual(jasmine.any(InterfaceDeclaration));
       const decl = ast.declarations[0] as InterfaceDeclaration;
       expect(decl.name).toBe('Container');
-      expect(decl.properties.length).toBe(18);
+      expect(decl.properties.length).toBe(19);
 
       // Assert the simple types
       function assertProperty(name: string, type: string) {
@@ -211,10 +230,7 @@ describe('Generation tests using all-types.json', () => {
       assertProperty('arrayOfAnyProp', 'Array<any>');
       assertProperty('nestedObject', '{ \'p1\': string, \'p2\': number, ' +
         '\'deeper\': { \'d1\': RefObject, \'d2\': string | Array<RefObject> | number } }');
-
-      // There's no support for additional properties in typescript-parser. Check as text.
-      const text = ts.substring(decl.start || 0, decl.end || ts.length);
-      expect(text).toContain('[key: string]: OtherObject');
+      assertProperty('dynamic', '{ [key: string]: OtherObject }');
 
       done();
     });
