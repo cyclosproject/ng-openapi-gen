@@ -170,7 +170,11 @@ export class Operation {
       const methodPart = this.id + (hasRequestBodyVariants ? this.variantMethodPart(requestBodyVariant) : '');
       for (const successResponseVariant of successResponseVariants) {
         const methodName = methodPart + (hasResponseVariants ? this.variantMethodPart(successResponseVariant) : '');
-        this.variants.push(new OperationVariant(this, methodName, requestBodyVariant, successResponseVariant, this.options));
+        if (!this.variants.find(v => v.methodName === methodName)) {
+          // It is possible to have multiple content types which end up in the same method.
+          // For example: application/json, application/foo-bar+json, text/json ...
+          this.variants.push(new OperationVariant(this, methodName, requestBodyVariant, successResponseVariant, this.options));
+        }
       }
     }
   }
@@ -185,6 +189,10 @@ export class Operation {
         return '$Any';
       }
       type = last(type.split('/')) as string;
+      const plus = type.lastIndexOf('+');
+      if (plus >= 0) {
+        type = type.substr(plus + 1);
+      }
       return `$${typeName(type)}`;
     } else {
       return '';
