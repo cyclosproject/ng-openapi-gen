@@ -131,21 +131,22 @@ describe('Generation tests using all-types.json', () => {
       expect(decl.properties.length).toBe(18);
 
       // Assert the simple types
-      function assertProperty(name: string, type: string) {
+      function assertProperty(name: string, type: string, required = false) {
         const prop = decl.properties.find(p => p.name === name);
         expect(prop).withContext(`${name} property`).toBeDefined();
         if (prop) {
-          expect(prop.type).toEqual(type);
+          expect(prop.type).withContext(`${name} type`).toEqual(type);
+          expect(prop.isOptional).withContext(`${name} required`).toBe(!required);
         }
       }
       assertProperty('stringProp', 'string');
       assertProperty('integerProp', 'number');
-      assertProperty('numberProp', 'number');
+      assertProperty('numberProp', 'number', true);
       assertProperty('booleanProp', 'boolean');
       assertProperty('anyProp', 'any');
 
-      assertProperty('refEnumProp', 'RefEnum');
-      assertProperty('refObjectProp', 'RefObject');
+      assertProperty('refEnumProp', 'RefEnum', true);
+      assertProperty('refObjectProp', 'RefObject', true);
       assertProperty('unionProp', 'Union');
       assertProperty('containerProp', 'Container');
       assertProperty('arrayOfStringsProp', 'Array<string>');
