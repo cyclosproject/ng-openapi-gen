@@ -5,7 +5,7 @@
     "version": "1.0"
   },
   "paths": {
-    "/test": {
+    "/foo": {
       "get": {
         "responses": {
           "200": {
@@ -13,6 +13,66 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Containers"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/bar": {
+      "parameters": [
+        {
+          "name": "param",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/ReferencedInParamOneOf1"
+              },
+              {
+                "$ref": "#/components/schemas/ReferencedInParamOneOf2"
+              }
+            ]
+          }
+        }
+      ],
+      "get": {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "nullable": true,
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/ReferencedInServiceOneOf1"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ReferencedInServiceOneOf2"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/baz": {
+      "get": {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/Disjunct"
+                    }
+                  ]
                 }
               }
             }
@@ -70,8 +130,13 @@
       "Disjunct": {
         "type": "object",
         "properties": {
-          "id": {
-            "type": "string"
+          "ref": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/ReferencedInNullableOneOf"
+              }
+            ]
           }
         },
         "oneOf": [
@@ -87,6 +152,46 @@
         ]
       },
       "ReferencedInOneOf": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "ReferencedInNullableOneOf": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "ReferencedInServiceOneOf1": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "ReferencedInServiceOneOf2": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "ReferencedInParamOneOf1": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "ReferencedInParamOneOf2": {
         "type": "object",
         "properties": {
           "name": {
@@ -210,6 +315,12 @@
                 "description": "Property of type array of any type",
                 "items": {}
               },
+              "dynamic": {
+                "type": "object",
+                "additionalProperties": {
+                  "$ref": "#/components/schemas/OtherObject"
+                }
+              },
               "nestedObject": {
                 "type": "object",
                 "properties": {
@@ -245,9 +356,6 @@
                   }
                 }
               }
-            },
-            "additionalProperties": {
-              "$ref": "#/components/schemas/OtherObject"
             }
           }
         ]

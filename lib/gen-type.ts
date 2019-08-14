@@ -41,7 +41,7 @@ export abstract class GenType {
     this.additionalDependencies = [...this._additionalDependencies];
   }
 
-  protected collectImports(schema: SchemaObject | ReferenceObject | undefined, additional?: true): void {
+  protected collectImports(schema: SchemaObject | ReferenceObject | undefined, additional = false, processOneOf = false): void {
     if (!schema) {
       return;
     } else if (schema.$ref) {
@@ -55,12 +55,18 @@ export abstract class GenType {
       schema = schema as SchemaObject;
       (schema.allOf || []).forEach(i => this.collectImports(i, additional));
       (schema.anyOf || []).forEach(i => this.collectImports(i, additional));
+      if (processOneOf) {
+        (schema.oneOf || []).forEach(i => this.collectImports(i, additional));
+      }
       if (schema.items) {
         this.collectImports(schema.items, additional);
       }
       if (schema.properties) {
         const properties = schema.properties;
-        Object.keys(properties).forEach(p => this.collectImports(properties[p], additional));
+        Object.keys(properties).forEach(p => {
+          const prop = properties[p];
+          this.collectImports(prop, additional, true);
+        });
       }
       if (typeof schema.additionalProperties === 'object') {
         this.collectImports(schema.additionalProperties, additional);

@@ -25,7 +25,7 @@ export class Service extends GenType {
     // Collect the imports
     for (const operation of operations) {
       for (const parameter of operation.parameters) {
-        this.collectImports(parameter.spec.schema);
+        this.collectImports(parameter.spec.schema, false, true);
       }
       for (const securityGroup of operation.security) {
         securityGroup.forEach(security => this.collectImports(security.spec.schema));
@@ -36,9 +36,9 @@ export class Service extends GenType {
         }
       }
       for (const response of operation.allResponses) {
-        const additional = response === operation.successResponse ? undefined : true;
+        const additional = response !== operation.successResponse;
         for (const content of response.content) {
-          this.collectImports(content.spec.schema, additional);
+          this.collectImports(content.spec.schema, additional, true);
         }
       }
     }
