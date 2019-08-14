@@ -186,6 +186,40 @@ describe('Generation tests using all-types.json', () => {
     });
   });
 
+  it('ReferencedInParamOneOf1 model', done => {
+    const ref = gen.models.get('ReferencedInParamOneOf1');
+    const ts = gen.templates.apply('model', ref);
+    const parser = new TypescriptParser();
+    parser.parseSource(ts).then(ast => {
+      expect(ast.imports.length).toBe(0);
+      expect(ast.declarations.length).toBe(1);
+      expect(ast.declarations[0]).toEqual(jasmine.any(InterfaceDeclaration));
+      const decl = ast.declarations[0] as InterfaceDeclaration;
+      expect(decl.name).toBe('ReferencedInParamOneOf1');
+      expect(decl.properties.length).toBe(1);
+      expect(decl.properties[0].name).toBe('name');
+      expect(decl.properties[0].type).toBe('string');
+      done();
+    });
+  });
+
+  it('ReferencedInParamOneOf2 model', done => {
+    const ref = gen.models.get('ReferencedInParamOneOf2');
+    const ts = gen.templates.apply('model', ref);
+    const parser = new TypescriptParser();
+    parser.parseSource(ts).then(ast => {
+      expect(ast.imports.length).toBe(0);
+      expect(ast.declarations.length).toBe(1);
+      expect(ast.declarations[0]).toEqual(jasmine.any(InterfaceDeclaration));
+      const decl = ast.declarations[0] as InterfaceDeclaration;
+      expect(decl.name).toBe('ReferencedInParamOneOf2');
+      expect(decl.properties.length).toBe(1);
+      expect(decl.properties[0].name).toBe('name');
+      expect(decl.properties[0].type).toBe('string');
+      done();
+    });
+  });
+
   it('Container model', done => {
     const container = gen.models.get('Container');
     const ts = gen.templates.apply('model', container);

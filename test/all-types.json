@@ -21,6 +21,24 @@
       }
     },
     "/bar": {
+      "parameters": [
+        {
+          "name": "param",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/ReferencedInParamOneOf1"
+              },
+              {
+                "$ref": "#/components/schemas/ReferencedInParamOneOf2"
+              }
+            ]
+          }
+        }
+      ],
       "get": {
         "responses": {
           "200": {
@@ -158,6 +176,22 @@
         }
       },
       "ReferencedInServiceOneOf2": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "ReferencedInParamOneOf1": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "ReferencedInParamOneOf2": {
         "type": "object",
         "properties": {
           "name": {
