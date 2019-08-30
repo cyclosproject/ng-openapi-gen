@@ -38,10 +38,11 @@ export class Model extends GenType {
     this.tsComments = tsComments(description, 0);
 
     const type = schema.type || 'any';
+    const names = schema["x-enumNames"] || null;
 
     // When enumStyle is 'alias' it is handled as a simple type.
     if (options.enumStyle !== 'alias' && (schema.enum || []).length > 0 && ['string', 'number', 'integer'].includes(type)) {
-      this.enumValues = (schema.enum || []).map(v => new EnumValue(type, v, options));
+      this.enumValues = (schema.enum || []).map((v, i) => new EnumValue(type, v, options, names ? names[i] : null));
     }
 
     this.isObject = type === 'object' || !!schema.properties || (schema.allOf || []).length > 0;
