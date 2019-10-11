@@ -137,7 +137,8 @@ export class {{ requestBuilderClass }} {
     // Path parameters
     let path = this.operationPath;
     for (const param of Array.from(this._path.keys())) {
-      path = path.replace(`{${param}}`, (this._path.get(param) || '').toString());
+      const item = this._path.get(param);
+      path = path.replace(`{${param}}`, (item !== undefined && item !== null ? item : '').toString());
     }
     const url = this.rootUrl + path;
 
