@@ -142,6 +142,11 @@
       "items": {
         "type": "string"
       }
+    },
+    "indexFile": {
+      "description": "When set to true, a index.ts file will be generated that exports all generated files.",
+      "default": "false",
+      "type": "boolean"
     }
   }
 }
