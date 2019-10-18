@@ -25,6 +25,11 @@
     "compile": "tsc --project tsconfig.json && ncp \"LICENSE\" dist && ncp \"README.md\" \"dist/README.md\" && ncp \"templates\" \"dist/templates\" && ncp \"node_modules\" \"dist/node_modules\" && rimraf \"dist/test\" && replace-in-file \"\\\"private\\\": true\" \"\\\"private\\\": false\" dist/package.json",
     "build": "npm run tslint && npm run compile && npm test"
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run build"
+    }
+  },
   "dependencies": {
     "@loopback/openapi-v3-types": "^1.2.1",
     "@types/argparse": "^1.0.36",
@@ -52,6 +57,7 @@
   },
   "devDependencies": {
     "@types/jasmine": "^3.4.0",
+    "husky": "^3.0.9",
     "jasmine": "^3.4.0",
     "jasmine-spec-reporter": "^4.2.1",
     "jasmine-ts": "^0.3.0",
