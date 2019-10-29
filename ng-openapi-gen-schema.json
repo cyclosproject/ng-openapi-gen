@@ -196,6 +196,11 @@
       "description": "When specified, will create temporary files in system temporary folder instead of output folder",
       "default": false,
       "type": "boolean"
+    },
+    "silent": {
+      "description": "When set to true, no verbose output will be displayed.",
+      "default": "false",
+      "type": "boolean"
     }
   }
 }

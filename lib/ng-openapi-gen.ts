@@ -15,6 +15,7 @@ import { Options } from './options';
 import { Service } from './service';
 import { Templates } from './templates';
 import eol from 'eol';
+import { Logger } from './logger';
 
 /**
  * Main generator class
@@ -27,11 +28,14 @@ export class NgOpenApiGen {
   services = new Map<string, Service>();
   operations = new Map<string, Operation>();
   outDir: string;
+  logger: Logger;
   tempDir: string;
 
   constructor(
     public openApi: OpenAPIObject,
     public options: Options) {
+
+    this.logger = new Logger(options.silent);
 
     this.outDir = this.options.output || 'src/app/api';
     // Make sure the output path doesn't end with a slash
@@ -111,9 +115,9 @@ export class NgOpenApiGen {
       }
 
       // Now synchronize the temp to the output folder
-      syncDirs(this.tempDir, this.outDir, this.options.removeStaleFiles !== false);
+      syncDirs(this.tempDir, this.outDir, this.options.removeStaleFiles !== false, this.logger);
 
-      console.info(`Generation from ${this.options.input} finished with ${models.length} models and ${services.length} services.`);
+      this.logger.info(`Generation from ${this.options.input} finished with ${models.length} models and ${services.length} services.`);
     } finally {
       // Always remove the temporary directory
       deleteDirRecursive(this.tempDir);
@@ -186,7 +190,7 @@ export class NgOpenApiGen {
           } else {
             // Generate an id
             id = methodName(`${opPath}.${method}`);
-            console.warn(`Operation '${opPath}.${method}' didn't specify an 'operationId'. Assuming '${id}'.`);
+            this.logger.warn(`Operation '${opPath}.${method}' didn't specify an 'operationId'. Assuming '${id}'.`);
           }
           if (this.operations.has(id)) {
             // Duplicated id. Add a suffix
@@ -195,14 +199,14 @@ export class NgOpenApiGen {
             while (this.operations.has(newId)) {
               newId = `${id}_${++suffix}`;
             }
-            console.warn(`Duplicate operation id '${id}'. Assuming id ${newId} for operation '${opPath}.${method}'.`);
+            this.logger.warn(`Duplicate operation id '${id}'. Assuming id ${newId} for operation '${opPath}.${method}'.`);
             id = newId;
           }
 
           const operation = new Operation(this.openApi, opPath, pathSpec, method, id, methodSpec, this.options);
           // Set a default tag if no tags are found
           if (operation.tags.length === 0) {
-            console.warn(`No tags set on operation '${opPath}.${method}'. Assuming '${defaultTag}'.`);
+            this.logger.warn(`No tags set on operation '${opPath}.${method}'. Assuming '${defaultTag}'.`);
             operation.tags.push(defaultTag);
           }
           for (const tag of operation.tags) {
@@ -226,11 +230,11 @@ export class NgOpenApiGen {
     const tags = this.openApi.tags || [];
     for (const tagName of operationsByTag.keys()) {
       if (includeTags.length > 0 && !includeTags.includes(tagName)) {
-        console.debug(`Ignoring tag ${tagName} because it is not listed in the 'includeTags' option`);
+        this.logger.info(`Ignoring tag ${tagName} because it is not listed in the 'includeTags' option`);
         continue;
       }
       if (excludeTags.length > 0 && excludeTags.includes(tagName)) {
-        console.debug(`Ignoring tag ${tagName} because it is listed in the 'excludeTags' option`);
+        this.logger.info(`Ignoring tag ${tagName} because it is listed in the 'excludeTags' option`);
         continue;
       }
       const operations = operationsByTag.get(tagName) || [];
@@ -260,7 +264,7 @@ export class NgOpenApiGen {
     // Then delete all unused models
     for (const model of this.models.values()) {
       if (!usedNames.has(model.name)) {
-        console.debug(`Ignoring model ${model.name} because it is not used anywhere`);
+        this.logger.debug(`Ignoring model ${model.name} because it is not used anywhere`);
         this.models.delete(model.name);
       }
     }
@@ -341,7 +345,7 @@ export async function runNgOpenApiGen() {
     const gen = new NgOpenApiGen(openApi, options);
     gen.generate();
   } catch (err) {
-    console.error(`Error on API generation from ${input}: ${err}`);
+    this.logger.error(`Error on API generation from ${input}: ${err}`);
     process.exit(1);
   }
 }
