@@ -1,6 +1,6 @@
 {
   "name": "@fullstax/ng-openapi-gen",
-  "version": "0.7.3",
+  "version": "0.7.4",
   "license": "MIT",
   "description": "An OpenAPI 3 codegen for Angular 6+",
   "author": "Cyclos development team",
