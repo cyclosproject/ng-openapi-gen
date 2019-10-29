@@ -1,7 +1,5 @@
-
 /** Options used by ng-openapi-gen */
 export interface Options {
-
   /** The input file or URL to the OpenAPI 3 specification, JSON or YAML, local file or URL */
   input: string;
 
@@ -78,4 +76,7 @@ export interface Options {
 
   /** When true, a index.ts file will be generated, that exports all generated files */
   indexFile?: boolean;
+
+  /** When true, no verbose output will be displayed */
+  silent?: boolean;
 }
