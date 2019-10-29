@@ -1,5 +1,5 @@
 import { InterfaceDeclaration, TypeAliasDeclaration, TypescriptParser } from 'typescript-parser';
-import { NgOpenApiGen } from '../lib/ng-openapi-gen';
+import { NgOpenApiGen } from '../src/ng-openapi-gen';
 import options from './person-place.config.json';
 import personAndPlaceSpec from './person-place.json';
 

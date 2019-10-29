@@ -1,7 +1,7 @@
 import { OpenAPIObject } from '@loopback/openapi-v3-types';
 import { ClassDeclaration, EnumDeclaration, InterfaceDeclaration, TypeAliasDeclaration, TypescriptParser } from 'typescript-parser';
-import { NgOpenApiGen } from '../lib/ng-openapi-gen';
-import { Options } from '../lib/options';
+import { NgOpenApiGen } from '../src/ng-openapi-gen';
+import { Options } from '../src/options';
 import options from './all-types.config.json';
 import allTypesSpec from './all-types.json';
 

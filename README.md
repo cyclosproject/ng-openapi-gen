@@ -262,16 +262,6 @@ the call to `ng-openapi-gen`, like:
 
 ## Developing and contributing
 
-The generator itself is written in TypeScript. When building, the code is transpiled to JavaScript in the `dist` folder. And the `dist` folder is the one that gets published to NPM. Even to prevent publishing from the wrong path, the `package.json` file has `"private": true`, which gets replaced by `false` in the build process.
+The generator itself is written in TypeScript. When building, the code from `src` is transpiled to JavaScript and placed in the `lib` folder.
 
-On the other hand, for developing / running tests, `jasmine-ts` is used, so the tests run directly from TypeScript. There's even a committed VisualStudio Code debug configuration for tests.
-
-After developing the changes, to `link` the module and test it with other node projects, run the following:
-
-```bash
-npm run build
-cd dist
-npm link
-```
-
-At that point, the globally available ng-openapi-gen will be the one compiled to the `dist` folder.
+During developing and testing, `jasmine-ts` is used, so the tests run directly from TypeScript. There's even a committed VisualStudio Code debug configuration for tests.

@@ -1,7 +1,7 @@
 import { OpenAPIObject } from 'openapi3-ts';
 import { ClassDeclaration, TypescriptParser } from 'typescript-parser';
-import { Content } from '../lib/content';
-import { NgOpenApiGen } from '../lib/ng-openapi-gen';
+import { Content } from '../src/content';
+import { NgOpenApiGen } from '../src/ng-openapi-gen';
 import options from './all-operations.config.json';
 import allOperationsSpec from './all-operations.json';
 

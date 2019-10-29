@@ -6,16 +6,17 @@
     "noImplicitAny": true,
     "moduleResolution": "node",
     "sourceMap": true,
+    "declaration": true,
     "strictNullChecks": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "resolveJsonModule": true,
-    "outDir": "dist",
-    "baseUrl": ".",
+    "outDir": "lib",
+    "baseUrl": "./",
+    "rootDir": "./src/",
     "paths": {
       "*": [
-        "node_modules/*",
-        "lib/types/*"
+        "node_modules/*"
       ]
     },
     "types": [
@@ -27,7 +28,6 @@
     ]
   },
   "include": [
-    "lib/**/*",
-    "test/**/*"
+    "src/**/*"
   ]
 }

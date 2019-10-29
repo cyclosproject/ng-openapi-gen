@@ -1,5 +1,5 @@
 import { InterfaceDeclaration, TypeAliasDeclaration, TypescriptParser, ClassDeclaration } from 'typescript-parser';
-import { NgOpenApiGen } from '../lib/ng-openapi-gen';
+import { NgOpenApiGen } from '../src/ng-openapi-gen';
 import options from './petstore.config.json';
 import petstore from './petstore.json';
 

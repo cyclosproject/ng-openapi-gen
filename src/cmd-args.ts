@@ -1,9 +1,11 @@
+import path from 'path';
+import fs from 'fs-extra';
 import { ArgumentParser } from 'argparse';
-import pkg from '../package.json';
-import schema from '../ng-openapi-gen-schema.json';
-import { Options } from './options.js';
-import fs from 'fs';
+import { Options } from './options';
 import { kebabCase } from 'lodash';
+
+const pkg = fs.readJSONSync(path.resolve(__dirname, '../package.json'));
+const schema = fs.readJSONSync(path.resolve(__dirname, '../ng-openapi-gen-schema.json'));
 
 const Mnemonics: { [key: string]: string } = { 'input': 'i', 'output': 'o' };
 const DefaultConfig = 'ng-openapi-gen.json';
