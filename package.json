@@ -30,7 +30,8 @@
     "test": "jasmine-ts tsconfig.json --config=jasmine.json",
     "tslint": "tslint -c tslint.json -p tsconfig.json",
     "compile": "tsc --project tsconfig.json",
-    "build": "npm run tslint && npm run compile && npm test"
+    "build": "npm run tslint && npm run compile && npm test",
+    "prepublishOnly": "npm run build"
   },
   "husky": {
     "hooks": {
