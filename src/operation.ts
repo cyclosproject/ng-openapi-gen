@@ -8,6 +8,7 @@ import { Parameter } from './parameter';
 import { Security } from './security';
 import { RequestBody } from './request-body';
 import { Response } from './response';
+import { Logger } from './logger';
 
 /**
  * An operation descriptor
@@ -26,6 +27,7 @@ export class Operation {
   allResponses: Response[] = [];
   pathExpression: string;
   variants: OperationVariant[] = [];
+  logger: Logger;
 
   constructor(
     public openApi: OpenAPIObject,
@@ -35,6 +37,8 @@ export class Operation {
     public id: string,
     public spec: OperationObject,
     public options: Options) {
+    this.logger = new Logger(options.silent);
+
     this.tags = spec.tags || [];
 
     this.tsComments = tsComments(spec.description || '', 1);

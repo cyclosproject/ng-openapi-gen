@@ -1,4 +1,10 @@
-import { OpenAPIObject, OperationObject, PathItemObject, ReferenceObject, SchemaObject } from '@loopback/openapi-v3-types';
+import {
+  OpenAPIObject,
+  OperationObject,
+  PathItemObject,
+  ReferenceObject,
+  SchemaObject
+} from '@loopback/openapi-v3-types';
 import fs from 'fs-extra';
 import path from 'path';
 import { HTTP_METHODS, methodName, simpleName, modelClass } from './gen-utils';
@@ -11,6 +17,7 @@ import { Templates } from './templates';
 import { parseOptions } from './cmd-args';
 import $RefParser from 'json-schema-ref-parser';
 import mkdirp from 'mkdirp';
+import { Logger } from './logger';
 
 /**
  * Main generator class
@@ -23,10 +30,10 @@ export class NgOpenApiGen {
   operations = new Map<string, Operation>();
   indexedFiles: string[] = [];
   outDir: string;
+  logger: Logger;
 
-  constructor(
-    public openApi: OpenAPIObject,
-    public options: Options) {
+  constructor(public openApi: OpenAPIObject, public options: Options) {
+    this.logger = new Logger(options.silent);
 
     this.outDir = this.options.output || 'src/app/api';
 
@@ -86,10 +93,17 @@ export class NgOpenApiGen {
       this.write('index', { indexFiles: this.indexedFiles }, 'index');
     }
 
-    console.info(`Generation from ${this.options.input} finished with ${models.length} models and ${services.length} services.`);
+    this.logger.info(
+      `Generation from ${this.options.input} finished with ${models.length} models and ${services.length} services.`
+    );
   }
 
-  private write(template: string, model: any, baseName: string, subDir?: string) {
+  private write(
+    template: string,
+    model: any,
+    baseName: string,
+    subDir?: string
+  ) {
     const ts = this.templates.apply(template, model);
     const file = path.join(this.outDir, subDir || '.', `${baseName}.ts`);
     const dir = path.dirname(file);
@@ -102,7 +116,7 @@ export class NgOpenApiGen {
       );
     }
 
-    console.info(`Wrote ${file}`);
+    this.logger.info(`Wrote ${file}`);
   }
 
   private readTemplates() {
@@ -140,7 +154,9 @@ export class NgOpenApiGen {
           } else {
             // Generate an id
             id = methodName(`${opPath}.${method}`);
-            console.warn(`Operation '${opPath}.${method}' didn't specify an 'operationId'. Assuming '${id}'.`);
+            this.logger.warn(
+              `Operation '${opPath}.${method}' didn't specify an 'operationId'. Assuming '${id}'.`
+            );
           }
           if (this.operations.has(id)) {
             // Duplicated id. Add a suffix
@@ -149,14 +165,26 @@ export class NgOpenApiGen {
             while (this.operations.has(newId)) {
               newId = `${id}_${++suffix}`;
             }
-            console.warn(`Duplicate operation id '${id}'. Assuming id ${newId} for operation '${opPath}.${method}'.`);
+            this.logger.warn(
+              `Duplicate operation id '${id}'. Assuming id ${newId} for operation '${opPath}.${method}'.`
+            );
             id = newId;
           }
 
-          const operation = new Operation(this.openApi, opPath, pathSpec, method, id, methodSpec, this.options);
+          const operation = new Operation(
+            this.openApi,
+            opPath,
+            pathSpec,
+            method,
+            id,
+            methodSpec,
+            this.options
+          );
           // Set a default tag if no tags are found
           if (operation.tags.length === 0) {
-            console.warn(`No tags set on operation '${opPath}.${method}'. Assuming '${defaultTag}'.`);
+            this.logger.warn(
+              `No tags set on operation '${opPath}.${method}'. Assuming '${defaultTag}'.`
+            );
             operation.tags.push(defaultTag);
           }
           for (const tag of operation.tags) {
@@ -180,11 +208,15 @@ export class NgOpenApiGen {
     const tags = this.openApi.tags || [];
     for (const tagName of operationsByTag.keys()) {
       if (includeTags.length > 0 && !includeTags.includes(tagName)) {
-        console.info(`Ignoring tag ${tagName} because it is not listed in the 'includeTags' option`);
+        this.logger.info(
+          `Ignoring tag ${tagName} because it is not listed in the 'includeTags' option`
+        );
         continue;
       }
       if (excludeTags.length > 0 && excludeTags.includes(tagName)) {
-        console.info(`Ignoring tag ${tagName} because it is listed in the 'excludeTags' option`);
+        this.logger.info(
+          `Ignoring tag ${tagName} because it is listed in the 'excludeTags' option`
+        );
         continue;
       }
       const operations = operationsByTag.get(tagName) || [];
@@ -214,7 +246,9 @@ export class NgOpenApiGen {
     // Then delete all unused models
     for (const model of this.models.values()) {
       if (!usedNames.has(model.typeName)) {
-        console.debug(`Ignoring model ${model.name} because it is not used anywhere`);
+        this.logger.debug(
+          `Ignoring model ${model.name} because it is not used anywhere`
+        );
         this.models.delete(model.name);
       }
     }
@@ -229,10 +263,14 @@ export class NgOpenApiGen {
     // Add the model name itself
     usedNames.add(model.name);
     // Then find all referenced names and recurse
-    this.allReferencedNames(model.schema).forEach(n => this.collectDependencies(n, usedNames));
+    this.allReferencedNames(model.schema).forEach(n =>
+      this.collectDependencies(n, usedNames)
+    );
   }
 
-  private allReferencedNames(schema: SchemaObject | ReferenceObject | undefined): string[] {
+  private allReferencedNames(
+    schema: SchemaObject | ReferenceObject | undefined
+  ): string[] {
     if (!schema) {
       return [];
     }
@@ -241,16 +279,28 @@ export class NgOpenApiGen {
     }
     schema = schema as SchemaObject;
     const result: string[] = [];
-    (schema.allOf || []).forEach(s => Array.prototype.push.apply(result, this.allReferencedNames(s)));
-    (schema.anyOf || []).forEach(s => Array.prototype.push.apply(result, this.allReferencedNames(s)));
-    (schema.oneOf || []).forEach(s => Array.prototype.push.apply(result, this.allReferencedNames(s)));
+    (schema.allOf || []).forEach(s =>
+      Array.prototype.push.apply(result, this.allReferencedNames(s))
+    );
+    (schema.anyOf || []).forEach(s =>
+      Array.prototype.push.apply(result, this.allReferencedNames(s))
+    );
+    (schema.oneOf || []).forEach(s =>
+      Array.prototype.push.apply(result, this.allReferencedNames(s))
+    );
     if (schema.properties) {
       for (const prop of Object.keys(schema.properties)) {
-        Array.prototype.push.apply(result, this.allReferencedNames(schema.properties[prop]));
+        Array.prototype.push.apply(
+          result,
+          this.allReferencedNames(schema.properties[prop])
+        );
       }
     }
     if (typeof schema.additionalProperties === 'object') {
-      Array.prototype.push.apply(result, this.allReferencedNames(schema.additionalProperties));
+      Array.prototype.push.apply(
+        result,
+        this.allReferencedNames(schema.additionalProperties)
+      );
     }
     if (schema.items) {
       Array.prototype.push.apply(result, this.allReferencedNames(schema.items));
@@ -269,10 +319,12 @@ export async function runNgOpenApiGen() {
   const refParser = new $RefParser();
   const input = options.input;
   try {
-    const openApi = await refParser.bundle(input, { dereference: { circular: false } }) as OpenAPIObject;
+    const openApi = (await refParser.bundle(input, {
+      dereference: { circular: false }
+    })) as OpenAPIObject;
     const gen = new NgOpenApiGen(openApi, options);
     gen.generate();
   } catch (err) {
-    console.error(`Error on API generation from ${input}: ${err}`);
+    this.logger.error(`Error on API generation from ${input}: ${err}`);
   }
 }

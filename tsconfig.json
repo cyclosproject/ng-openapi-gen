@@ -15,19 +15,10 @@
     "baseUrl": "./",
     "rootDir": "./src/",
     "paths": {
-      "*": [
-        "node_modules/*"
-      ]
+      "*": ["node_modules/*"]
     },
-    "types": [
-      "node",
-      "jasmine"
-    ],
-    "lib": [
-      "es2017"
-    ]
+    "types": ["node", "jasmine"],
+    "lib": ["es2017", "dom"]
   },
-  "include": [
-    "src/**/*"
-  ]
+  "include": ["src/**/*"]
 }
