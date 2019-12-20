@@ -184,11 +184,11 @@ export class NgOpenApiGen {
     const tags = this.openApi.tags || [];
     for (const tagName of operationsByTag.keys()) {
       if (includeTags.length > 0 && !includeTags.includes(tagName)) {
-        console.info(`Ignoring tag ${tagName} because it is not listed in the 'includeTags' option`);
+        console.debug(`Ignoring tag ${tagName} because it is not listed in the 'includeTags' option`);
         continue;
       }
       if (excludeTags.length > 0 && excludeTags.includes(tagName)) {
-        console.info(`Ignoring tag ${tagName} because it is listed in the 'excludeTags' option`);
+        console.debug(`Ignoring tag ${tagName} because it is listed in the 'excludeTags' option`);
         continue;
       }
       const operations = operationsByTag.get(tagName) || [];
