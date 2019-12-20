@@ -184,14 +184,20 @@ function toType(schemaOrRef: SchemaObject | ReferenceObject | undefined, options
     let result = '{ ';
     let first = true;
     const properties = schema.properties || {};
+    const required = schema.required;
     for (const propName of Object.keys(properties)) {
       const property = properties[propName];
+      const propRequired = required && required.includes(propName);
       if (first) {
         first = false;
       } else {
         result += ', ';
       }
-      result += `'${propName}': ${toType(property, options)}`;
+      result += `'${propName}'`;
+      if (!propRequired) {
+        result += '?';
+      }
+      result += `: ${toType(property, options)}`;
     }
     if (schema.additionalProperties) {
       const additionalProperties = schema.additionalProperties === true ? {} : schema.additionalProperties;

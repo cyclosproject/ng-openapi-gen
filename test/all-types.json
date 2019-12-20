@@ -158,18 +158,20 @@
         ]
       },
       "disjunct": {
-        "type": "object",
-        "properties": {
-          "ref": {
-            "nullable": true,
-            "oneOf": [
-              {
-                "$ref": "#/components/schemas/ReferencedInNullableOneOf"
-              }
-            ]
-          }
-        },
         "oneOf": [
+          {
+            "type": "object",
+            "properties": {
+              "ref": {
+                "nullable": true,
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/ReferencedInNullableOneOf"
+                  }
+                ]
+              }
+            }
+          },
           {
             "$ref": "#/components/schemas/a.b.RefObject"
           },
@@ -378,6 +380,9 @@
                   },
                   "deeper": {
                     "type": "object",
+                    "required": [
+                      "d1"
+                    ],
                     "properties": {
                       "d1": {
                         "$ref": "#/components/schemas/a.b.RefObject"
