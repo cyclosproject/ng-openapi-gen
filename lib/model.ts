@@ -38,7 +38,13 @@ export class Model extends GenType {
 
     // When enumStyle is 'alias' it is handled as a simple type.
     if (options.enumStyle !== 'alias' && (schema.enum || []).length > 0 && ['string', 'number', 'integer'].includes(type)) {
-      this.enumValues = (schema.enum || []).map(v => new EnumValue(type, v, options));
+      const names = schema['x-enumNames'] as string[] || [];
+      const values = schema.enum || [];
+      this.enumValues = [];
+      for (let i = 0; i < values.length; i++) {
+        const enumValue = new EnumValue(type, names[i], values[i], options);
+        this.enumValues.push(enumValue);
+      }
     }
 
     this.isObject = type === 'object' || !!schema.properties || (schema.allOf || []).length > 0;

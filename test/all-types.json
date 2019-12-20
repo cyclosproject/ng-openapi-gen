@@ -102,6 +102,19 @@
           300
         ]
       },
+      "RefNamedIntEnum": {
+        "type": "integer",
+        "x-enumNames": [
+          "first",
+          "second",
+          "third"
+        ],
+        "enum": [
+          100,
+          200,
+          300
+        ]
+      },
       "a.b.RefObject": {
         "type": "object",
         "required": [
@@ -135,6 +148,9 @@
           },
           {
             "$ref": "#/components/schemas/RefIntEnum"
+          },
+          {
+            "$ref": "#/components/schemas/RefNamedIntEnum"
           },
           {
             "$ref": "#/components/schemas/Container"

@@ -67,6 +67,24 @@ describe('Generation tests using all-types.json', () => {
     });
   });
 
+  it('RefNamedIntEnum model', done => {
+    const ref = gen.models.get('RefNamedIntEnum');
+    const ts = gen.templates.apply('model', ref);
+    const parser = new TypescriptParser();
+    parser.parseSource(ts).then(ast => {
+      expect(ast.imports.length).toBe(0);
+      expect(ast.declarations.length).toBe(1);
+      expect(ast.declarations[0]).toEqual(jasmine.any(EnumDeclaration));
+      const decl = ast.declarations[0] as EnumDeclaration;
+      expect(decl.name).toBe('RefNamedIntEnum');
+      expect(decl.members.length).toBe(3);
+      expect(decl.members[0]).toBe('first');
+      expect(decl.members[1]).toBe('second');
+      expect(decl.members[2]).toBe('third');
+      done();
+    });
+  });
+
   it('a.b.RefObject model', done => {
     const refObject = gen.models.get('a.b.RefObject');
     const ts = gen.templates.apply('model', refObject);
@@ -114,7 +132,7 @@ describe('Generation tests using all-types.json', () => {
       const decl = ast.declarations[0] as TypeAliasDeclaration;
       expect(decl.name).toBe('Union');
       const text = ts.substring(decl.start || 0, decl.end || ts.length);
-      expect(text).toBe('export type Union = { [key: string]: any } | RefEnum | RefIntEnum | Container;');
+      expect(text).toBe('export type Union = { [key: string]: any } | RefEnum | RefIntEnum | RefNamedIntEnum | Container;');
       done();
     });
   });
