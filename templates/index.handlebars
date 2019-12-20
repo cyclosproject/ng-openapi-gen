@@ -1,3 +1,8 @@
+export { {{configurationClass}} } from './{{{configurationFile}}}';
+export { {{baseServiceClass}} } from './{{{baseServiceFile}}}';
+export { {{requestBuilderClass}} } from './{{{requestBuilderFile}}}';
+export { {{responseClass}} } from './{{{responseFile}}}';
+export { {{moduleClass}} } from './{{{moduleFile}}}';
 {{#modelImports}}export { {{{typeName}}}{{#useAlias}} as {{{qualifiedName}}}{{/useAlias}} } from '{{{file}}}';
 {{/modelImports}}
 {{#services}}export { {{typeName}} } from './services/{{{fileName}}}';
