@@ -36,16 +36,16 @@ export function qualifiedName(name: string, options: Options): string {
  * Returns the file to import for a given model
  */
 export function modelFile(pathToModels: string, name: string, options: Options): string {
-  let path = pathToModels || '';
-  if (path.endsWith('/')) {
-    path = path.substr(0, path.length - 1);
+  let dir = pathToModels || '';
+  if (dir.endsWith('/')) {
+    dir = dir.substr(0, dir.length - 1);
   }
   const ns = namespace(name);
   if (ns) {
-    path += `/${ns}`;
+    dir += `/${ns}`;
   }
   const file = unqualifiedName(name, options);
-  return path += '/' + fileName(file);
+  return dir += '/' + fileName(file);
 }
 
 /**
