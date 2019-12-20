@@ -1,6 +1,6 @@
 {
   "name": "ng-openapi-gen",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "license": "MIT",
   "author": "Cyclos development team",
   "description": "An OpenAPI 3 codegen for Angular 6+",
@@ -26,38 +26,38 @@
   "dependencies": {
     "@loopback/openapi-v3-types": "^1.2.1",
     "@types/argparse": "^1.0.36",
-    "@types/fs-extra": "^8.0.0",
+    "@types/fs-extra": "^8.0.1",
     "@types/jsesc": "^0.4.29",
     "@types/json-schema": "^7.0.3",
-    "@types/lodash": "^4.14.136",
+    "@types/lodash": "^4.14.149",
     "@types/mkdirp": "^0.5.2",
-    "@types/node": "^12.7.1",
+    "@types/node": "^12.12.21",
     "argparse": "^1.0.10",
     "esm": "^3.2.25",
     "fs-extra": "^8.1.0",
-    "handlebars": "^4.1.2",
+    "handlebars": "^4.5.3",
     "jsesc": "^2.5.2",
-    "json-schema": "^0.2.3",
-    "json-schema-ref-parser": "^7.1.0",
+    "json-schema": "^0.2.5",
+    "json-schema-ref-parser": "^7.1.2",
     "lodash": "^4.17.15",
     "mkdirp": "^0.5.1",
-    "ts-node": "^8.3.0",
-    "typescript": "^3.5.3"
+    "ts-node": "^8.5.4",
+    "typescript": "^3.7.3"
   },
   "peerDependencies": {
     "@angular/core": ">=6.0.0",
     "rxjs": ">=6.0.0"
   },
   "devDependencies": {
-    "@types/jasmine": "^3.4.0",
-    "jasmine": "^3.4.0",
+    "@types/jasmine": "^3.5.0",
+    "jasmine": "^3.5.0",
     "jasmine-spec-reporter": "^4.2.1",
     "jasmine-ts": "^0.3.0",
     "mem": "^5.1.1",
     "ncp": "^2.0.0",
-    "replace-in-file": "^4.1.2",
-    "rimraf": "^2.7.0",
-    "tslint": "^5.18.0",
+    "replace-in-file": "^4.3.1",
+    "rimraf": "^2.7.1",
+    "tslint": "^5.20.1",
     "typescript-parser": "^2.6.1"
   }
 }
