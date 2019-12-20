@@ -120,8 +120,8 @@ describe('Generation tests using all-types.json', () => {
     });
   });
 
-  it('Union model', done => {
-    const union = gen.models.get('Union');
+  it('union model', done => {
+    const union = gen.models.get('union');
     const ts = gen.templates.apply('model', union);
     const parser = new TypescriptParser();
     parser.parseSource(ts).then(ast => {
@@ -137,8 +137,8 @@ describe('Generation tests using all-types.json', () => {
     });
   });
 
-  it('Disjunct model', done => {
-    const disjunct = gen.models.get('Disjunct');
+  it('disjunct model', done => {
+    const disjunct = gen.models.get('disjunct');
     const ts = gen.templates.apply('model', disjunct);
     const parser = new TypescriptParser();
     parser.parseSource(ts).then(ast => {

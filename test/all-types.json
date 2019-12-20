@@ -73,7 +73,7 @@
                 "schema": {
                   "oneOf": [
                     {
-                      "$ref": "#/components/schemas/Disjunct"
+                      "$ref": "#/components/schemas/disjunct"
                     }
                   ]
                 }
@@ -137,7 +137,7 @@
           }
         ]
       },
-      "Union": {
+      "union": {
         "anyOf": [
           {
             "type": "object",
@@ -157,7 +157,7 @@
           }
         ]
       },
-      "Disjunct": {
+      "disjunct": {
         "type": "object",
         "properties": {
           "ref": {
@@ -287,12 +287,12 @@
                 ]
               },
               "unionProp": {
-                "$ref": "#/components/schemas/Union",
-                "description": "Property which references an Union object"
+                "$ref": "#/components/schemas/union",
+                "description": "Property which references an union object"
               },
               "disjunctProp": {
-                "$ref": "#/components/schemas/Disjunct",
-                "decription": "Property wich references an Disjunct object"
+                "$ref": "#/components/schemas/disjunct",
+                "decription": "Property wich references an disjunct object"
               },
               "containerProp": {
                 "$ref": "#/components/schemas/Container",
