@@ -4,14 +4,14 @@ import $RefParser from 'json-schema-ref-parser';
 import mkdirp from 'mkdirp';
 import path from 'path';
 import { parseOptions } from './cmd-args';
-import { HTTP_METHODS, methodName, simpleName } from './gen-utils';
+import { HTTP_METHODS, methodName, simpleName, syncDirs } from './gen-utils';
 import { Globals } from './globals';
+import { Import } from './imports';
 import { Model } from './model';
 import { Operation } from './operation';
 import { Options } from './options';
 import { Service } from './service';
 import { Templates } from './templates';
-import { Import } from './imports';
 
 /**
  * Main generator class
@@ -23,12 +23,14 @@ export class NgOpenApiGen {
   services = new Map<string, Service>();
   operations = new Map<string, Operation>();
   outDir: string;
+  tempDir: string;
 
   constructor(
     public openApi: OpenAPIObject,
     public options: Options) {
 
     this.outDir = this.options.output || 'src/app/api';
+    this.tempDir = this.outDir + '$';
 
     this.readTemplates();
     this.readModels();
@@ -44,9 +46,11 @@ export class NgOpenApiGen {
    * Actually generates the files
    */
   generate(): void {
-    if (this.options.removeStaleFiles !== false) {
-      // Clear the output directory
-      fs.emptyDirSync(this.outDir);
+    // Prepare the temporary directory to generate sources on it
+    if (fs.existsSync(this.tempDir)) {
+      fs.emptyDirSync(this.tempDir);
+    } else {
+      fs.mkdirsSync(this.tempDir);
     }
 
     // Generate each model
@@ -88,16 +92,21 @@ export class NgOpenApiGen {
       this.write('index', { ...general, modelImports }, 'index');
     }
 
+    // Now synchronize the temp to the output folder
+    syncDirs(this.tempDir, this.outDir, this.options.removeStaleFiles !== false);
+
+    // Finally, remove the temp directory
+    fs.rmdirSync(this.tempDir, { recursive: true });
+
     console.info(`Generation from ${this.options.input} finished with ${models.length} models and ${services.length} services.`);
   }
 
   private write(template: string, model: any, baseName: string, subDir?: string) {
     const ts = this.templates.apply(template, model);
-    const file = path.join(this.outDir, subDir || '.', `${baseName}.ts`);
+    const file = path.join(this.tempDir, subDir || '.', `${baseName}.ts`);
     const dir = path.dirname(file);
     mkdirp.sync(dir);
     fs.writeFileSync(file, ts, { encoding: 'utf-8' });
-    console.info(`Wrote ${file}`);
   }
 
   private readTemplates() {
