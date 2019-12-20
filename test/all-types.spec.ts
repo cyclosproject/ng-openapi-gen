@@ -32,8 +32,8 @@ it('Api', done => {
 
 describe('Generation tests using all-types.json', () => {
   it('RefEnum model', done => {
-    const refString = gen.models.get('RefEnum');
-    const ts = gen.templates.apply('model', refString);
+    const ref = gen.models.get('RefEnum');
+    const ts = gen.templates.apply('model', ref);
     const parser = new TypescriptParser();
     parser.parseSource(ts).then(ast => {
       expect(ast.imports.length).toBe(0);
@@ -45,6 +45,24 @@ describe('Generation tests using all-types.json', () => {
       expect(decl.members[0]).toBe('ValueA');
       expect(decl.members[1]).toBe('ValueB');
       expect(decl.members[2]).toBe('ValueC');
+      done();
+    });
+  });
+
+  it('RefIntEnum model', done => {
+    const ref = gen.models.get('RefIntEnum');
+    const ts = gen.templates.apply('model', ref);
+    const parser = new TypescriptParser();
+    parser.parseSource(ts).then(ast => {
+      expect(ast.imports.length).toBe(0);
+      expect(ast.declarations.length).toBe(1);
+      expect(ast.declarations[0]).toEqual(jasmine.any(EnumDeclaration));
+      const decl = ast.declarations[0] as EnumDeclaration;
+      expect(decl.name).toBe('RefIntEnum');
+      expect(decl.members.length).toBe(3);
+      expect(decl.members[0]).toBe('$100');
+      expect(decl.members[1]).toBe('$200');
+      expect(decl.members[2]).toBe('$300');
       done();
     });
   });
@@ -96,7 +114,7 @@ describe('Generation tests using all-types.json', () => {
       const decl = ast.declarations[0] as TypeAliasDeclaration;
       expect(decl.name).toBe('Union');
       const text = ts.substring(decl.start || 0, decl.end || ts.length);
-      expect(text).toBe('export type Union = { [key: string]: any } | RefEnum | Container;');
+      expect(text).toBe('export type Union = { [key: string]: any } | RefEnum | RefIntEnum | Container;');
       done();
     });
   });
@@ -236,7 +254,7 @@ describe('Generation tests using all-types.json', () => {
       expect(ast.declarations[0]).toEqual(jasmine.any(InterfaceDeclaration));
       const decl = ast.declarations[0] as InterfaceDeclaration;
       expect(decl.name).toBe('Container');
-      expect(decl.properties.length).toBe(19);
+      expect(decl.properties.length).toBe(21);
 
       // Assert the simple types
       function assertProperty(name: string, type: string, required = false) {
@@ -267,6 +285,8 @@ describe('Generation tests using all-types.json', () => {
       assertProperty('nestedObject', '{ \'p1\': string, \'p2\': number, ' +
         '\'deeper\': { \'d1\': ABRefObject, \'d2\': string | Array<ABRefObject> | number } }');
       assertProperty('dynamic', '{ [key: string]: XYRefObject }');
+      assertProperty('stringEnumProp', '\'a\' | \'b\' | \'c\'');
+      assertProperty('intEnumProp', '1 | 2 | 3');
 
       done();
     });

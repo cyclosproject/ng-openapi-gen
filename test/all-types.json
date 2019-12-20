@@ -94,6 +94,14 @@
           "valueC"
         ]
       },
+      "RefIntEnum": {
+        "type": "integer",
+        "enum": [
+          100,
+          200,
+          300
+        ]
+      },
       "a.b.RefObject": {
         "type": "object",
         "required": [
@@ -124,6 +132,9 @@
           },
           {
             "$ref": "#/components/schemas/RefEnum"
+          },
+          {
+            "$ref": "#/components/schemas/RefIntEnum"
           },
           {
             "$ref": "#/components/schemas/Container"
@@ -323,6 +334,22 @@
                 "additionalProperties": {
                   "$ref": "#/components/schemas/x.y.RefObject"
                 }
+              },
+              "stringEnumProp": {
+                "type": "string",
+                "enum": [
+                  "a",
+                  "b",
+                  "c"
+                ]
+              },
+              "intEnumProp": {
+                "type": "integer",
+                "enum": [
+                  1,
+                  2,
+                  3
+                ]
               },
               "nestedObject": {
                 "type": "object",

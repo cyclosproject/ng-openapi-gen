@@ -68,12 +68,16 @@ export function typeName(name: string): string {
  * Returns the name of the enum constant for a given value
  */
 export function enumName(value: string, options: Options): string {
-  const name = toBasicChars(value, true);
+  let name = toBasicChars(value, true);
   if (options.enumStyle === 'upper') {
-    return upperCase(name).replace(/\s+/g, '_');
+    name = upperCase(name).replace(/\s+/g, '_');
   } else {
-    return upperFirst(camelCase(name));
+    name = upperFirst(camelCase(name));
   }
+  if (/^\d/.test(name)) {
+    name = '$' + name;
+  }
+  return name;
 }
 
 /**
