@@ -35,6 +35,7 @@ export class Operation {
     public id: string,
     public spec: OperationObject,
     public options: Options) {
+    this.path = this.path.replace(/\'/g, '\\\'');
     this.tags = spec.tags || [];
 
     this.tsComments = tsComments(spec.description || '', 1);

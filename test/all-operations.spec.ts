@@ -98,7 +98,7 @@ describe('Generation tests using all-operations.json', () => {
     const noTag = gen.services.get('noTag');
     expect(noTag).toBeDefined();
     if (!noTag) return;
-    expect(noTag.operations.length).toBe(2);
+    expect(noTag.operations.length).toBe(3);
 
     const ts = gen.templates.apply('service', noTag);
     const parser = new TypescriptParser();
@@ -140,6 +140,9 @@ describe('Generation tests using all-operations.json', () => {
       assertPath4Put('path4Put$Plain$Image', 'string');
       assertPath4Put('path4Put$Any$Image$Response', 'Blob');
       assertPath4Put('path4Put$Any$Image', 'Blob');
+
+      const withQuotes = cls.methods.find(m => m.name === 'pathWithQuotesGet');
+      expect(withQuotes).withContext(`method pathWithQuotesGet`).toBeDefined();
 
       done();
     });
