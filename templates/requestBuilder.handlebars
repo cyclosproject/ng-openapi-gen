@@ -82,7 +82,7 @@ export class {{ requestBuilderClass }} {
       const formData = new FormData();
       if (value != null) {
         for (const key of Object.keys(value)) {
-          const val = value[key]
+          const val = value[key];
           if (val instanceof Array) {
             for (const v of val) {
               const toAppend = this.formDataValue(v);
@@ -113,9 +113,9 @@ export class {{ requestBuilderClass }} {
       return value;
     }
     if (typeof value === 'object') {
-      return new Blob([JSON.stringify(value)], { type: 'application/json' });
+      return JSON.stringify(value);
     }
-    return new Blob([String(value)], { type: 'text/plain' });
+    return String(value);
   }
 
   /**
