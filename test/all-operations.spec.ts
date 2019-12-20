@@ -15,7 +15,7 @@ describe('Generation tests using all-operations.json', () => {
   });
 
   it('Tag 1', done => {
-    const tag1 = gen.services.get('Tag1Service');
+    const tag1 = gen.services.get('tag1');
     expect(tag1).toBeDefined();
     if (!tag1) return;
     expect(tag1.operations.length).toBe(2);
@@ -62,7 +62,7 @@ describe('Generation tests using all-operations.json', () => {
   });
 
   it('Tag 2', done => {
-    const tag2 = gen.services.get('Tag2Service');
+    const tag2 = gen.services.get('tag2');
     expect(tag2).toBeDefined();
     if (!tag2) return;
     expect(tag2.operations.length).toBe(1);
@@ -95,7 +95,7 @@ describe('Generation tests using all-operations.json', () => {
   });
 
   it('No tag', done => {
-    const noTag = gen.services.get('NoTagService');
+    const noTag = gen.services.get('noTag');
     expect(noTag).toBeDefined();
     if (!noTag) return;
     expect(noTag.operations.length).toBe(2);

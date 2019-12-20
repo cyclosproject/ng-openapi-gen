@@ -13,7 +13,7 @@ describe('Generation tests using petstore.json', () => {
   });
 
   it('pets tag', done => {
-    const pets = gen.services.get('PetsService');
+    const pets = gen.services.get('pets');
     expect(pets).toBeDefined();
     if (!pets) return;
     expect(pets.operations.length).toBe(3);
@@ -54,7 +54,7 @@ describe('Generation tests using petstore.json', () => {
   });
 
   it('Pet model', done => {
-    const pet = gen.models.get('PetstorePetModel');
+    const pet = gen.models.get('Pet');
     const ts = gen.templates.apply('model', pet);
     const parser = new TypescriptParser();
     parser.parseSource(ts).then(ast => {
@@ -80,7 +80,7 @@ describe('Generation tests using petstore.json', () => {
   });
 
   it('Pets model', done => {
-    const pets = gen.models.get('PetstorePetsModel');
+    const pets = gen.models.get('Pets');
     const ts = gen.templates.apply('model', pets);
     const parser = new TypescriptParser();
     parser.parseSource(ts).then(ast => {
@@ -95,7 +95,7 @@ describe('Generation tests using petstore.json', () => {
   });
 
   it('Error model', done => {
-    const entity = gen.models.get('PetstoreErrorModel');
+    const entity = gen.models.get('Error');
     const ts = gen.templates.apply('model', entity);
     const parser = new TypescriptParser();
     parser.parseSource(ts).then(ast => {

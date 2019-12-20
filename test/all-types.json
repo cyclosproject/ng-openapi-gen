@@ -34,6 +34,9 @@
               },
               {
                 "$ref": "#/components/schemas/ReferencedInParamOneOf2"
+              },
+              {
+                "$ref": "#/components/schemas/a.b.RefObject"
               }
             ]
           }
@@ -91,7 +94,7 @@
           "valueC"
         ]
       },
-      "RefObject": {
+      "a.b.RefObject": {
         "type": "object",
         "required": [
           "id"
@@ -102,10 +105,10 @@
           }
         }
       },
-      "OtherObject": {
+      "x.y.RefObject": {
         "allOf": [
           {
-            "$ref": "#/components/schemas/RefObject"
+            "$ref": "#/components/schemas/a.b.RefObject"
           },
           {
             "type": "object",
@@ -141,10 +144,10 @@
         },
         "oneOf": [
           {
-            "$ref": "#/components/schemas/RefObject"
+            "$ref": "#/components/schemas/a.b.RefObject"
           },
           {
-            "$ref": "#/components/schemas/OtherObject"
+            "$ref": "#/components/schemas/x.y.RefObject"
           },
           {
             "$ref": "#/components/schemas/ReferencedInOneOf"
@@ -235,7 +238,7 @@
             }
           },
           {
-            "$ref": "#/components/schemas/RefObject"
+            "$ref": "#/components/schemas/a.b.RefObject"
           },
           {
             "type": "object",
@@ -252,7 +255,7 @@
                 "description": "Property which references an object",
                 "allOf": [
                   {
-                    "$ref": "#/components/schemas/RefObject"
+                    "$ref": "#/components/schemas/a.b.RefObject"
                   }
                 ]
               },
@@ -303,11 +306,11 @@
                   "$ref": "#/components/schemas/RefEnum"
                 }
               },
-              "arrayOfRefObjectsProp": {
+              "arrayOfABRefObjectsProp": {
                 "type": "array",
                 "description": "Property of type array of references an object",
                 "items": {
-                  "$ref": "#/components/schemas/RefObject"
+                  "$ref": "#/components/schemas/a.b.RefObject"
                 }
               },
               "arrayOfAnyProp": {
@@ -318,7 +321,7 @@
               "dynamic": {
                 "type": "object",
                 "additionalProperties": {
-                  "$ref": "#/components/schemas/OtherObject"
+                  "$ref": "#/components/schemas/x.y.RefObject"
                 }
               },
               "nestedObject": {
@@ -334,7 +337,7 @@
                     "type": "object",
                     "properties": {
                       "d1": {
-                        "$ref": "#/components/schemas/RefObject"
+                        "$ref": "#/components/schemas/a.b.RefObject"
                       },
                       "d2": {
                         "anyOf": [
@@ -344,7 +347,7 @@
                           {
                             "type": "array",
                             "items": {
-                              "$ref": "#/components/schemas/RefObject"
+                              "$ref": "#/components/schemas/a.b.RefObject"
                             }
                           },
                           {

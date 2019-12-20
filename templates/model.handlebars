@@ -1,5 +1,5 @@
 /* tslint:disable */
-{{#imports}}import { {{{type}}} } from '{{{file}}}';
+{{#imports}}import { {{{typeName}}}{{#useAlias}} as {{{qualifiedName}}}{{/useAlias}} } from '{{{file}}}';
 {{/imports}}
 {{{tsComments}}}{{#isObject}}{{>object}}{{/isObject
 }}{{#isEnum}}{{>enum}}{{/isEnum

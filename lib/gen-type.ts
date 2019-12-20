@@ -1,5 +1,5 @@
 import { ReferenceObject, SchemaObject } from 'openapi3-ts';
-import { fileName, simpleName, modelClass } from './gen-utils';
+import { fileName, namespace, simpleName, typeName } from './gen-utils';
 import { Import, Imports } from './imports';
 import { Options } from './options';
 
@@ -9,32 +9,51 @@ import { Options } from './options';
 export abstract class GenType {
 
   /** Name of the generated type / class */
-  public typeName: string;
+  typeName: string;
+
+  /** Namespace, separated by '/' */
+  namespace?: string;
+
+  /** Camel-case qualified name of the type, including namespace */
+  qualifiedName: string;
 
   /** Name of the generated file */
-  public fileName: string;
+  fileName: string;
 
   /** TypeScript comments for this type */
-  public tsComments: string;
+  tsComments: string;
 
-  private _imports: Imports = new Imports();
-  public imports: Import[];
+  imports: Import[];
+  private _imports: Imports;
+
+  additionalDependencies: string[];
   private _additionalDependencies = new Set<string>();
-  public additionalDependencies: string[];
 
   constructor(
     public name: string,
+    typeNameTransform: (typeName: string, options: Options) => string,
     /** Generation options */
     public options: Options) {
+
+    this.typeName = typeNameTransform(name, options);
+    this.namespace = namespace(name);
+    this.fileName = fileName(this.typeName);
+    this.qualifiedName = this.typeName;
+    if (this.namespace) {
+      this.fileName = this.namespace + '/' + this.fileName;
+      this.qualifiedName = typeName(this.namespace) + this.typeName;
+    }
+    this._imports = new Imports(options);
   }
 
-  protected addImport(type: string) {
-    type = modelClass(type, this.options);
-    if (type && this.typeName !== type) {
-      // Don't add an import to this own file
-      this._imports.add(type, `${this.pathToModels()}${fileName(type)}`);
+  protected addImport(name: string) {
+    if (!this.skipImport(name)) {
+      // Don't have to import to this own file
+      this._imports.add(name, this.pathToModels());
     }
   }
+
+  protected abstract skipImport(name: string): boolean;
 
   protected updateImports() {
     this.imports = this._imports.toArray();
@@ -47,7 +66,7 @@ export abstract class GenType {
     } else if (schema.$ref) {
       const dep = simpleName(schema.$ref);
       if (additional) {
-        this._additionalDependencies.add(modelClass(dep, this.options));
+        this._additionalDependencies.add(dep);
       } else {
         this.addImport(dep);
       }

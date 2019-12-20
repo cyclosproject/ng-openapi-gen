@@ -1,6 +1,6 @@
 import { TagObject } from 'openapi3-ts';
 import { GenType } from './gen-type';
-import { fileName, serviceClass, tsComments, typeName } from './gen-utils';
+import { serviceClass, tsComments } from './gen-utils';
 import { Operation } from './operation';
 import { Options } from './options';
 
@@ -12,10 +12,8 @@ export class Service extends GenType {
   tag: TagObject;
 
   constructor(tag: TagObject, public operations: Operation[], options: Options) {
-    super(tag.name, options);
+    super(tag.name, serviceClass, options);
 
-    this.typeName = serviceClass(typeName(tag.name), options);
-    this.fileName = fileName(this.typeName);
     // Angular standards demand that services have a period separating them
     if (this.fileName.endsWith('-service')) {
       this.fileName = this.fileName.substring(0, this.fileName.length - '-service'.length) + '.service';
@@ -47,5 +45,10 @@ export class Service extends GenType {
 
   protected pathToModels(): string {
     return '../models/';
+  }
+
+  protected skipImport(): boolean {
+    // All models are imported
+    return false;
   }
 }

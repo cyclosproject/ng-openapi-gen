@@ -1,3 +1,2 @@
-{{#models}}
-export { {{typeName}} } from './models/{{{fileName}}}';
-{{/models}}
+{{#imports}}export { {{{typeName}}}{{#useAlias}} as {{{qualifiedName}}}{{/useAlias}} } from '{{{file}}}';
+{{/imports}}

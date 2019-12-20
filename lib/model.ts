@@ -1,9 +1,9 @@
 import { SchemaObject } from 'openapi3-ts';
+import { EnumValue } from './enum-value';
 import { GenType } from './gen-type';
-import { fileName, modelClass, simpleName, tsComments, tsType } from './gen-utils';
+import { qualifiedName, simpleName, tsComments, tsType, unqualifiedName } from './gen-utils';
 import { Options } from './options';
 import { Property } from './property';
-import { EnumValue } from './enum-value';
 
 /**
  * Context to generate a model
@@ -29,10 +29,7 @@ export class Model extends GenType {
   additionalPropertiesType: string;
 
   constructor(name: string, public schema: SchemaObject, options: Options) {
-    super(name, options);
-
-    this.typeName = name;
-    this.fileName = fileName(this.typeName);
+    super(name, unqualifiedName, options);
 
     const description = schema.description || '';
     this.tsComments = tsComments(description, 0);
@@ -66,7 +63,20 @@ export class Model extends GenType {
   }
 
   protected pathToModels(): string {
+    if (this.namespace) {
+      const depth = this.namespace.split('/').length;
+      let path = '';
+      for (let i = 0; i < depth; i++) {
+        path += '../';
+      }
+      return path;
+    }
     return './';
+  }
+
+  protected skipImport(name: string): boolean {
+    // Don't import own type
+    return this.name === name;
   }
 
   private collectObject(schema: SchemaObject, propertiesByName: Map<string, Property>) {
@@ -75,7 +85,8 @@ export class Model extends GenType {
       for (const part of allOf) {
         if (part.$ref) {
           // A superclass
-          this.superClasses.push(modelClass(simpleName(part.$ref), this.options));
+          const ref = simpleName(part.$ref);
+          this.superClasses.push(qualifiedName(ref, this.options));
         } else {
           this.collectObject(part, propertiesByName);
         }

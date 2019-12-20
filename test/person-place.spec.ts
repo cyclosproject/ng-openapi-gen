@@ -8,7 +8,7 @@ gen.generate();
 
 describe('Generation tests using person-place.json', () => {
   it('Id model', done => {
-    const id = gen.models.get('PPIdModel');
+    const id = gen.models.get('Id');
     const ts = gen.templates.apply('model', id);
     const parser = new TypescriptParser();
     parser.parseSource(ts).then(ast => {
@@ -22,7 +22,7 @@ describe('Generation tests using person-place.json', () => {
   });
 
   it('Entity model', done => {
-    const entity = gen.models.get('PPEntityModel');
+    const entity = gen.models.get('Entity');
     const ts = gen.templates.apply('model', entity);
     const parser = new TypescriptParser();
     parser.parseSource(ts).then(ast => {
@@ -40,7 +40,7 @@ describe('Generation tests using person-place.json', () => {
   });
 
   it('Person model', done => {
-    const person = gen.models.get('PPPersonModel');
+    const person = gen.models.get('Person');
     const ts = gen.templates.apply('model', person);
     const parser = new TypescriptParser();
     parser.parseSource(ts).then(ast => {
@@ -66,7 +66,7 @@ describe('Generation tests using person-place.json', () => {
   });
 
   it('Place model', done => {
-    const place = gen.models.get('PPPlaceModel');
+    const place = gen.models.get('Place');
     const ts = gen.templates.apply('model', place);
     const parser = new TypescriptParser();
     parser.parseSource(ts).then(ast => {
@@ -89,7 +89,7 @@ describe('Generation tests using person-place.json', () => {
   });
 
   it('PersonPlace model', done => {
-    const person = gen.models.get('PPPersonPlaceModel');
+    const person = gen.models.get('PersonPlace');
     const ts = gen.templates.apply('model', person);
     const parser = new TypescriptParser();
     parser.parseSource(ts).then(ast => {

@@ -9,7 +9,7 @@ const gen = new NgOpenApiGen(allTypesSpec as OpenAPIObject, options as Options);
 gen.generate();
 
 it('Api', done => {
-  const api = gen.services.get('ApiService');
+  const api = gen.services.get('Api');
   expect(api).toBeDefined();
   if (api) {
     const ts = gen.templates.apply('service', api);
@@ -22,6 +22,7 @@ it('Api', done => {
       // Should have imported referenced-in-service-one-of-1/2
       expect(ast.imports.find(i => i.libraryName === '../models/referenced-in-service-one-of-1')).withContext('ref1 import').toBeDefined();
       expect(ast.imports.find(i => i.libraryName === '../models/referenced-in-service-one-of-2')).withContext('ref2 import').toBeDefined();
+      expect(ast.imports.find(i => i.libraryName === '../models/a/b/ref-object')).withContext('a.b.RefObject import').toBeDefined();
       // But not referenced-in-one-of, as it is nested within an object schema
       expect(ast.imports.find(i => i.libraryName === '../models/referenced-in-one-of')).withContext('ref import').toBeUndefined();
       done();
@@ -48,8 +49,8 @@ describe('Generation tests using all-types.json', () => {
     });
   });
 
-  it('RefObject model', done => {
-    const refObject = gen.models.get('RefObject');
+  it('a.b.RefObject model', done => {
+    const refObject = gen.models.get('a.b.RefObject');
     const ts = gen.templates.apply('model', refObject);
     const parser = new TypescriptParser();
     parser.parseSource(ts).then(ast => {
@@ -64,17 +65,17 @@ describe('Generation tests using all-types.json', () => {
     });
   });
 
-  it('OtherObject model', done => {
-    const otherObject = gen.models.get('OtherObject');
+  it('x.y.RefObject model', done => {
+    const otherObject = gen.models.get('x.y.RefObject');
     const ts = gen.templates.apply('model', otherObject);
     const parser = new TypescriptParser();
     parser.parseSource(ts).then(ast => {
       expect(ast.imports.length).toBe(1);
-      expect(ast.imports.find(i => i.libraryName === './ref-object')).withContext('ref-object import').toBeDefined();
+      expect(ast.imports.find(i => i.libraryName === '../../a/b/ref-object')).withContext('a/b/ref-object import').toBeDefined();
       expect(ast.declarations.length).toBe(1);
       expect(ast.declarations[0]).toEqual(jasmine.any(InterfaceDeclaration));
       const decl = ast.declarations[0] as InterfaceDeclaration;
-      expect(decl.name).toBe('OtherObject');
+      expect(decl.name).toBe('RefObject');
       expect(decl.properties.length).toBe(0);
       // There's no support for additional properties in typescript-parser. Check as text.
       const text = ts.substring(decl.start || 0, decl.end || ts.length);
@@ -227,10 +228,10 @@ describe('Generation tests using all-types.json', () => {
     parser.parseSource(ts).then(ast => {
       expect(ast.imports.length).toBe(5);
       expect(ast.imports.find(i => i.libraryName === './ref-enum')).withContext('ref-enum import').toBeDefined();
-      expect(ast.imports.find(i => i.libraryName === './ref-object')).withContext('ref-object import').toBeDefined();
+      expect(ast.imports.find(i => i.libraryName === './a/b/ref-object')).withContext('a/b/ref-object import').toBeDefined();
+      expect(ast.imports.find(i => i.libraryName === './x/y/ref-object')).withContext('x/y/ref-object import').toBeDefined();
       expect(ast.imports.find(i => i.libraryName === './union')).withContext('union import').toBeDefined();
       expect(ast.imports.find(i => i.libraryName === './disjunct')).withContext('disjunct import').toBeDefined();
-      expect(ast.imports.find(i => i.libraryName === './other-object')).withContext('other-object import').toBeDefined();
       expect(ast.declarations.length).toBe(1);
       expect(ast.declarations[0]).toEqual(jasmine.any(InterfaceDeclaration));
       const decl = ast.declarations[0] as InterfaceDeclaration;
@@ -253,7 +254,7 @@ describe('Generation tests using all-types.json', () => {
       assertProperty('anyProp', 'any');
 
       assertProperty('refEnumProp', 'RefEnum', true);
-      assertProperty('refObjectProp', 'RefObject', true);
+      assertProperty('refObjectProp', 'ABRefObject', true);
       assertProperty('unionProp', 'Union');
       assertProperty('containerProp', 'Container');
       assertProperty('arrayOfStringsProp', 'Array<string>');
@@ -261,11 +262,11 @@ describe('Generation tests using all-types.json', () => {
       assertProperty('arrayOfNumbersProp', 'Array<number>');
       assertProperty('arrayOfBooleansProp', 'Array<boolean>');
       assertProperty('arrayOfRefEnumsProp', 'Array<RefEnum>');
-      assertProperty('arrayOfRefObjectsProp', 'Array<RefObject>');
+      assertProperty('arrayOfABRefObjectsProp', 'Array<ABRefObject>');
       assertProperty('arrayOfAnyProp', 'Array<any>');
       assertProperty('nestedObject', '{ \'p1\': string, \'p2\': number, ' +
-        '\'deeper\': { \'d1\': RefObject, \'d2\': string | Array<RefObject> | number } }');
-      assertProperty('dynamic', '{ [key: string]: OtherObject }');
+        '\'deeper\': { \'d1\': ABRefObject, \'d2\': string | Array<ABRefObject> | number } }');
+      assertProperty('dynamic', '{ [key: string]: XYRefObject }');
 
       done();
     });

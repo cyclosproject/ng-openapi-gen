@@ -1,7 +1,7 @@
 import jsesc from 'jsesc';
+import { camelCase, deburr, kebabCase, upperCase, upperFirst } from 'lodash';
 import { OpenAPIObject, ReferenceObject, SchemaObject } from 'openapi3-ts';
 import { Options } from './options';
-import { upperFirst, kebabCase, upperCase, deburr, camelCase } from 'lodash';
 
 export const HTTP_METHODS = ['get', 'put', 'post', 'delete', 'options', 'head', 'patch', 'trace'];
 
@@ -11,6 +11,50 @@ export const HTTP_METHODS = ['get', 'put', 'post', 'delete', 'options', 'head', 
 export function simpleName(name: string): string {
   const pos = name.lastIndexOf('/');
   return name.substring(pos + 1);
+}
+
+/**
+ * Returns the unqualified model class name, that is, the last part after '.'
+ */
+export function unqualifiedName(name: string, options: Options): string {
+  const pos = name.lastIndexOf('.');
+  return modelClass(name.substring(pos + 1), options);
+}
+
+/**
+ * Returns the qualified model class name, that is, the camelized namespace (if any) plus the unqualified name
+ */
+export function qualifiedName(name: string, options: Options): string {
+  const ns = namespace(name);
+  const unq = unqualifiedName(name, options);
+  return ns ? typeName(ns) + unq : unq;
+}
+
+/**
+ * Returns the file to import for a given model
+ */
+export function modelFile(pathToModels: string, name: string, options: Options): string {
+  let path = pathToModels || '';
+  if (path.endsWith('/')) {
+    path = path.substr(0, path.length - 1);
+  }
+  const ns = namespace(name);
+  if (ns) {
+    path += `/${ns}`;
+  }
+  const file = unqualifiedName(name, options);
+  return path += '/' + fileName(file);
+}
+
+/**
+ * Returns the namespace path, that is, the part before the last '.' splitted by '/' instead of '.'.
+ * If there's no namespace, returns undefined.
+ */
+export function namespace(name: string): string | undefined {
+  name = name.replace(/^\.+/g, '');
+  name = name.replace(/\.+$/g, '');
+  const pos = name.lastIndexOf('.');
+  return pos < 0 ? undefined : name.substring(0, pos).replace('.', '/');
 }
 
 /**
@@ -81,14 +125,14 @@ export function tsComments(description: string | undefined, level: number) {
  * Applies the prefix and suffix to a model class name
  */
 export function modelClass(baseName: string, options: Options) {
-  return `${options.modelPrefix || ''}${baseName}${options.modelSuffix || ''}`;
+  return `${options.modelPrefix || ''}${typeName(baseName)}${options.modelSuffix || ''}`;
 }
 
 /**
  * Applies the prefix and suffix to a service class name
  */
 export function serviceClass(baseName: string, options: Options) {
-  return `${options.servicePrefix || ''}${baseName}${options.serviceSuffix || 'Service'}`;
+  return `${options.servicePrefix || ''}${typeName(baseName)}${options.serviceSuffix || 'Service'}`;
 }
 
 /**
@@ -108,7 +152,7 @@ function toType(schemaOrRef: SchemaObject | ReferenceObject | undefined, options
   }
   if (schemaOrRef.$ref) {
     // A reference
-    return modelClass(simpleName(schemaOrRef.$ref), options);
+    return qualifiedName(simpleName(schemaOrRef.$ref), options);
   }
   const schema = schemaOrRef as SchemaObject;
 

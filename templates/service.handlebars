@@ -8,7 +8,7 @@ import { {{requestBuilderClass}} } from '../{{requestBuilderFile}}';
 import { Observable } from 'rxjs';
 import { map, filter } from 'rxjs/operators';
 
-{{#imports}}import { {{{type}}} } from '{{{file}}}';
+{{#imports}}import { {{{typeName}}}{{#useAlias}} as {{{qualifiedName}}}{{/useAlias}} } from '{{{file}}}';
 {{/imports}}
 
 {{{tsComments}}}@Injectable({

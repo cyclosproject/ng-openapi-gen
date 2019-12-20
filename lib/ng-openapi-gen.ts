@@ -1,16 +1,17 @@
 import { OpenAPIObject, OperationObject, PathItemObject, ReferenceObject, SchemaObject } from '@loopback/openapi-v3-types';
 import fs from 'fs-extra';
+import $RefParser from 'json-schema-ref-parser';
+import mkdirp from 'mkdirp';
 import path from 'path';
-import { HTTP_METHODS, methodName, simpleName, modelClass } from './gen-utils';
+import { parseOptions } from './cmd-args';
+import { HTTP_METHODS, methodName, simpleName } from './gen-utils';
 import { Globals } from './globals';
 import { Model } from './model';
 import { Operation } from './operation';
 import { Options } from './options';
 import { Service } from './service';
 import { Templates } from './templates';
-import { parseOptions } from './cmd-args';
-import $RefParser from 'json-schema-ref-parser';
-import mkdirp from 'mkdirp';
+import { Import } from './imports';
 
 /**
  * Main generator class
@@ -75,7 +76,8 @@ export class NgOpenApiGen {
       this.write('module', general, this.globals.moduleFile);
     }
     if (this.globals.modelIndexFile) {
-      this.write('modelIndex', general, this.globals.modelIndexFile);
+      const imports = models.map(m => new Import(m.name, './models', m.options));
+      this.write('modelIndex', { ...general, imports }, this.globals.modelIndexFile);
     }
     if (this.globals.serviceIndexFile) {
       this.write('serviceIndex', general, this.globals.serviceIndexFile);
@@ -105,9 +107,8 @@ export class NgOpenApiGen {
     const schemas = (this.openApi.components || {}).schemas || {};
     for (const name of Object.keys(schemas)) {
       const schema = schemas[name];
-      const clazz = modelClass(name, this.options);
-      const model = new Model(clazz, schema, this.options);
-      this.models.set(clazz, model);
+      const model = new Model(name, schema, this.options);
+      this.models.set(name, model);
     }
   }
 
@@ -178,7 +179,7 @@ export class NgOpenApiGen {
       const operations = operationsByTag.get(tagName) || [];
       const tag = tags.find(t => t.name === tagName) || { name: tagName };
       const service = new Service(tag, operations, this.options);
-      this.services.set(service.typeName, service);
+      this.services.set(tag.name, service);
     }
   }
 
@@ -187,7 +188,7 @@ export class NgOpenApiGen {
     const usedNames = new Set<string>();
     for (const service of this.services.values()) {
       for (const imp of service.imports) {
-        usedNames.add(imp.type);
+        usedNames.add(imp.name);
       }
       for (const imp of service.additionalDependencies) {
         usedNames.add(imp);
@@ -201,7 +202,7 @@ export class NgOpenApiGen {
 
     // Then delete all unused models
     for (const model of this.models.values()) {
-      if (!usedNames.has(model.typeName)) {
+      if (!usedNames.has(model.name)) {
         console.debug(`Ignoring model ${model.name} because it is not used anywhere`);
         this.models.delete(model.name);
       }
@@ -225,7 +226,7 @@ export class NgOpenApiGen {
       return [];
     }
     if (schema.$ref) {
-      return [modelClass(simpleName(schema.$ref), this.options)];
+      return [simpleName(schema.$ref)];
     }
     schema = schema as SchemaObject;
     const result: string[] = [];
