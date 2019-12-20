@@ -1,3 +1,4 @@
-{{#indexFiles}}
-export * from './{{.}}';
-{{/indexFiles}}
+{{#modelImports}}export { {{{typeName}}}{{#useAlias}} as {{{qualifiedName}}}{{/useAlias}} } from '{{{file}}}';
+{{/modelImports}}
+{{#services}}export { {{typeName}} } from './services/{{{fileName}}}';
+{{/services}}

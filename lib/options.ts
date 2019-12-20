@@ -29,6 +29,9 @@ export interface Options {
   /** Typescript file, without '.ts' extension that exports all services. Set to false to skip. Defaults to `services`. */
   serviceIndex?: string | boolean;
 
+  /** When true, an 'index.ts' file will be generated, exporting all generated files */
+  indexFile?: boolean;
+
   /** Prefix for generated service classes. Defaults to empty. */
   servicePrefix?: string;
 
@@ -73,9 +76,6 @@ export interface Options {
   /** Custom templates directory. Any `.handlebars` files here will be used instead of the corresponding default. */
   templates?: string;
 
-  /**  When specified, filters the generated services, excluding any param corresponding to this list of params. */
+  /** When specified, filters the generated services, excluding any param corresponding to this list of params. */
   excludeParameters?: string[];
-
-  /** When true, a index.ts file will be generated, that exports all generated files */
-  indexFile?: boolean;
 }

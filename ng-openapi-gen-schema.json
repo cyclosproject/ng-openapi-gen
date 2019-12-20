@@ -145,7 +145,7 @@
     },
     "indexFile": {
       "description": "When set to true, a index.ts file will be generated that exports all generated files.",
-      "default": "false",
+      "default": false,
       "type": "boolean"
     }
   }

@@ -22,7 +22,6 @@ export class NgOpenApiGen {
   models = new Map<string, Model>();
   services = new Map<string, Service>();
   operations = new Map<string, Operation>();
-  indexedFiles: string[] = [];
   outDir: string;
 
   constructor(
@@ -76,16 +75,17 @@ export class NgOpenApiGen {
     if (this.globals.moduleClass && this.globals.moduleFile) {
       this.write('module', general, this.globals.moduleFile);
     }
+
+    const modelImports = this.globals.modelIndexFile || this.options.indexFile
+      ? models.map(m => new Import(m.name, './models', m.options)) : null;
     if (this.globals.modelIndexFile) {
-      const imports = models.map(m => new Import(m.name, './models', m.options));
-      this.write('modelIndex', { ...general, imports }, this.globals.modelIndexFile);
+      this.write('modelIndex', { ...general, modelImports }, this.globals.modelIndexFile);
     }
     if (this.globals.serviceIndexFile) {
       this.write('serviceIndex', general, this.globals.serviceIndexFile);
     }
-
     if (this.options.indexFile) {
-      this.write('index', { indexFiles: this.indexedFiles }, 'index');
+      this.write('index', { ...general, modelImports }, 'index');
     }
 
     console.info(`Generation from ${this.options.input} finished with ${models.length} models and ${services.length} services.`);
@@ -97,13 +97,6 @@ export class NgOpenApiGen {
     const dir = path.dirname(file);
     mkdirp.sync(dir);
     fs.writeFileSync(file, ts, { encoding: 'utf-8' });
-
-    if (this.options.indexFile) {
-      this.indexedFiles.push(
-        subDir !== undefined ? `${subDir}/${baseName}` : baseName
-      );
-    }
-
     console.info(`Wrote ${file}`);
   }
 
