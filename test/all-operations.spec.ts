@@ -141,8 +141,8 @@ describe('Generation tests using all-operations.json', () => {
       assertPath4Put('path4Put$Any$Image$Response', 'Blob');
       assertPath4Put('path4Put$Any$Image', 'Blob');
 
-      const withQuotes = cls.methods.find(m => m.name === 'pathWithQuotesGet');
-      expect(withQuotes).withContext(`method pathWithQuotesGet`).toBeDefined();
+      const withQuotes = cls.methods.find(m => m.name === 'withQuotes');
+      expect(withQuotes).withContext(`method withQuotes`).toBeDefined();
 
       done();
     });

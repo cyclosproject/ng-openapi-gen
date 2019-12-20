@@ -78,8 +78,8 @@ To access the full response (for headers, for example), \`${this.responseMethodN
   private descriptionSuffix() {
     const sends = this.requestBody ? 'sends `' + this.requestBody.mediaType + '` and ' : '';
     const handles = this.requestBody
-      ? `handles response body of type \`${this.requestBody.mediaType}\``
-      : 'doesn\'t expect any response body';
-    return `\n\nThis method ${sends}${handles}`;
+      ? `handles request body of type \`${this.requestBody.mediaType}\``
+      : 'doesn\'t expect any request body';
+    return `\n\nThis method ${sends}${handles}.`;
   }
 }

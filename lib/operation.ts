@@ -14,6 +14,7 @@ import { Response } from './response';
  */
 export class Operation {
   tags: string[];
+  methodName: string;
   pathVar: string;
   parameters: Parameter[] = [];
   hasParameters: boolean;
@@ -40,6 +41,7 @@ export class Operation {
 
     this.tsComments = tsComments(spec.description || '', 1);
     this.pathVar = `${upperFirst(id)}Path`;
+    this.methodName = spec['x-operation-name'] || this.id;
 
     // Add both the common and specific parameters
     this.parameters = [
@@ -168,7 +170,7 @@ export class Operation {
     const requestBodyVariants = contentOrNull(this.requestBody);
     const successResponseVariants = contentOrNull(this.successResponse);
     for (const requestBodyVariant of requestBodyVariants) {
-      const methodPart = this.id + (hasRequestBodyVariants ? this.variantMethodPart(requestBodyVariant) : '');
+      const methodPart = this.methodName + (hasRequestBodyVariants ? this.variantMethodPart(requestBodyVariant) : '');
       for (const successResponseVariant of successResponseVariants) {
         const methodName = methodPart + (hasResponseVariants ? this.variantMethodPart(successResponseVariant) : '');
         if (!this.variants.find(v => v.methodName === methodName)) {
