@@ -76,4 +76,6 @@ export interface Options {
   /**  When specified, filters the generated services, excluding any param corresponding to this list of params. */
   excludeParameters?: string[];
 
+  /** When true, a index.ts file will be generated, that exports all generated files */
+  indexFile?: boolean;
 }

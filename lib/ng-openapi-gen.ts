@@ -22,6 +22,7 @@ export class NgOpenApiGen {
   models = new Map<string, Model>();
   services = new Map<string, Service>();
   operations = new Map<string, Operation>();
+  indexedFiles: string[] = [];
   outDir: string;
 
   constructor(
@@ -82,6 +83,11 @@ export class NgOpenApiGen {
     if (this.globals.serviceIndexFile) {
       this.write('serviceIndex', general, this.globals.serviceIndexFile);
     }
+
+    if (this.options.indexFile) {
+      this.write('index', { indexFiles: this.indexedFiles }, 'index');
+    }
+
     console.info(`Generation from ${this.options.input} finished with ${models.length} models and ${services.length} services.`);
   }
 
@@ -91,6 +97,13 @@ export class NgOpenApiGen {
     const dir = path.dirname(file);
     mkdirp.sync(dir);
     fs.writeFileSync(file, ts, { encoding: 'utf-8' });
+
+    if (this.options.indexFile) {
+      this.indexedFiles.push(
+        subDir !== undefined ? `${subDir}/${baseName}` : baseName
+      );
+    }
+
     console.info(`Wrote ${file}`);
   }
 
