@@ -12,6 +12,7 @@ import { Operation } from './operation';
 import { Options } from './options';
 import { Service } from './service';
 import { Templates } from './templates';
+import rimraf from 'rimraf';
 
 /**
  * Main generator class
@@ -96,7 +97,7 @@ export class NgOpenApiGen {
     syncDirs(this.tempDir, this.outDir, this.options.removeStaleFiles !== false);
 
     // Finally, remove the temp directory
-    fs.rmdirSync(this.tempDir, { recursive: true });
+    rimraf.sync(this.tempDir);
 
     console.info(`Generation from ${this.options.input} finished with ${models.length} models and ${services.length} services.`);
   }
