@@ -42,8 +42,8 @@ export class OperationVariant {
     if (description !== '') {
       description += '\n\n';
     }
-    this.responseMethodTsComments = tsComments(this.responseMethodDescription(), 1);
-    this.bodyMethodTsComments = tsComments(this.bodyMethodDescription(), 1);
+    this.responseMethodTsComments = tsComments(this.responseMethodDescription(), 1, operation.deprecated);
+    this.bodyMethodTsComments = tsComments(this.bodyMethodDescription(), 1, operation.deprecated);
   }
 
   private inferResponseType(mediaType: string): string {

@@ -32,7 +32,7 @@ export class Model extends GenType {
     super(name, unqualifiedName, options);
 
     const description = schema.description || '';
-    this.tsComments = tsComments(description, 0);
+    this.tsComments = tsComments(description, 0, schema.deprecated);
 
     const type = schema.type || 'any';
 

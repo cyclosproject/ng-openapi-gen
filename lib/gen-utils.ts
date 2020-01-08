@@ -113,16 +113,19 @@ export function toBasicChars(text: string, firstNonDigit = false): string {
 /**
  * Returns the TypeScript comments for the given schema description, in a given indentation level
  */
-export function tsComments(description: string | undefined, level: number) {
+export function tsComments(description: string | undefined, level: number, deprecated?: boolean) {
   const indent = '  '.repeat(level);
   if (description == undefined || description.length === 0) {
-    return indent;
+    return indent + (deprecated ? '/** @deprecated */' : '');
   }
   const lines = description.trim().split('\n');
   let result = '\n' + indent + '/**\n';
   lines.forEach(line => {
     result += indent + ' *' + (line === '' ? '' : ' ' + line.replace(/\*\//g, '* / ')) + '\n';
   });
+  if (deprecated) {
+    result += indent + ' *\n' + indent + ' * @deprecated\n';
+  }
   result += indent + ' */\n' + indent;
   return result;
 }

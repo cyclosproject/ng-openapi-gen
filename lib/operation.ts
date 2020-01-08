@@ -20,6 +20,7 @@ export class Operation {
   hasParameters: boolean;
   parametersRequired = false;
   security: Security[][] = [];
+  deprecated: boolean;
 
   tsComments: string;
   requestBody?: RequestBody;
@@ -39,7 +40,7 @@ export class Operation {
     this.path = this.path.replace(/\'/g, '\\\'');
     this.tags = spec.tags || [];
 
-    this.tsComments = tsComments(spec.description || '', 1);
+    this.tsComments = tsComments(spec.description || '', 1, spec.deprecated);
     this.pathVar = `${upperFirst(id)}Path`;
     this.methodName = spec['x-operation-name'] || this.id;
 
@@ -70,6 +71,8 @@ export class Operation {
     this.successResponse = responses.success;
     this.allResponses = responses.all;
     this.pathExpression = this.toPathExpression();
+
+    this.deprecated = !!spec.deprecated;
 
     // Now calculate the variants: request body content x success response content
     this.calculateVariants();

@@ -18,6 +18,6 @@ export class Property {
 
     this.type = tsType(this.schema, options);
     const description = (schema as SchemaObject).description || '';
-    this.tsComments = tsComments(description, 1);
+    this.tsComments = tsComments(description, 1, (schema as SchemaObject).deprecated);
   }
 }
