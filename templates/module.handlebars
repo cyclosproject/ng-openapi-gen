@@ -25,7 +25,7 @@ import { {{configurationClass}}, {{configurationParams}} } from './{{configurati
   ],
 })
 export class {{moduleClass}} {
-  static forRoot(params: {{configurationParams}}): ModuleWithProviders {
+  static forRoot(params: {{configurationParams}}): ModuleWithProviders<{{moduleClass}}> {
     return {
       ngModule: {{moduleClass}},
       providers: [
