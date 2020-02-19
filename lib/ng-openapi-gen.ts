@@ -31,6 +31,10 @@ export class NgOpenApiGen {
     public options: Options) {
 
     this.outDir = this.options.output || 'src/app/api';
+    // Make sure the output path doesn't end with a slash
+    if (this.outDir.endsWith('/') || this.outDir.endsWith('\\')) {
+      this.outDir = this.outDir.substr(0, this.outDir.length - 1);
+    }
     this.tempDir = this.outDir + '$';
 
     this.readTemplates();
