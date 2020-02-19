@@ -170,9 +170,12 @@ export class Operation {
         }
       }
     }
-    if (map.size < 2) {
-      map.clear();
+    if (map.size === 0) {
       map.set('', null);
+    } else if (map.size === 1) {
+      const content = [...map.values()][0];
+      map.clear();
+      map.set('', content);
     }
     return map;
   }
