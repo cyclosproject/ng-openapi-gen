@@ -77,7 +77,23 @@ export class {{ requestBuilderClass }} {
     } else {
       this._bodyContentType = contentType;
     }
-    if ((this._bodyContentType || '').startsWith('multipart/form-data')) {
+    if (this._bodyContentType === 'application/x-www-form-urlencoded' && typeof value === 'object') {
+      // Handle URL-encoded data
+      const pairs: string[][] = [];
+      for (const key of Object.keys(value)) {
+        let val = value[key];
+        if (!(val instanceof Array)) {
+          val = [val];
+        }
+        for (const v of val) {
+          const formValue = this.formDataValue(v);
+          if (formValue !== null) {
+            pairs.push([key, formValue]);
+          }
+        }
+      }
+      this._bodyContent = pairs.map(p => `${encodeURIComponent(p[0])}=${encodeURIComponent(p[1])}`).join('&');
+    } else if (this._bodyContentType === 'multipart/form-data') {
       // Handle multipart form data
       const formData = new FormData();
       if (value != null) {
