@@ -158,31 +158,36 @@ export class Operation {
     });
   }
 
-  private calculateVariants() {
-    const hasRequestBodyVariants = this.requestBody && this.requestBody.content.length > 1;
-    const hasResponseVariants = this.successResponse && this.successResponse.content.length > 1;
-    const contentOrNull = (hasContent?: { content?: Content[] }): (Content | null)[] => {
-      if (hasContent) {
-        const content = hasContent.content;
-        if (content && content.length > 0) {
-          return content;
-        }
-      }
-      return [null];
-    };
-    const requestBodyVariants = contentOrNull(this.requestBody);
-    const successResponseVariants = contentOrNull(this.successResponse);
-    for (const requestBodyVariant of requestBodyVariants) {
-      const methodPart = this.methodName + (hasRequestBodyVariants ? this.variantMethodPart(requestBodyVariant) : '');
-      for (const successResponseVariant of successResponseVariants) {
-        const methodName = methodPart + (hasResponseVariants ? this.variantMethodPart(successResponseVariant) : '');
-        if (!this.variants.find(v => v.methodName === methodName)) {
-          // It is possible to have multiple content types which end up in the same method.
-          // For example: application/json, application/foo-bar+json, text/json ...
-          this.variants.push(new OperationVariant(this, methodName, requestBodyVariant, successResponseVariant, this.options));
+  private contentsByMethodPart(hasContent?: { content?: Content[] }): Map<string, Content | null> {
+    const map = new Map<string, Content | null>();
+    if (hasContent) {
+      const content = hasContent.content;
+      if (content && content.length > 0) {
+        for (const type of content) {
+          if (type && type.mediaType) {
+            map.set(this.variantMethodPart(type), type);
+          }
         }
       }
     }
+    if (map.size < 2) {
+      map.clear();
+      map.set('', null);
+    }
+    return map;
+  }
+
+  private calculateVariants() {
+    // It is possible to have multiple content types which end up in the same method.
+    // For example: application/json, application/foo-bar+json, text/json ...
+    const requestVariants = this.contentsByMethodPart(this.requestBody);
+    const responseVariants = this.contentsByMethodPart(this.successResponse);
+    requestVariants.forEach((requestContent, requestPart) => {
+      responseVariants.forEach((responseContent, responsePart) => {
+        const methodName = this.methodName + requestPart + responsePart;
+        this.variants.push(new OperationVariant(this, methodName, requestContent, responseContent, this.options));
+      });
+    });
   }
 
   /**

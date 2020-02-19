@@ -94,6 +94,11 @@
                   "$ref": "#/components/schemas/RefObject"
                 }
               },
+              "application/dummy+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RefObject"
+                }
+              },
               "image/*": {
                 "schema": {
                   "type": "string",
@@ -191,6 +196,14 @@
           "200": {
             "content": {
               "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              },
+              "application/*+json": {
                 "schema": {
                   "type": "array",
                   "items": {
