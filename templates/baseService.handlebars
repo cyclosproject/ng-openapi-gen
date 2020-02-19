@@ -1,10 +1,12 @@
 /* tslint:disable */
-import { {{configurationClass}} } from './{{configurationFile}}';
+import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { {{configurationClass}} } from './{{configurationFile}}';
 
 /**
  * Base class for services
  */
+@Injectable()
 export class {{baseServiceClass}} {
   constructor(
     protected config: {{configurationClass}},
