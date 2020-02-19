@@ -3,11 +3,9 @@ ng-openapi-gen: An OpenAPI 3 code generator for Angular
 
 This project is a NPM module that generates model interfaces and web service clients from an [OpenApi 3](https://www.openapis.org/) [specification](https://github.com/OAI/OpenAPI-Specification).
 The generated classes follow the principles of [Angular](https://angular.io/).
-The generated code is compatible with Angular 6+.
+The generated code is compatible with Angular 7+.
 
 For a generator for [Swagger 2.0](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/2.0.md), use [ng-swagger-gen](https://github.com/cyclosproject/ng-swagger-gen) instead.
-
-`ng-openapi-gen` is still in early development stage, and is not yet recommended for production.
 
 ## Highlights
 
@@ -26,28 +24,26 @@ For a generator for [Swagger 2.0](https://github.com/OAI/OpenAPI-Specification/b
 
 ## Limitations
 
-- Only standard OpenAPI 3 descriptions will be generated. `ng-swagger-gen` allows several extensions, specially types from JSON schema, but they are out of scope for `ng-openapi-gen`;
+- Only standard OpenAPI 3 descriptions will be generated. `ng-swagger-gen` allows several extensions, specially types from JSON schema, but they are out of scope for `ng-openapi-gen`. There is, however, support for a few [vendor extensions](#Supported_vendor_extensions);
 - Servers per operation are not supported;
 - Only the first server is used as a default root URL in the configuration;
 - No data transformation is ever performed before sending / after returning data.
-  This means that a property of type `string` and format `date-time` will always be generated as `string`.
+  This means that a property of type `string` and format `date-time` will always be generated as `string`, not `Date`.
   Otherwise every API call would need to have a processing that would traverse the returned object graph before sending the request
   to replace all date properties by `Date`. The same applies to sent requests. Such operations are out of scope for `ng-openapi-gen`;
 
 ## Relationship with ng-swagger-gen
 
 This project uses the same philosophy as [ng-swagger-gen](https://github.com/cyclosproject/ng-swagger-gen), and was built by the same team.
-We've learned a lot with `ng-swagger-gen` and have applied all the acuired knowledge to build `ng-openapi-gen`.
+We've learned a lot with `ng-swagger-gen` and have applied all the acquired knowledge to build `ng-openapi-gen`.
 
-There were several reasons to not build a new major version of `ng-swagger-gen` that supports `OpenAPI 3`, but instead,
-to create a new project.
+There were several reasons to not build a new major version of `ng-swagger-gen` that supports `OpenAPI 3`, but instead, to create a new project.
 The main differences between `ng-openapi-gen` and `ng-swagger-gen` are:
 
 - The first, more obvious and more important is the specification version, `OpenAPI 3` vs `Swagger 2`;
 - The generator itself is written in `TypeScript`, which should be easier to maintain;
-- There is a test suite for the generator;
-- The command-line arguments are more robust, derived directly from the `JSON schema` definition for the configuration file, easily
-  allowing to override any specific configuration on CLI.
+- There is an extensive test suite for the generator;
+- The command-line arguments are more robust, derived directly from the `JSON schema` definition for the configuration file, easily allowing to override any specific configuration on CLI.
 - Root enumerations (schemas of `type` = `string` | `number` | `integer`) can be generated as TypeScript's `enum`'s.
 This is enabled by default. Inline enums are not, because it would require another type to be exported in the container type.
 
@@ -123,7 +119,7 @@ export class ApiInterceptor implements HttpInterceptor {
     // Apply the headers
     req = req.clone({
       setHeaders: {
-        'ApiToken': '234567890'
+        'ApiToken': '1234567890'
       }
     });
 
