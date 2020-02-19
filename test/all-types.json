@@ -37,6 +37,9 @@
               },
               {
                 "$ref": "#/components/schemas/a.b.RefObject"
+              },
+              {
+                "$ref": "#/components/schemas/AdditionalProperties"
               }
             ]
           }
@@ -229,6 +232,28 @@
           "name": {
             "type": "string"
           }
+        }
+      },
+      "AdditionalProperties": {
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "age": {
+            "type": "integer",
+            "nullable": true
+          }
+        },
+        "additionalProperties": {
+          "$ref": "#/components/schemas/a.b.RefObject"
         }
       },
       "Containers": {

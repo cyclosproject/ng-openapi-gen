@@ -256,6 +256,31 @@ describe('Generation tests using all-types.json', () => {
     });
   });
 
+  it('AdditionalProperties model', done => {
+    const ref = gen.models.get('AdditionalProperties');
+    const ts = gen.templates.apply('model', ref);
+    const parser = new TypescriptParser();
+    parser.parseSource(ts).then(ast => {
+      expect(ast.imports.length).toBe(1);
+      expect(ast.imports.find(i => i.libraryName === './a/b/ref-object')).withContext('a/b/ref-object import').toBeDefined();
+      expect(ast.declarations.length).toBe(1);
+      expect(ast.declarations[0]).toEqual(jasmine.any(InterfaceDeclaration));
+      const decl = ast.declarations[0] as InterfaceDeclaration;
+      expect(decl.name).toBe('AdditionalProperties');
+      expect(decl.properties.length).toBe(3);
+      expect(decl.properties[0].name).toBe('age');
+      expect(decl.properties[0].type).toBe('null | number');
+      expect(decl.properties[1].name).toBe('description');
+      expect(decl.properties[1].type).toBe('null | string');
+      expect(decl.properties[2].name).toBe('name');
+      expect(decl.properties[2].type).toBe('string');
+      expect(decl.properties[2].isOptional).toBeFalse();
+      const text = ts.substring(decl.start || 0, decl.end || ts.length);
+      expect(text).toContain('[key: string]: ABRefObject | null | number | string;');
+      done();
+    });
+  });
+
   it('Container model', done => {
     const container = gen.models.get('Container');
     const ts = gen.templates.apply('model', container);

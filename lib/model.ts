@@ -102,13 +102,28 @@ export class Model extends GenType {
       const properties = schema.properties || {};
       const required = schema.required || [];
       const propNames = Object.keys(properties);
+      // When there are additional properties, we need an union of all types for it.
+      // See https://github.com/cyclosproject/ng-openapi-gen/issues/68
+      const propTypes = new Set<string>();
+      const appendType = (type: string) => {
+        if (type.startsWith('null | ')) {
+          propTypes.add('null');
+          propTypes.add(type.substr('null | '.length));
+        } else {
+          propTypes.add(type);
+        }
+      };
       for (const propName of propNames) {
-        propertiesByName.set(propName, new Property(propName, properties[propName], required.includes(propName), this.options));
+        const prop = new Property(propName, properties[propName], required.includes(propName), this.options);
+        propertiesByName.set(propName, prop);
+        appendType(prop.type);
       }
       if (schema.additionalProperties === true) {
         this.additionalPropertiesType = 'any';
       } else if (schema.additionalProperties) {
-        this.additionalPropertiesType = tsType(schema.additionalProperties, this.options);
+        const propType = tsType(schema.additionalProperties, this.options);
+        appendType(propType);
+        this.additionalPropertiesType = [...propTypes].sort().join(' | ');
       }
     }
   }
