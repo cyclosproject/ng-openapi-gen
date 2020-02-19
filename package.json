@@ -3,7 +3,7 @@
   "version": "0.8.0",
   "license": "MIT",
   "author": "Cyclos development team",
-  "description": "An OpenAPI 3 codegen for Angular 6+",
+  "description": "An OpenAPI 3 codegen for Angular 7+",
   "keywords": [
     "angular",
     "openapi",
@@ -47,7 +47,7 @@
     "typescript": "^3.7.5"
   },
   "peerDependencies": {
-    "@angular/core": ">=6.0.0",
+    "@angular/core": ">=7.0.0",
     "rxjs": ">=6.0.0"
   },
   "devDependencies": {
