@@ -4,6 +4,16 @@
     "title": "Test with several operations",
     "version": "1.0"
   },
+  "servers": [
+    {
+      "url": "/api/{version}",
+      "variables": {
+        "version": {
+          "default": "1.0"
+        }
+      }
+    }
+  ],
   "tags": [
     {
       "name": "tag1",

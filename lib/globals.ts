@@ -19,6 +19,7 @@ export class Globals {
   moduleFile?: string;
   modelIndexFile?: string;
   serviceIndexFile?: string;
+  rootUrl?: string;
 
   constructor(options: Options) {
     this.configurationClass = options.configuration || 'ApiConfiguration';

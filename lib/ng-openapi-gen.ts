@@ -119,8 +119,26 @@ export class NgOpenApiGen {
     const builtInDir = path.join(__dirname, hasLib ? '../templates' : 'templates');
     const customDir = this.options.templates || '';
     this.globals = new Globals(this.options);
+    this.globals.rootUrl = this.readRootUrl();
     this.templates = new Templates(builtInDir, customDir);
     this.templates.setGlobals(this.globals);
+  }
+
+  private readRootUrl() {
+    if (!this.openApi.servers || this.openApi.servers.length === 0) {
+      return '';
+    }
+    const server = this.openApi.servers[0];
+    let rootUrl = server.url;
+    if (rootUrl == null || rootUrl.length === 0) {
+      return '';
+    }
+    const vars = server.variables || {};
+    for (const key of Object.keys(vars)) {
+      const value = String(vars[key].default);
+      rootUrl = rootUrl.replace(`{${key}}`, value);
+    }
+    return rootUrl;
   }
 
   private readModels() {

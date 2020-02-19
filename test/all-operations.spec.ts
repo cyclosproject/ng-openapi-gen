@@ -10,6 +10,10 @@ gen.generate();
 
 describe('Generation tests using all-operations.json', () => {
 
+  it('Root URL', () => {
+    expect(gen.globals.rootUrl).toBe('/api/1.0');
+  });
+
   it('Tags', () => {
     expect(gen.services.size).toBe(3);
   });
