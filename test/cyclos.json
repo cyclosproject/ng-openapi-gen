@@ -185,6 +185,9 @@
   }, {
     "name" : "OIDC",
     "description" : "Provides the delegation of data and operations via OAuth2 / OpenID Connect. These are standard protocols which enables logging-in on other services with Cyclos, as well as allowing external services to perform operations in behalf of users."
+  }, {
+    "name" : "PrivacySettings",
+    "description" : "Provides a way to define how the personal data can be accessed."
   } ],
   "security" : [ {
     "basic" : [ ]
@@ -16062,7 +16065,7 @@
           "name" : "broker",
           "in" : "query",
           "required" : false,
-          "description" : "DEPRECATED: Use `brokers` instead.\nReference to the broker of users involved in transfers. Is only taken into account if authenticated as administrator.",
+          "description" : "Use `brokers` instead.\n\nReference to the broker of users involved in transfers. Is only taken into account if authenticated as administrator.",
           "schema" : {
             "type" : "string"
           }
@@ -16251,7 +16254,7 @@
           "name" : "transferKinds",
           "in" : "query",
           "required" : false,
-          "description" : "DEPRECATED: Use `kinds` instead",
+          "description" : "Use `kinds` instead.",
           "schema" : {
             "type" : "array",
             "items" : {
@@ -16457,7 +16460,7 @@
           "name" : "broker",
           "in" : "query",
           "required" : false,
-          "description" : "DEPRECATED: Use `brokers` instead.\nReference to the broker of users involved in transfers. Is only taken into account if authenticated as administrator.",
+          "description" : "Use `brokers` instead.\n\nReference to the broker of users involved in transfers. Is only taken into account if authenticated as administrator.",
           "schema" : {
             "type" : "string"
           }
@@ -16653,7 +16656,7 @@
           "name" : "transferKinds",
           "in" : "query",
           "required" : false,
-          "description" : "DEPRECATED: Use `kinds` instead",
+          "description" : "Use `kinds` instead.",
           "schema" : {
             "type" : "array",
             "items" : {
@@ -16813,7 +16816,7 @@
           "name" : "broker",
           "in" : "query",
           "required" : false,
-          "description" : "DEPRECATED: Use `brokers` instead.\nReference to the broker of users involved in transfers. Is only taken into account if authenticated as administrator.",
+          "description" : "Use `brokers` instead.\n\nReference to the broker of users involved in transfers. Is only taken into account if authenticated as administrator.",
           "schema" : {
             "type" : "string"
           }
@@ -17009,7 +17012,7 @@
           "name" : "transferKinds",
           "in" : "query",
           "required" : false,
-          "description" : "DEPRECATED: Use `kinds` instead",
+          "description" : "Use `kinds` instead.",
           "schema" : {
             "type" : "array",
             "items" : {
@@ -18658,7 +18661,7 @@
           "name" : "broker",
           "in" : "query",
           "required" : false,
-          "description" : "DEPRECATED: Use `brokers` instead. Will be removed in 4.14. Either the ids or identification methods of users' broker",
+          "description" : "Use `brokers` instead.\n\nEither the ids or identification methods of users' broker",
           "schema" : {
             "type" : "string"
           }
@@ -18897,7 +18900,7 @@
           "name" : "broker",
           "in" : "query",
           "required" : false,
-          "description" : "DEPRECATED: Use `brokers` instead. Will be removed in 4.14. Either the ids or identification methods of users' broker",
+          "description" : "Use `brokers` instead.\n\nEither the ids or identification methods of users' broker",
           "schema" : {
             "type" : "string"
           }
@@ -19204,7 +19207,7 @@
           "name" : "broker",
           "in" : "query",
           "required" : false,
-          "description" : "DEPRECATED: Use `brokers` instead.\nReference to the broker of users involved in transfers. Is only taken into account if authenticated as administrator.",
+          "description" : "Use `brokers` instead.\n\nReference to the broker of users involved in transfers. Is only taken into account if authenticated as administrator.",
           "schema" : {
             "type" : "string"
           }
@@ -19264,7 +19267,7 @@
           "name" : "currency",
           "in" : "query",
           "required" : false,
-          "description" : "DEPRECATED: Use `currencies` instead.\nEither id or internal name of the currency",
+          "description" : "Use `currencies` instead.\n\nEither id or internal name of the currency",
           "schema" : {
             "type" : "string"
           }
@@ -19297,7 +19300,7 @@
           "name" : "fromAccountType",
           "in" : "query",
           "required" : false,
-          "description" : "DEPRECATED: Use `fromAccountTypes` instead.\nEither ids or internal names of the origin account type",
+          "description" : "Use `fromAccountTypes` instead.\n\nEither ids or internal names of the origin account type",
           "schema" : {
             "type" : "string"
           }
@@ -19401,7 +19404,7 @@
           "name" : "toAccountType",
           "in" : "query",
           "required" : false,
-          "description" : "DEPRECATED: Use `toAccountTypes` instead.\nEither ids or internal names of the destination account type",
+          "description" : "Use `toAccountTypes` instead.\n\nEither ids or internal names of the destination account type",
           "schema" : {
             "type" : "string"
           }
@@ -19441,7 +19444,7 @@
           "name" : "transferKinds",
           "in" : "query",
           "required" : false,
-          "description" : "DEPRECATED: Use `kinds` instead",
+          "description" : "Use `kinds` instead.",
           "schema" : {
             "type" : "array",
             "items" : {
@@ -19597,7 +19600,7 @@
           "name" : "broker",
           "in" : "query",
           "required" : false,
-          "description" : "DEPRECATED: Use `brokers` instead.\nReference to the broker of users involved in transfers. Is only taken into account if authenticated as administrator.",
+          "description" : "Use `brokers` instead.\n\nReference to the broker of users involved in transfers. Is only taken into account if authenticated as administrator.",
           "schema" : {
             "type" : "string"
           }
@@ -19657,7 +19660,7 @@
           "name" : "currency",
           "in" : "query",
           "required" : false,
-          "description" : "DEPRECATED: Use `currencies` instead.\nEither id or internal name of the currency",
+          "description" : "Use `currencies` instead.\n\nEither id or internal name of the currency",
           "schema" : {
             "type" : "string"
           }
@@ -19690,7 +19693,7 @@
           "name" : "fromAccountType",
           "in" : "query",
           "required" : false,
-          "description" : "DEPRECATED: Use `fromAccountTypes` instead.\nEither ids or internal names of the origin account type",
+          "description" : "Use `fromAccountTypes` instead.\n\nEither ids or internal names of the origin account type",
           "schema" : {
             "type" : "string"
           }
@@ -19794,7 +19797,7 @@
           "name" : "toAccountType",
           "in" : "query",
           "required" : false,
-          "description" : "DEPRECATED: Use `toAccountTypes` instead.\nEither ids or internal names of the destination account type",
+          "description" : "Use `toAccountTypes` instead.\n\nEither ids or internal names of the destination account type",
           "schema" : {
             "type" : "string"
           }
@@ -19834,7 +19837,7 @@
           "name" : "transferKinds",
           "in" : "query",
           "required" : false,
-          "description" : "DEPRECATED: Use `kinds` instead",
+          "description" : "Use `kinds` instead.",
           "schema" : {
             "type" : "array",
             "items" : {
@@ -20311,7 +20314,7 @@
           "name" : "broker",
           "in" : "query",
           "required" : false,
-          "description" : "DEPRECATED: Use `brokers` instead.\nReference to the broker of users involved in transfers. Is only taken into account if authenticated as administrator.",
+          "description" : "Use `brokers` instead.\n\nReference to the broker of users involved in transfers. Is only taken into account if authenticated as administrator.",
           "schema" : {
             "type" : "string"
           }
@@ -20729,7 +20732,7 @@
           "name" : "broker",
           "in" : "query",
           "required" : false,
-          "description" : "DEPRECATED: Use `brokers` instead.\nReference to the broker of users involved in transfers. Is only taken into account if authenticated as administrator.",
+          "description" : "Use `brokers` instead.\n\nReference to the broker of users involved in transfers. Is only taken into account if authenticated as administrator.",
           "schema" : {
             "type" : "string"
           }
@@ -21192,7 +21195,7 @@
           "name" : "broker",
           "in" : "query",
           "required" : false,
-          "description" : "DEPRECATED: Use `brokers` instead.\nReference to the broker of users involved in transfers. Is only taken into account if authenticated as administrator.",
+          "description" : "Use `brokers` instead.\n\nReference to the broker of users involved in transfers. Is only taken into account if authenticated as administrator.",
           "schema" : {
             "type" : "string"
           }
@@ -21633,7 +21636,7 @@
           "name" : "broker",
           "in" : "query",
           "required" : false,
-          "description" : "DEPRECATED: Use `brokers` instead.\nReference to the broker of users involved in transfers. Is only taken into account if authenticated as administrator.",
+          "description" : "Use `brokers` instead.\n\nReference to the broker of users involved in transfers. Is only taken into account if authenticated as administrator.",
           "schema" : {
             "type" : "string"
           }
@@ -22300,7 +22303,7 @@
           "name" : "broker",
           "in" : "query",
           "required" : false,
-          "description" : "DEPRECATED: Use `brokers` instead.\nReference to the broker of users involved in transfers. Is only taken into account if authenticated as administrator.",
+          "description" : "Use `brokers` instead.\n\nReference to the broker of users involved in transfers. Is only taken into account if authenticated as administrator.",
           "schema" : {
             "type" : "string"
           }
@@ -22661,7 +22664,7 @@
           "name" : "broker",
           "in" : "query",
           "required" : false,
-          "description" : "DEPRECATED: Use `brokers` instead.\nReference to the broker of users involved in transfers. Is only taken into account if authenticated as administrator.",
+          "description" : "Use `brokers` instead.\n\nReference to the broker of users involved in transfers. Is only taken into account if authenticated as administrator.",
           "schema" : {
             "type" : "string"
           }
@@ -23059,7 +23062,7 @@
           "name" : "broker",
           "in" : "query",
           "required" : false,
-          "description" : "DEPRECATED: Use `brokers` instead.\nReference to the broker of users involved in transfers. Is only taken into account if authenticated as administrator.",
+          "description" : "Use `brokers` instead.\n\nReference to the broker of users involved in transfers. Is only taken into account if authenticated as administrator.",
           "schema" : {
             "type" : "string"
           }
@@ -23435,7 +23438,7 @@
           "name" : "broker",
           "in" : "query",
           "required" : false,
-          "description" : "DEPRECATED: Use `brokers` instead.\nReference to the broker of users involved in transfers. Is only taken into account if authenticated as administrator.",
+          "description" : "Use `brokers` instead.\n\nReference to the broker of users involved in transfers. Is only taken into account if authenticated as administrator.",
           "schema" : {
             "type" : "string"
           }
@@ -29273,7 +29276,7 @@
         "deprecated" : true,
         "x-remove-version" : 4.15,
         "summary" : "Returns the voucher types the authenticated user can buy vouchers to the given user",
-        "description" : "Instead use \"/{user}/vouchers/data-for-buy\" without passing a type.\n\nList the voucher types the user can buy to another user (or himself)",
+        "description" : "Instead use \"/{user}/vouchers/data-for-buy\" without passing a type.\n\n\nList the voucher types the user can buy to another user (or himself)",
         "tags" : [ "Vouchers" ],
         "security" : [ {
           "basic" : [ ]
@@ -39588,7 +39591,7 @@
           "name" : "broker",
           "in" : "query",
           "required" : false,
-          "description" : "DEPRECATED. Use `brokers` instead.",
+          "description" : "Use `brokers` instead.",
           "schema" : {
             "type" : "string"
           }
@@ -40714,6 +40717,79 @@
         }
       }
     },
+    "/marketplace/{ad}/export/{format}" : {
+      "parameters" : [ {
+        "$ref" : "#/components/parameters/ad"
+      }, {
+        "$ref" : "#/components/parameters/format"
+      } ],
+      "get" : {
+        "operationId" : "exportAd",
+        "summary" : "Exports the advertisement details to a file.",
+        "description" : "Exports the advertisement details to a file. The available formats are available in `AdView`",
+        "tags" : [ "Marketplace" ],
+        "security" : [ {
+          "basic" : [ ]
+        }, {
+          "session" : [ ]
+        }, {
+          "accessClient" : [ ]
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "The file content",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "binary"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized access. Missing or invalid crendentials supplied for such operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/UnauthorizedError"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Permission denied for such operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "An expected data was not found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/NotFoundError"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Unexpected error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/marketplace/{ad}/hide" : {
       "post" : {
         "operationId" : "hideAd",
@@ -41386,7 +41462,7 @@
       "get" : {
         "operationId" : "searchUnansweredAdQuestions",
         "summary" : "Searches for unanswered questions for a specific user",
-        "description" : "Searches for unanswered questions for a specific user, if a type is not given then `simple` will be used. Only if the user has the ad questions enabled or can manage webshops and the authenticated user can manage ads / webshops of the given user.",
+        "description" : "Searches for unanswered questions for a specific user (currently `self` only is supported), if a type is not given then `simple` will be used. Only if the user has the ad questions enabled or can manage webshops and the authenticated user can manage ads / webshops of the given user.",
         "tags" : [ "AdQuestions" ],
         "security" : [ {
           "basic" : [ ]
@@ -41441,7 +41517,7 @@
                 "schema" : {
                   "type" : "array",
                   "items" : {
-                    "$ref" : "#/components/schemas/AdQuestion"
+                    "$ref" : "#/components/schemas/AdQuestionResult"
                   }
                 }
               }
@@ -42833,6 +42909,79 @@
               "application/json" : {
                 "schema" : {
                   "$ref" : "#/components/schemas/ConflictError"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized access. Missing or invalid crendentials supplied for such operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/UnauthorizedError"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Permission denied for such operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "An expected data was not found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/NotFoundError"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Unexpected error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/orders/{order}/export/{format}" : {
+      "parameters" : [ {
+        "$ref" : "#/components/parameters/order"
+      }, {
+        "$ref" : "#/components/parameters/format"
+      } ],
+      "get" : {
+        "operationId" : "exportOrder",
+        "summary" : "Exports the order details to a file.",
+        "description" : "Exports the order details to a file. The available formats are available in `OrderView`",
+        "tags" : [ "Orders" ],
+        "security" : [ {
+          "basic" : [ ]
+        }, {
+          "session" : [ ]
+        }, {
+          "accessClient" : [ ]
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "The file content",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "binary"
                 }
               }
             }
@@ -44531,6 +44680,153 @@
           }
         }
       }
+    },
+    "/{user}/privacy-settings" : {
+      "get" : {
+        "operationId" : "getPrivacySettingsData",
+        "summary" : "Get the privacy settings data",
+        "description" : "Returns the privacy settings data of the given user",
+        "tags" : [ "PrivacySettings" ],
+        "security" : [ {
+          "basic" : [ ]
+        }, {
+          "session" : [ ]
+        }, {
+          "accessClient" : [ ]
+        } ],
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/fields"
+        }, {
+          "$ref" : "#/components/parameters/user"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "The privacy settings data",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PrivacySettingsData"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized access. Missing or invalid crendentials supplied for such operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/UnauthorizedError"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Permission denied for such operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "An expected data was not found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/NotFoundError"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Unexpected error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post" : {
+        "operationId" : "savePrivacySettings",
+        "summary" : "Saves the privacy settings for a given user.",
+        "description" : "Saves the privacy settings for a given user.",
+        "tags" : [ "PrivacySettings" ],
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/user"
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "The privacy settings was saved"
+          },
+          "401" : {
+            "description" : "Unauthorized access. Missing or invalid crendentials supplied for such operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/UnauthorizedError"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Permission denied for such operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "An expected data was not found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/NotFoundError"
+                }
+              }
+            }
+          },
+          "422" : {
+            "description" : "Input error. Either a validation error or the maximum allowed items was exceeded",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/InputError"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Unexpected error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "requestBody" : {
+          "description" : "The privacy settings data to be saved",
+          "required" : true,
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/PrivacySettingsParams"
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components" : {
@@ -45623,7 +45919,7 @@
               }
             },
             "broker" : {
-              "description" : "DEPRECATED: Use `brokers` instead. Will be removed in 4.14. Either the ids or identification methods of users' broker",
+              "description" : "Use `brokers` instead.\n\n\nEither the ids or identification methods of users' broker",
               "deprecated" : true,
               "x-remove-version" : 4.14,
               "type" : "string"
@@ -46021,7 +46317,7 @@
         }
       },
       "Ad" : {
-        "description" : "A advertisement is a structured data stored either for a user or for system (a general advertisement, unrelated to a user).",
+        "description" : "Basic information common for advertisements and webshops",
         "allOf" : [ {
           "$ref" : "#/components/schemas/NamedEntity"
         }, {
@@ -46093,8 +46389,16 @@
               "$ref" : "#/components/schemas/AdKind"
             } ]
           },
+          "user" : {
+            "description" : "The user which owns the advertisement",
+            "allOf" : [ {
+              "$ref" : "#/components/schemas/User"
+            } ]
+          },
           "owner" : {
-            "description" : "The owner of the advertisement.",
+            "deprecated" : true,
+            "x-remove-version" : 4.15,
+            "description" : "Use `user` instead.\n\n\nThe owner of the advertisement.",
             "allOf" : [ {
               "$ref" : "#/components/schemas/User"
             } ]
@@ -46154,13 +46458,25 @@
             "status" : {
               "$ref" : "#/components/schemas/AdStatusEnum"
             },
-            "edit" : {
+            "canEdit" : {
               "type" : "boolean",
               "description" : "Indicates whether the current ad can be edited by the currently authenticated used."
             },
+            "canRemove" : {
+              "type" : "boolean",
+              "description" : "Indicates whether the current ad can be removed by the currently authenticated used."
+            },
+            "edit" : {
+              "type" : "boolean",
+              "deprecated" : true,
+              "x-remove-version" : 4.15,
+              "description" : "Use `canEdit` instead.\n\n\nIndicates whether the current ad can be edited by the currently authenticated used."
+            },
             "remove" : {
               "type" : "boolean",
-              "description" : "Indicates whether the current ad can be edited by the currently authenticated used."
+              "deprecated" : true,
+              "x-remove-version" : 4.15,
+              "description" : "Use `canRemove` instead.\n\n\nIndicates whether the current ad can be removed by the currently authenticated used."
             },
             "creationDate" : {
               "description" : "The creation date the advertisement was created",
@@ -46250,8 +46566,19 @@
               "description" : "The advertisement description content, formatted as HTML",
               "type" : "string"
             },
+            "user" : {
+              "description" : "The user which owns this ad",
+              "allOf" : [ {
+                "$ref" : "#/components/schemas/User"
+              } ]
+            },
             "owner" : {
-              "$ref" : "#/components/schemas/User"
+              "deprecated" : true,
+              "x-remove-version" : 4.15,
+              "description" : "Use `user` instead.",
+              "allOf" : [ {
+                "$ref" : "#/components/schemas/User"
+              } ]
             },
             "publicationPeriod" : {
               "$ref" : "#/components/schemas/DatePeriod"
@@ -46336,12 +46663,24 @@
         }, {
           "type" : "object",
           "properties" : {
-            "edit" : {
+            "canEdit" : {
               "description" : "Can the authenticated user edit this advertisement interest?",
               "type" : "boolean"
             },
-            "remove" : {
+            "canRemove" : {
               "description" : "Can the authenticated user remove this advertisement interest?",
+              "type" : "boolean"
+            },
+            "edit" : {
+              "deprecated" : true,
+              "x-remove-version" : 4.15,
+              "description" : "Use `canEdit` instead.\n\n\nCan the authenticated user edit this advertisement interest?",
+              "type" : "boolean"
+            },
+            "remove" : {
+              "deprecated" : true,
+              "x-remove-version" : 4.15,
+              "description" : "Use `canRemove` instead.\n\n\nCan the authenticated user remove this advertisement interest?",
               "type" : "boolean"
             },
             "adInterest" : {
@@ -46483,12 +46822,30 @@
                 "$ref" : "#/components/schemas/User"
               } ]
             },
-            "edit" : {
+            "owner" : {
+              "description" : "Owner of this advertisement interest",
+              "allOf" : [ {
+                "$ref" : "#/components/schemas/User"
+              } ]
+            },
+            "canEdit" : {
               "description" : "Can the authenticated user edit this advertisement interest?",
               "type" : "boolean"
             },
-            "remove" : {
+            "canRemove" : {
               "description" : "Can the authenticated user remove this advertisement interest?",
+              "type" : "boolean"
+            },
+            "edit" : {
+              "deprecated" : true,
+              "x-remove-version" : 4.15,
+              "description" : "Use `canEdit` instead.\n\n\nCan the authenticated user edit this advertisement interest?",
+              "type" : "boolean"
+            },
+            "remove" : {
+              "deprecated" : true,
+              "x-remove-version" : 4.15,
+              "description" : "Use `canRemove` instead.\n\n\nCan the authenticated user remove this advertisement interest?",
               "type" : "boolean"
             }
           }
@@ -46638,7 +46995,7 @@
               "type" : "string",
               "deprecated" : true,
               "x-remove-version" : 4.15,
-              "description" : "DEPRECATED. Use `brokers` instead."
+              "description" : "Use `brokers` instead."
             },
             "brokers" : {
               "type" : "array",
@@ -46685,6 +47042,12 @@
               "description" : "The answer date and time (if any).",
               "type" : "string",
               "format" : "date-time"
+            },
+            "user" : {
+              "description" : "The user which asked the question",
+              "allOf" : [ {
+                "$ref" : "#/components/schemas/User"
+              } ]
             }
           }
         } ]
@@ -46697,7 +47060,26 @@
           "type" : "object",
           "properties" : {
             "kind" : {
-              "$ref" : "#/components/schemas/AdKind"
+              "description" : "When kind is not specified it will assume simple or webshop based on user permissions",
+              "allOf" : [ {
+                "$ref" : "#/components/schemas/AdKind"
+              } ]
+            }
+          }
+        } ]
+      },
+      "AdQuestionResult" : {
+        "description" : "Data returned from question search",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/AdQuestion"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "advertisement" : {
+              "description" : "The advertisement of the question.",
+              "allOf" : [ {
+                "$ref" : "#/components/schemas/AdWithOwner"
+              } ]
             }
           }
         } ]
@@ -46705,17 +47087,9 @@
       "AdQuestionView" : {
         "description" : "A question asked for an advertisement.",
         "allOf" : [ {
-          "$ref" : "#/components/schemas/AdQuestion"
+          "$ref" : "#/components/schemas/AdQuestionResult"
         }, {
-          "type" : "object",
-          "properties" : {
-            "user" : {
-              "description" : "The user which asked the question",
-              "allOf" : [ {
-                "$ref" : "#/components/schemas/User"
-              } ]
-            }
-          }
+          "type" : "object"
         } ]
       },
       "AdResult" : {
@@ -46881,7 +47255,7 @@
               "description" : "The list of questions this advertisement has.",
               "type" : "array",
               "items" : {
-                "$ref" : "#/components/schemas/AdQuestionView"
+                "$ref" : "#/components/schemas/AdQuestion"
               }
             },
             "allowDecimal" : {
@@ -46913,6 +47287,29 @@
             "hideOwner" : {
               "description" : "Indicates whether show or not this advertisement owner to guests",
               "type" : "boolean"
+            },
+            "exportFormats" : {
+              "description" : "The formats which the advertisement can be exported",
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/components/schemas/ExportFormat"
+              }
+            }
+          }
+        } ]
+      },
+      "AdWithOwner" : {
+        "description" : "An advertisement with information about its owner",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/Ad"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "owner" : {
+              "description" : "The owner of this advertisement",
+              "allOf" : [ {
+                "$ref" : "#/components/schemas/User"
+              } ]
             }
           }
         } ]
@@ -46974,6 +47371,9 @@
               "allOf" : [ {
                 "$ref" : "#/components/schemas/GeographicalCoordinate"
               } ]
+            },
+            "contactInfo" : {
+              "$ref" : "#/components/schemas/AddressContactInfo"
             }
           }
         } ]
@@ -46985,9 +47385,36 @@
         }, {
           "type" : "object",
           "properties" : {
+            "enablePrivacy" : {
+              "description" : "Indicates whether privacy can be used for this address",
+              "type" : "boolean"
+            },
             "managePrivacy" : {
               "type" : "boolean",
               "description" : "Can the authenticated user manage the privacy of this address?"
+            },
+            "contactInfoEnabled" : {
+              "type" : "boolean",
+              "description" : "Can the address have additional contact information fields?"
+            },
+            "contactInfoFields" : {
+              "description" : "The additional contact information custom fields. Only returned if `contactInfoEnabled` is true.",
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/components/schemas/CustomFieldDetailed"
+              }
+            },
+            "phoneConfiguration" : {
+              "description" : "Configuration for settings contact phone numbers. Only returned if `contactInfoEnabled` is true.",
+              "allOf" : [ {
+                "$ref" : "#/components/schemas/PhoneConfiguration"
+              } ]
+            },
+            "user" : {
+              "description" : "The user which owns the address.",
+              "allOf" : [ {
+                "$ref" : "#/components/schemas/User"
+              } ]
             },
             "confirmationPasswordInput" : {
               "description" : "If a confirmation password is used, contains the definitions on how to request that password from the user. This confirmation password is required when performing sensible actions. Sometimes this is dynamic, for example, the confirmation might be configured to be used only once per session, or operations like payments may have a limit per day to be without confirmation (pinless).",
@@ -47049,9 +47476,94 @@
             },
             "availability" : {
               "$ref" : "#/components/schemas/AvailabilityEnum"
+            },
+            "contactInfoEnabled" : {
+              "type" : "boolean",
+              "description" : "Is contact information, such as email, phones and custom values, enabled for addresses of this user?"
+            },
+            "contactInfoFields" : {
+              "description" : "The contact information custom fields for the address. Only sent if `contactInfoEnabled` is true and there are available custom fields.",
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/components/schemas/CustomFieldDetailed"
+              }
+            },
+            "phoneConfiguration" : {
+              "description" : "The phone configuration to set contact phones for the address. Only sent if `contactInfoEnabled` is true.",
+              "allOf" : [ {
+                "$ref" : "#/components/schemas/PhoneConfiguration"
+              } ]
             }
           }
         } ]
+      },
+      "AddressContactInfo" : {
+        "description" : "Contact information for an address",
+        "x-implements" : "IContactInfo, INormalizedPhones",
+        "type" : "object",
+        "properties" : {
+          "email" : {
+            "type" : "string",
+            "description" : "The e-mail for this additional contact information"
+          },
+          "mobilePhone" : {
+            "type" : "string",
+            "description" : "The formatted mobile phone for this additional contact information"
+          },
+          "landLinePhone" : {
+            "type" : "string",
+            "description" : "The formatted landline phone for this additional contact information"
+          },
+          "landLineExtension" : {
+            "type" : "string",
+            "description" : "The landline phone extension for this additional contact information"
+          },
+          "normalizedMobilePhone" : {
+            "type" : "string",
+            "description" : "The mobile phone, normalized to the E.164 format"
+          },
+          "normalizedLandLinePhone" : {
+            "type" : "string",
+            "description" : "The land-line phone, normalized to the E.164 format"
+          },
+          "customValues" : {
+            "description" : "The list of custom field values on this additional contact information",
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/CustomFieldValue"
+            }
+          }
+        }
+      },
+      "AddressContactInfoManage" : {
+        "description" : "Common fields for either creating or editing an additional contact information",
+        "type" : "object",
+        "x-implements" : "IContactInfo",
+        "properties" : {
+          "email" : {
+            "type" : "string",
+            "description" : "The e-mail for this additional contact information"
+          },
+          "mobilePhone" : {
+            "type" : "string",
+            "description" : "The formatted mobile phone for this additional contact information"
+          },
+          "landLinePhone" : {
+            "type" : "string",
+            "description" : "The formatted landline phone for this additional contact information"
+          },
+          "landLineExtension" : {
+            "type" : "string",
+            "description" : "The landline phone extension for this additional contact information"
+          },
+          "customValues" : {
+            "type" : "object",
+            "description" : "Holds the custom field values, keyed by field internal name or id. The format of the value depends on the custom field type. Example: `{..., \"customValues\": {\"gender\": \"male\", \"birthDate\": \"1980-10-27\"}}`",
+            "additionalProperties" : {
+              "type" : "string"
+            }
+          }
+        }
       },
       "AddressDataForEdit" : {
         "description" : "Contains data for editing an existing address",
@@ -47066,13 +47578,25 @@
                 "$ref" : "#/components/schemas/AddressEdit"
               } ]
             },
-            "edit" : {
+            "canEdit" : {
               "type" : "boolean",
               "description" : "Can the authenticated user edit this address?"
             },
-            "remove" : {
+            "canRemove" : {
               "type" : "boolean",
               "description" : "Can the authenticated user remove this address?"
+            },
+            "edit" : {
+              "type" : "boolean",
+              "deprecated" : true,
+              "x-remove-version" : 4.15,
+              "description" : "Use `canEdit` instead.\n\n\nCan the authenticated user edit this address?"
+            },
+            "remove" : {
+              "type" : "boolean",
+              "deprecated" : true,
+              "x-remove-version" : 4.15,
+              "description" : "Use `canRemove` instead.\n\n\nCan the authenticated user remove this address?"
             }
           }
         } ]
@@ -47188,6 +47712,9 @@
           "hidden" : {
             "type" : "boolean",
             "description" : "Whether this address should be hidden for other users"
+          },
+          "contactInfo" : {
+            "$ref" : "#/components/schemas/AddressContactInfoManage"
           }
         }
       },
@@ -47211,6 +47738,12 @@
             "hidden" : {
               "description" : "Indicates whether this address is hidden for other users. It always returns false if the authenticated user doesn't manage the owner of this address.",
               "type" : "boolean"
+            },
+            "contactInfo" : {
+              "description" : "If enabled, contains additional contact information for the address",
+              "allOf" : [ {
+                "$ref" : "#/components/schemas/AddressContactInfo"
+              } ]
             }
           }
         } ]
@@ -47228,8 +47761,18 @@
                 "$ref" : "#/components/schemas/User"
               } ]
             },
-            "editable" : {
+            "canEdit" : {
               "description" : "Can the authenticated user edit / remove this address?",
+              "type" : "boolean"
+            },
+            "enablePrivacy" : {
+              "description" : "Indicates whether address privacy can be used for this user",
+              "type" : "boolean"
+            },
+            "editable" : {
+              "deprecated" : true,
+              "x-remove-version" : 4.15,
+              "description" : "Use `canEdit` instead.\n\n\nCan the authenticated user edit / remove this address?",
               "type" : "boolean"
             }
           }
@@ -47391,7 +47934,7 @@
           "recurringPayments" : {
             "deprecated" : true,
             "x-remove-version" : 4.15,
-            "description" : "DEPRECATED: Recurring payment permissions are no longer separated from scheduled payment permissions. Use `scheduledPayments` instead.\n\nRecurring payments permissions",
+            "description" : "Recurring payment permissions are no longer separated from scheduled payment permissions. Use `scheduledPayments` instead.\n\n\nRecurring payments permissions",
             "allOf" : [ {
               "$ref" : "#/components/schemas/ScheduledPaymentsPermissions"
             } ]
@@ -47885,8 +48428,14 @@
           "role" : {
             "$ref" : "#/components/schemas/RoleEnum"
           },
+          "canEdit" : {
+            "description" : "Indicates whether the logged user can edit the notitification settings of this user.",
+            "type" : "boolean"
+          },
           "editable" : {
-            "description" : "Indicates whether the logged user can manage the notitification settings of this user.",
+            "deprecated" : true,
+            "x-remove-version" : 4.15,
+            "description" : "Use `canEdit` instead.\n\n\nIndicates whether the logged user can manage the notitification settings of this user.",
             "type" : "boolean"
           },
           "emailAllowed" : {
@@ -48178,7 +48727,7 @@
               "type" : "string"
             },
             "broker" : {
-              "description" : "DEPRECATED: Use `brokers` instead.\n\nReference to the broker of users involved in transfers. Is only taken into account if authenticated as administrator.",
+              "description" : "Use `brokers` instead.\n\n\nReference to the broker of users involved in transfers. Is only taken into account if authenticated as administrator.",
               "deprecated" : true,
               "x-remove-version" : 4.15,
               "type" : "string"
@@ -48491,7 +49040,7 @@
               }
             },
             "transferKinds" : {
-              "description" : "DEPRECATED: Use `kinds` instead",
+              "description" : "Use `kinds` instead.",
               "deprecated" : true,
               "x-remove-version" : 4.15,
               "type" : "array",
@@ -49167,6 +49716,12 @@
             },
             "status" : {
               "$ref" : "#/components/schemas/ClientStatusEnum"
+            },
+            "user" : {
+              "description" : "The user which owns this access client",
+              "allOf" : [ {
+                "$ref" : "#/components/schemas/User"
+              } ]
             }
           }
         } ]
@@ -49209,6 +49764,12 @@
           },
           "contactUser" : {
             "description" : "The contact user details",
+            "allOf" : [ {
+              "$ref" : "#/components/schemas/User"
+            } ]
+          },
+          "user" : {
+            "description" : "The user which owns the contact",
             "allOf" : [ {
               "$ref" : "#/components/schemas/User"
             } ]
@@ -49276,7 +49837,7 @@
       },
       "ContactInfo" : {
         "description" : "An additional contact information reference",
-        "x-implements" : "IContactInfo",
+        "x-implements" : "IContactInfo, INormalizedPhones",
         "allOf" : [ {
           "$ref" : "#/components/schemas/NamedEntity"
         }, {
@@ -49335,6 +49896,12 @@
           },
           "phoneConfiguration" : {
             "$ref" : "#/components/schemas/PhoneConfiguration"
+          },
+          "user" : {
+            "description" : "The user which owns the contact info",
+            "allOf" : [ {
+              "$ref" : "#/components/schemas/User"
+            } ]
           },
           "confirmationPasswordInput" : {
             "description" : "If a confirmation password is used, contains the definitions on how to request that password from the user. This confirmation password is required when performing sensible actions. Sometimes this is dynamic, for example, the confirmation might be configured to be used only once per session, or operations like payments may have a limit per day to be without confirmation (pinless).",
@@ -49404,13 +49971,25 @@
                 "$ref" : "#/components/schemas/ContactInfoEdit"
               } ]
             },
-            "edit" : {
+            "canEdit" : {
               "type" : "boolean",
               "description" : "Indicates whether the current contact info can be edited by the currently authenticated used."
             },
-            "remove" : {
+            "canRemove" : {
               "type" : "boolean",
               "description" : "Indicates whether the current contact info can be removed by the currently authenticated used."
+            },
+            "edit" : {
+              "type" : "boolean",
+              "deprecated" : true,
+              "x-remove-version" : 4.15,
+              "description" : "Use `canEdit` instead.\n\n\nIndicates whether the current contact info can be edited by the currently authenticated used."
+            },
+            "remove" : {
+              "type" : "boolean",
+              "deprecated" : true,
+              "x-remove-version" : 4.15,
+              "description" : "Use `canRemove` instead.\n\n\nIndicates whether the current contact info can be removed by the currently authenticated used."
             },
             "image" : {
               "$ref" : "#/components/schemas/Image"
@@ -49579,9 +50158,15 @@
                 "$ref" : "#/components/schemas/User"
               } ]
             },
-            "editable" : {
+            "canEdit" : {
               "type" : "boolean",
               "description" : "Indicates whether the logged user can remove / edit this additional contact information"
+            },
+            "editable" : {
+              "type" : "boolean",
+              "deprecated" : true,
+              "x-remove-version" : 4.15,
+              "description" : "Use `canEdit` instead.\n\n\nIndicates whether the logged user can remove / edit this additional contact information"
             },
             "hidden" : {
               "type" : "boolean",
@@ -49716,8 +50301,16 @@
         }, {
           "type" : "object",
           "properties" : {
-            "owner" : {
+            "user" : {
               "description" : "The user which owns this contact",
+              "allOf" : [ {
+                "$ref" : "#/components/schemas/User"
+              } ]
+            },
+            "owner" : {
+              "deprecated" : true,
+              "x-remove-version" : 4.15,
+              "description" : "Use `user` instead.\n\n\nThe user which owns this contact",
               "allOf" : [ {
                 "$ref" : "#/components/schemas/User"
               } ]
@@ -49729,8 +50322,14 @@
                 "$ref" : "#/components/schemas/CustomFieldValue"
               }
             },
+            "canEdit" : {
+              "description" : "Can the authenticated user edit this contact?",
+              "type" : "boolean"
+            },
             "canManage" : {
-              "description" : "Can the authenticated user manage this contact?",
+              "deprecated" : true,
+              "x-remove-version" : 4.15,
+              "description" : "Use `canEdit` instead.\n\n\nCan the authenticated user manage this contact?",
               "type" : "boolean"
             },
             "operations" : {
@@ -50466,15 +51065,19 @@
           "user" : {
             "$ref" : "#/components/schemas/UserEdit"
           },
+          "enablePrivacy" : {
+            "type" : "boolean",
+            "description" : "Whether privacy control is enabled for profile fields, phones and addresses."
+          },
           "display" : {
             "type" : "string",
-            "description" : "DEPRECATED. Use `userConfiguration.details.display` instead.\n\nContains the formatting of the user according to the configuration. Is only returned if no profile fields are marked to return in user list.",
+            "description" : "Use `userConfiguration.details.display` instead.\n\n\nContains the formatting of the user according to the configuration. Is only returned if no profile fields are marked to return in user list.",
             "deprecated" : true,
             "x-remove-version" : 4.14
           },
           "shortDisplay" : {
             "type" : "string",
-            "description" : "DEPRECATED. Use `userConfiguration.details.shortDisplay` instead.\n\nContains the short formatting of the user according to the configuration. Is only returned if no profile fields are marked to return in user list",
+            "description" : "Use `userConfiguration.details.shortDisplay` instead.\n\n\nContains the short formatting of the user according to the configuration. Is only returned if no profile fields are marked to return in user list",
             "deprecated" : true,
             "x-remove-version" : 4.14
           },
@@ -50505,6 +51108,13 @@
               "$ref" : "#/components/schemas/AddressEditWithId"
             }
           },
+          "addressBinaryValues" : {
+            "description" : "Values for images and binary custom fields for address contact infos, keyed by address id.",
+            "type" : "object",
+            "additionalProperties" : {
+              "$ref" : "#/components/schemas/CustomFieldBinaryValues"
+            }
+          },
           "contactInfoConfiguration" : {
             "$ref" : "#/components/schemas/ContactInfoConfigurationForUserProfile"
           },
@@ -50516,7 +51126,7 @@
             }
           },
           "contactInfoBinaryValues" : {
-            "description" : "Values for images and binary custom fields for additional contacts",
+            "description" : "Values for images and binary custom fields for additional contacts, keyed by contact info id.",
             "type" : "object",
             "additionalProperties" : {
               "$ref" : "#/components/schemas/ContactInfoBinaryValuesForUserProfile"
@@ -50697,7 +51307,7 @@
             "canActivateAsTrustedDevice" : {
               "x-remove-version" : 4.15,
               "deprecated" : true,
-              "description" : "DEPRECATED: Use `deviceActivationMode` instead. Will be removed in 4.15. Indicates whether there is an allowed medium to activate the device as trusted",
+              "description" : "Use `deviceActivationMode` instead.\n\n\nIndicates whether there is an allowed medium to activate the device as trusted",
               "type" : "boolean"
             },
             "deviceActivationMode" : {
@@ -51091,7 +51701,7 @@
             "deliveryTime" : {
               "x-remove-version" : 4.15,
               "deprecated" : true,
-              "description" : "Use `minDeliveryTime` and `maxDeliveryTime` instead.\n\nThe maximum time interval expected for the products to be delivered.",
+              "description" : "Use `minDeliveryTime` and `maxDeliveryTime` instead.\n\n\nThe maximum time interval expected for the products to be delivered.",
               "allOf" : [ {
                 "$ref" : "#/components/schemas/TimeInterval"
               } ]
@@ -51148,13 +51758,25 @@
         }, {
           "type" : "object",
           "properties" : {
+            "canEdit" : {
+              "type" : "boolean",
+              "description" : "Can the authenticated user edit this delivery method?"
+            },
+            "canRemove" : {
+              "type" : "boolean",
+              "description" : "Can the authenticated user remove this delivery method?"
+            },
             "edit" : {
-              "description" : "Can the authenticated user edit this delivery method?",
-              "type" : "boolean"
+              "type" : "boolean",
+              "deprecated" : true,
+              "x-remove-version" : 4.15,
+              "description" : "Use `canEdit` instead.\n\n\nCan the authenticated user edit this delivery method?"
             },
             "remove" : {
-              "description" : "Can the authenticated user remove this delivery method?",
-              "type" : "boolean"
+              "type" : "boolean",
+              "deprecated" : true,
+              "x-remove-version" : 4.15,
+              "description" : "Use `canRemove` instead.\n\n\nCan the authenticated user remove this delivery method?"
             },
             "deliveryMethod" : {
               "description" : "The delivery method populated with the current fields. This value can be modified and sent back on `PUT /delivery-methods/{id}`.",
@@ -51218,7 +51840,7 @@
           "deliveryTime" : {
             "x-remove-version" : 4.15,
             "deprecated" : true,
-            "description" : "Use `minDeliveryTime` and `maxDeliveryTime` instead.\n\nThe maximum time interval expected for the products to be delivered.",
+            "description" : "Use `minDeliveryTime` and `maxDeliveryTime` instead.\n\n\nThe maximum time interval expected for the products to be delivered.",
             "allOf" : [ {
               "$ref" : "#/components/schemas/TimeInterval"
             } ]
@@ -51259,12 +51881,24 @@
         }, {
           "type" : "object",
           "properties" : {
-            "edit" : {
+            "canEdit" : {
               "description" : "Can the authenticated user edit this delivery method?",
               "type" : "boolean"
             },
-            "remove" : {
+            "canRemove" : {
               "description" : "Can the authenticated user remove this delivery method?",
+              "type" : "boolean"
+            },
+            "edit" : {
+              "deprecated" : true,
+              "x-remove-version" : 4.15,
+              "description" : "Use `canEdit` instead.\n\n\nCan the authenticated user edit this delivery method?",
+              "type" : "boolean"
+            },
+            "remove" : {
+              "deprecated" : true,
+              "x-remove-version" : 4.15,
+              "description" : "Use `canRemove` instead.\n\n\nCan the authenticated user remove this delivery method?",
               "type" : "boolean"
             },
             "user" : {
@@ -51387,9 +52021,15 @@
               "$ref" : "#/components/schemas/DeviceEdit"
             } ]
           },
+          "canEdit" : {
+            "type" : "boolean",
+            "description" : "Whether the authenticated user can edit this device or not."
+          },
           "manage" : {
             "type" : "boolean",
-            "description" : "Whether the authenticated user can manage this device or not."
+            "deprecated" : true,
+            "x-remove-version" : 4.15,
+            "description" : "Use `canEdit` instead.\n\n\nWhether the authenticated user can manage this device or not."
           }
         }
       },
@@ -51460,9 +52100,15 @@
               "$ref" : "#/components/schemas/DevicePinEdit"
             } ]
           },
+          "canEdit" : {
+            "type" : "boolean",
+            "description" : "Whether the authenticated user can edit this device PIN or not."
+          },
           "manage" : {
             "type" : "boolean",
-            "description" : "Whether the authenticated user can manage this device PIN or not."
+            "deprecated" : true,
+            "x-remove-version" : 4.15,
+            "description" : "Use `canEdit` instead.\n\n\nWhether the authenticated user can manage this device PIN or not."
           }
         }
       },
@@ -52442,6 +53088,21 @@
           }
         }
       },
+      "INormalizedPhones" : {
+        "description" : "Contains normalized phone numbers",
+        "x-interface" : true,
+        "type" : "object",
+        "properties" : {
+          "normalizedMobilePhone" : {
+            "type" : "string",
+            "description" : "The mobile phone, normalized to the E.164 format"
+          },
+          "normalizedLandLinePhone" : {
+            "type" : "string",
+            "description" : "The land-line phone, normalized to the E.164 format"
+          }
+        }
+      },
       "IPhone" : {
         "description" : "Interface containing the common phone properties",
         "type" : "object",
@@ -52481,7 +53142,7 @@
           },
           "hidden" : {
             "type" : "boolean",
-            "description" : "Indicates whether this phone is hidden for other users (`true`) or visible to all users (`false`)."
+            "description" : "Indicates whether this phone is private / hidden for other users (`true`) or public / visible to all users (`false`)."
           },
           "enabledForSms" : {
             "type" : "boolean",
@@ -52684,8 +53345,14 @@
         "description" : "Contains information for a list of images, such as permissions and the list of images itself",
         "type" : "object",
         "properties" : {
+          "canEdit" : {
+            "description" : "Does the authenticated user has permission to edit these images?",
+            "type" : "boolean"
+          },
           "canManage" : {
-            "description" : "Does the authenticated user has permission to manage these images?",
+            "deprecated" : true,
+            "x-remove-version" : 4.15,
+            "description" : "Use `canEdit` instead.\n\n\nDoes the authenticated user has permission to manage these images?",
             "type" : "boolean"
           },
           "canCreate" : {
@@ -53341,8 +54008,10 @@
               }
             },
             "countries" : {
-              "description" : "The list of countries, with translated display names. Whenever the translations are returned, the country list is returned as well.",
+              "description" : "The list of countries must be read from the already existing list in the mobile.\n\n\nThe list of countries, with translated display names. Whenever the translations are returned, the country list is returned as well.",
               "type" : "array",
+              "deprecated" : true,
+              "x-remove-version" : 4.15,
               "items" : {
                 "$ref" : "#/components/schemas/Country"
               }
@@ -54222,7 +54891,7 @@
               "type" : "boolean"
             },
             "showForm" : {
-              "description" : "Indicates whether a form with the parameters must be shown. Only returned if `scope` is `internal` and the `resultType` is not `resultPage` Only returned in contexts where the operation can be executed.",
+              "description" : "Indicates the conditions in which the form with the parameters must be shown. Only returned if the `resultType` is not `resultPage`, for this `resultType` see `OperationDataForRun.searchAutomatically`. Only returned in contexts where the operation can be executed.",
               "allOf" : [ {
                 "$ref" : "#/components/schemas/OperationShowFormEnum"
               } ]
@@ -54289,6 +54958,17 @@
             "searchAutomatically" : {
               "description" : "Should the operation be immediately executed by the third party client software when first presenting the form to the user  (when `true`) or only when the user clicks submit (when `false`)? Only returned if `resultType` is `resultPage`.",
               "type" : "boolean"
+            },
+            "autoRunActionId" : {
+              "description" : "If it is present, it indicates the id of the action that should be executed automatically.",
+              "type" : "string"
+            },
+            "actions" : {
+              "description" : "Actions are other internal custom operations that can be executed from this custom operation. The returned parameters should be passed to the server when running this action.",
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/components/schemas/RunOperationAction"
+              }
             },
             "rowLocation" : {
               "description" : "The location to which the client should be redirected when selecting a row in the results table. Only returned if `resultType` is `resultPage` and `rowAction` is `location`.",
@@ -54561,13 +55241,25 @@
                 "$ref" : "#/components/schemas/OperatorGroupEdit"
               } ]
             },
-            "edit" : {
+            "canEdit" : {
               "type" : "boolean",
               "description" : "Can the authenticated user edit this operator group?"
             },
-            "remove" : {
+            "canRemove" : {
               "type" : "boolean",
               "description" : "Can the authenticated user remove this operator group?"
+            },
+            "edit" : {
+              "type" : "boolean",
+              "deprecated" : true,
+              "x-remove-version" : 4.15,
+              "description" : "Use `canEdit` instead.\n\n\nCan the authenticated user edit this operator group?"
+            },
+            "remove" : {
+              "type" : "boolean",
+              "deprecated" : true,
+              "x-remove-version" : 4.15,
+              "description" : "Use `canRemove` instead.\n\n\nCan the authenticated user remove this operator group?"
             }
           }
         } ]
@@ -54763,8 +55455,14 @@
                 "$ref" : "#/components/schemas/User"
               } ]
             },
-            "editable" : {
+            "canEdit" : {
               "description" : "Can the authenticated user edit / remove this operator group?",
+              "type" : "boolean"
+            },
+            "editable" : {
+              "deprecated" : true,
+              "x-remove-version" : 4.15,
+              "description" : "Use `canEdit` instead.\n\n\nCan the authenticated user edit / remove this operator group?",
               "type" : "boolean"
             },
             "description" : {
@@ -54992,12 +55690,24 @@
         }, {
           "type" : "object",
           "properties" : {
-            "edit" : {
+            "canEdit" : {
               "description" : "Can the authenticated user edit this order?",
               "type" : "boolean"
             },
-            "remove" : {
+            "canRemove" : {
               "description" : "Can the authenticated user remove this order?",
+              "type" : "boolean"
+            },
+            "edit" : {
+              "deprecated" : true,
+              "x-remove-version" : 4.15,
+              "description" : "Use `canEdit` instead.\n\n\nCan the authenticated user edit this order?",
+              "type" : "boolean"
+            },
+            "remove" : {
+              "deprecated" : true,
+              "x-remove-version" : 4.15,
+              "description" : "Use `canRemove` instead.\n\n\nCan the authenticated user remove this order?",
               "type" : "boolean"
             },
             "currency" : {
@@ -55006,6 +55716,18 @@
             "order" : {
               "description" : "The order that is being edited",
               "$ref" : "#/components/schemas/OrderEdit"
+            },
+            "creationDate" : {
+              "type" : "string",
+              "format" : "date-time",
+              "description" : "The creation date when the order was saved for first time"
+            },
+            "number" : {
+              "type" : "string",
+              "description" : "The generated order number according to the webshop settings."
+            },
+            "status" : {
+              "$ref" : "#/components/schemas/OrderStatusEnum"
             }
           }
         } ]
@@ -55403,6 +56125,13 @@
               "type" : "array",
               "items" : {
                 "$ref" : "#/components/schemas/OrderLog"
+              }
+            },
+            "exportFormats" : {
+              "description" : "The formats which the ordercan be exported",
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/components/schemas/ExportFormat"
               }
             }
           }
@@ -56134,6 +56863,12 @@
             "allOf" : [ {
               "$ref" : "#/components/schemas/IdentityProvidersPermissions"
             } ]
+          },
+          "privacySettings" : {
+            "description" : "Permissions over own privacy settings",
+            "allOf" : [ {
+              "$ref" : "#/components/schemas/PrivacySettingsPermissions"
+            } ]
           }
         }
       },
@@ -56204,6 +56939,10 @@
             "description" : "Only returned for mobile phones. Indicates whether outbound SMS is enabled in Cyclos",
             "type" : "boolean"
           },
+          "enablePrivacy" : {
+            "description" : "Indicates whether privacy can be used for this phone",
+            "type" : "boolean"
+          },
           "managePrivacy" : {
             "type" : "boolean",
             "description" : "Can the authenticated user manage the privacy of this phone?"
@@ -56220,6 +56959,12 @@
           },
           "type" : {
             "$ref" : "#/components/schemas/PhoneKind"
+          },
+          "user" : {
+            "description" : "The user which owns the phone",
+            "allOf" : [ {
+              "$ref" : "#/components/schemas/User"
+            } ]
           }
         }
       },
@@ -56310,13 +57055,25 @@
                 "$ref" : "#/components/schemas/PhoneEdit"
               } ]
             },
-            "edit" : {
+            "canEdit" : {
               "type" : "boolean",
               "description" : "Can the authenticated user edit this phone?"
             },
-            "remove" : {
+            "canRemove" : {
               "type" : "boolean",
               "description" : "Can the authenticated user remove this phone?"
+            },
+            "edit" : {
+              "type" : "boolean",
+              "deprecated" : true,
+              "x-remove-version" : 4.15,
+              "description" : "Use `canEdit` instead.\n\n\nCan the authenticated user edit this phone?"
+            },
+            "remove" : {
+              "type" : "boolean",
+              "deprecated" : true,
+              "x-remove-version" : 4.15,
+              "description" : "Use `canRemove` instead.\n\n\nCan the authenticated user remove this phone?"
             }
           }
         } ]
@@ -56389,7 +57146,7 @@
           },
           "hidden" : {
             "type" : "boolean",
-            "description" : "Indicates whether this phone is hidden for other users (`true`) or visible to all users (`false`)."
+            "description" : "Indicates whether this phone is private / hidden for other users (`true`) or public / visible to all users (`false`)."
           },
           "enabledForSms" : {
             "type" : "boolean",
@@ -56455,8 +57212,14 @@
                 "$ref" : "#/components/schemas/User"
               } ]
             },
-            "editable" : {
+            "canEdit" : {
               "description" : "Can the authenticated user edit / remove this phone?",
+              "type" : "boolean"
+            },
+            "editable" : {
+              "deprecated" : true,
+              "x-remove-version" : 4.15,
+              "description" : "Use `canEdit` instead.\n\n\nCan the authenticated user edit / remove this phone?",
               "type" : "boolean"
             },
             "name" : {
@@ -56473,7 +57236,7 @@
             },
             "hidden" : {
               "type" : "boolean",
-              "description" : "Indicates whether this phone is hidden for other users (`true`) or visible to all users (`false`)."
+              "description" : "Indicates whether this phone is private / hidden for other users (`true`) or public / visible to all users (`false`)."
             },
             "enabledForSms" : {
               "type" : "boolean",
@@ -56482,6 +57245,10 @@
             "verified" : {
               "type" : "boolean",
               "description" : "Only applicable if this represents a mobile phone. Whether this mobile is verified. Can only be directly set by administrators. Regular users need to verify it."
+            },
+            "enablePrivacy" : {
+              "description" : "Indicates whether phone privacy can be used for this user",
+              "type" : "boolean"
             }
           }
         } ]
@@ -56599,6 +57366,103 @@
             }
           }
         } ]
+      },
+      "PrivacyControl" : {
+        "description" : "A privacy control definition",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/InternalNamedEntity"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "fieldsAlwaysVisible" : {
+              "description" : "If true an admin having this control will see all fields",
+              "type" : "boolean"
+            },
+            "informationText" : {
+              "description" : "A message about this control to be displayed to the user.",
+              "type" : "string"
+            }
+          }
+        } ]
+      },
+      "PrivacySettingsData" : {
+        "description" : "The privacy settings of a user with the information to edit it",
+        "type" : "object",
+        "properties" : {
+          "user" : {
+            "description" : "The privacy settings owner",
+            "allOf" : [ {
+              "$ref" : "#/components/schemas/User"
+            } ]
+          },
+          "enabled" : {
+            "description" : "Whether the privacy control is enabled or not for the owner",
+            "type" : "boolean"
+          },
+          "canEdit" : {
+            "description" : "Can the authenticated user edit this privacy setting data?",
+            "type" : "boolean"
+          },
+          "controlledFields" : {
+            "description" : "The profile fields defined in the configuration subject to privacy control.",
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "customFields" : {
+            "description" : "Detailed information for those custom fields included in the `controlledFields` list.",
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/CustomField"
+            }
+          },
+          "availableControls" : {
+            "description" : "The available privacy controls (departments) that could be selected to put the fields under control.",
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/PrivacyControl"
+            }
+          },
+          "selectedControls" : {
+            "description" : "The internal name or id of the already selected controls.",
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          }
+        }
+      },
+      "PrivacySettingsParams" : {
+        "description" : "The parameters to save a privacy control",
+        "type" : "object",
+        "properties" : {
+          "enabled" : {
+            "description" : "If false the controlled fields in the configuration are not subject to privacy control. Otherwise only the `selectedControls` can view the user fields",
+            "type" : "boolean"
+          },
+          "selectedControls" : {
+            "description" : "The internal name or id of the controls that can view the user fields.",
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          }
+        }
+      },
+      "PrivacySettingsPermissions" : {
+        "description" : "Permissions regarding the privacy settings",
+        "type" : "object",
+        "properties" : {
+          "view" : {
+            "description" : "Can the current user view his own privacy settings?",
+            "type" : "boolean"
+          },
+          "manage" : {
+            "description" : "Can the current user manage his own privacy settings?",
+            "type" : "boolean"
+          }
+        }
       },
       "ProcessDynamicDocument" : {
         "description" : "Defines parameters used to process a dynamic document",
@@ -56819,12 +57683,24 @@
         }, {
           "type" : "object",
           "properties" : {
-            "edit" : {
+            "canEdit" : {
               "description" : "Can the authenticated user edit records of this type?",
               "type" : "boolean"
             },
-            "remove" : {
+            "canRemove" : {
               "description" : "Can the authenticated user remove records of this type?",
+              "type" : "boolean"
+            },
+            "edit" : {
+              "deprecated" : true,
+              "x-remove-version" : 4.15,
+              "description" : "Use `canEdit` instead.\n\n\nCan the authenticated user edit records of this type?",
+              "type" : "boolean"
+            },
+            "remove" : {
+              "deprecated" : true,
+              "x-remove-version" : 4.15,
+              "description" : "Use `canRemove` instead.\n\n\nCan the authenticated user remove records of this type?",
               "type" : "boolean"
             },
             "editableFields" : {
@@ -57135,12 +58011,24 @@
                 "$ref" : "#/components/schemas/RecordCustomFieldValue"
               }
             },
-            "edit" : {
+            "canEdit" : {
               "description" : "Can the authenticated user edit this record?",
               "type" : "boolean"
             },
-            "remove" : {
+            "canRemove" : {
               "description" : "Can the authenticated user remove this record?",
+              "type" : "boolean"
+            },
+            "edit" : {
+              "deprecated" : true,
+              "x-remove-version" : 4.15,
+              "description" : "Use `canEdit` instead.\n\n\nCan the authenticated user edit this record?",
+              "type" : "boolean"
+            },
+            "remove" : {
+              "deprecated" : true,
+              "x-remove-version" : 4.15,
+              "description" : "Use `canRemove` instead.\n\n\nCan the authenticated user remove this record?",
               "type" : "boolean"
             },
             "operations" : {
@@ -57404,8 +58292,14 @@
                 "$ref" : "#/components/schemas/User"
               } ]
             },
+            "canEdit" : {
+              "description" : "Can the authenticated user edit this reference?",
+              "type" : "boolean"
+            },
             "manage" : {
-              "description" : "Can the authenticated user manage this reference?",
+              "deprecated" : true,
+              "x-remove-version" : 4.15,
+              "description" : "Use `canEdit` instead.\n\n\nCan the authenticated user manage this reference?",
               "type" : "boolean"
             }
           }
@@ -57471,7 +58365,8 @@
             "type" : "string"
           },
           "pageContext" : {
-            "description" : "DEPRECATED: Use `exportFormat` instead.\nOnly when running a custom operation with `resultType` = `resultPage`.",
+            "deprecated" : true,
+            "description" : "Use `exportFormat` instead.\n\n\nOnly when running a custom operation with `resultType` = `resultPage`.",
             "x-remove-version" : 4.15,
             "allOf" : [ {
               "$ref" : "#/components/schemas/OperationPageContextEnum"
@@ -58692,7 +59587,7 @@
           "nfc" : {
             "deprecated" : true,
             "x-remove-version" : 4.15,
-            "description" : "DEPRECATED: Use either `my`, `user` or `personalizeNfcTokensAsMember`, filtering by `physicalType` to be `nfcTag`.\n\nPermissions over each visible nfc token type",
+            "description" : "Use either `my`, `user` or `personalizeNfcTokensAsMember`, filtering by `physicalType` to be `nfcTag`.\n\n\nPermissions over each visible nfc token type",
             "type" : "array",
             "items" : {
               "$ref" : "#/components/schemas/NfcTokenPermissions"
@@ -58808,7 +59703,7 @@
             "fromKind" : {
               "deprecated" : true,
               "x-remove-version" : 4.15,
-              "description" : "DEPRECATED. Use `from.kind`.\n\nThe kind of account owner that sent the transaction. WARNING: for kinds `paymentRequest` and `ticket` will represent the `to` account. This way the pre-Cyclos 4.13 semantic is kept. But keep this in mind that when updating your client code.",
+              "description" : "Use `from.kind` instead.\n\n\nThe kind of account owner that sent the transaction. WARNING: for kinds `paymentRequest` and `ticket` will represent the `to` account. This way the pre-Cyclos 4.13 semantic is kept. But keep this in mind that when updating your client code.",
               "allOf" : [ {
                 "$ref" : "#/components/schemas/AccountKind"
               } ]
@@ -58816,7 +59711,7 @@
             "fromUser" : {
               "deprecated" : true,
               "x-remove-version" : 4.15,
-              "description" : "DEPRECATED. Use `from.user`.\n\nThe kind of account owner that sent the transaction. WARNING: for kinds `paymentRequest` and `ticket` will represent the `to` account. This way the pre-Cyclos 4.13 semantic is kept. But keep this in mind that when updating your client code.",
+              "description" : "Use `from.user` instead.\n\n\nThe kind of account owner that sent the transaction. WARNING: for kinds `paymentRequest` and `ticket` will represent the `to` account. This way the pre-Cyclos 4.13 semantic is kept. But keep this in mind that when updating your client code.",
               "allOf" : [ {
                 "$ref" : "#/components/schemas/User"
               } ]
@@ -58824,7 +59719,7 @@
             "toKind" : {
               "deprecated" : true,
               "x-remove-version" : 4.15,
-              "description" : "DEPRECATED. Use `to.kind`.\n\nThe kind of account owner that sent the transaction. WARNING: for kinds `paymentRequest` and `ticket` will represent the `from` account. This way the pre-Cyclos 4.13 semantic is kept. But keep this in mind that when updating your client code.",
+              "description" : "Use `to.kind` instead.\n\n\nThe kind of account owner that sent the transaction. WARNING: for kinds `paymentRequest` and `ticket` will represent the `from` account. This way the pre-Cyclos 4.13 semantic is kept. But keep this in mind that when updating your client code.",
               "allOf" : [ {
                 "$ref" : "#/components/schemas/AccountKind"
               } ]
@@ -58832,7 +59727,7 @@
             "toUser" : {
               "deprecated" : true,
               "x-remove-version" : 4.15,
-              "description" : "DEPRECATED. Use `to.user`.\n\nThe kind of account owner that sent the transaction. WARNING: for kinds `paymentRequest` and `ticket` will represent the `from` account. This way the pre-Cyclos 4.13 semantic is kept. But keep this in mind that when updating your client code.",
+              "description" : "Use `to.user` instead.\n\n\nThe kind of account owner that sent the transaction. WARNING: for kinds `paymentRequest` and `ticket` will represent the `from` account. This way the pre-Cyclos 4.13 semantic is kept. But keep this in mind that when updating your client code.",
               "allOf" : [ {
                 "$ref" : "#/components/schemas/User"
               } ]
@@ -59067,7 +59962,7 @@
             "fromKind" : {
               "deprecated" : true,
               "x-remove-version" : 4.15,
-              "description" : "DEPRECATED. Use `from.kind`.",
+              "description" : "Use `from.kind` instead.",
               "allOf" : [ {
                 "$ref" : "#/components/schemas/AccountKind"
               } ]
@@ -59075,7 +59970,7 @@
             "fromUser" : {
               "deprecated" : true,
               "x-remove-version" : 4.15,
-              "description" : "DEPRECATED. Use `from.user`.",
+              "description" : "Use `from.user` instead.",
               "allOf" : [ {
                 "$ref" : "#/components/schemas/User"
               } ]
@@ -59083,7 +59978,7 @@
             "toKind" : {
               "deprecated" : true,
               "x-remove-version" : 4.15,
-              "description" : "DEPRECATED. Use `to.kind`.",
+              "description" : "Use `to.kind` instead.",
               "allOf" : [ {
                 "$ref" : "#/components/schemas/AccountKind"
               } ]
@@ -59091,7 +59986,7 @@
             "toUser" : {
               "deprecated" : true,
               "x-remove-version" : 4.15,
-              "description" : "DEPRECATED. Use `to.user`.",
+              "description" : "Use `to.user` instead.",
               "allOf" : [ {
                 "$ref" : "#/components/schemas/User"
               } ]
@@ -59182,7 +60077,7 @@
             "relatedKind" : {
               "deprecated" : true,
               "x-remove-version" : 4.15,
-              "description" : "DEPRECATED. Use `related.kind` instead.",
+              "description" : "Use `related.kind` instead.",
               "allOf" : [ {
                 "$ref" : "#/components/schemas/AccountKind"
               } ]
@@ -59190,7 +60085,7 @@
             "relatedUser" : {
               "deprecated" : true,
               "x-remove-version" : 4.15,
-              "description" : "DEPRECATED. Use `related.user` instead.",
+              "description" : "Use `related.user` instead.",
               "allOf" : [ {
                 "$ref" : "#/components/schemas/User"
               } ]
@@ -59632,7 +60527,7 @@
           "type" : "object",
           "properties" : {
             "currency" : {
-              "description" : "DEPRECATED: Use `currencies` instead.\n\nEither id or internal name of the currency",
+              "description" : "Use `currencies` instead.\n\n\nEither id or internal name of the currency",
               "deprecated" : true,
               "x-remove-version" : 4.15,
               "type" : "string"
@@ -59645,7 +60540,7 @@
               }
             },
             "fromAccountType" : {
-              "description" : "DEPRECATED: Use `fromAccountTypes` instead.\n\nEither ids or internal names of the origin account type",
+              "description" : "Use `fromAccountTypes` instead.\n\n\nEither ids or internal names of the origin account type",
               "deprecated" : true,
               "x-remove-version" : 4.15,
               "type" : "string"
@@ -59658,7 +60553,7 @@
               }
             },
             "toAccountType" : {
-              "description" : "DEPRECATED: Use `toAccountTypes` instead.\n\nEither ids or internal names of the destination account type",
+              "description" : "Use `toAccountTypes` instead.\n\n\nEither ids or internal names of the destination account type",
               "deprecated" : true,
               "x-remove-version" : 4.15,
               "type" : "string"
@@ -59953,7 +60848,7 @@
               "deprecated" : true,
               "x-remove-version" : 4.15,
               "type" : "string",
-              "description" : "DEPRECATED: The short display was originally meant for SMS only. Will be removed in Cyclos 4.15 with no replacement.\n\nContains the optional short formatting of the user according to the configuration. When not defined, the value is not sent. When this object is in the search result, this is only returned if no profile fields are marked to return in user list."
+              "description" : "The short display was originally meant for SMS only. Will be removed in Cyclos 4.15 with no replacement.\n\n\nContains the optional short formatting of the user according to the configuration. When not defined, the value is not sent. When this object is in the search result, this is only returned if no profile fields are marked to return in user list."
             },
             "image" : {
               "description" : "The primary user profile image",
@@ -59990,8 +60885,20 @@
         "description" : "Contains, besides the user's advertisement interests, additional data for its management",
         "type" : "object",
         "properties" : {
+          "user" : {
+            "description" : "The user which owns this advertisement interests",
+            "allOf" : [ {
+              "$ref" : "#/components/schemas/User"
+            } ]
+          },
+          "canEdit" : {
+            "description" : "Indicates whether the advertisement interests can be edited by the authenticated user",
+            "type" : "boolean"
+          },
           "canManage" : {
-            "description" : "Indicates whether the advertisement interests can be managed by the authenticated user",
+            "deprecated" : true,
+            "x-remove-version" : 4.15,
+            "description" : "Use `canEdit` instead.\n\n\nIndicates whether the advertisement interests can be managed by the authenticated user",
             "type" : "boolean"
           },
           "canCreate" : {
@@ -60011,12 +60918,28 @@
         "description" : "Contains, besides the user's addresses, additional data for its management",
         "type" : "object",
         "properties" : {
+          "user" : {
+            "description" : "The user which owns this addresses",
+            "allOf" : [ {
+              "$ref" : "#/components/schemas/User"
+            } ]
+          },
+          "canEdit" : {
+            "description" : "Indicates whether the addresses can be edited by the authenticated user",
+            "type" : "boolean"
+          },
           "canManage" : {
-            "description" : "Indicates whether the addresses can be managed by the authenticated user",
+            "deprecated" : true,
+            "x-remove-version" : 4.15,
+            "description" : "Use `canEdit` instead.\n\n\nIndicates whether the addresses can be managed by the authenticated user",
             "type" : "boolean"
           },
           "canCreate" : {
             "description" : "Indicates whether the authenticated user can create a new address for this user",
+            "type" : "boolean"
+          },
+          "enablePrivacy" : {
+            "description" : "Indicates whether address privacy can be used for this user",
             "type" : "boolean"
           },
           "maxAddresses" : {
@@ -60222,6 +61145,10 @@
             "description" : "Indicates whether the e-mail is required",
             "type" : "boolean"
           },
+          "enablePrivacy" : {
+            "description" : "Indicates whether privacy over profile fields can be controlled for this user.",
+            "type" : "boolean"
+          },
           "profileFieldActions" : {
             "description" : "An object, keyed by profile field internal name (either one of the basic profile fields or custom fields), containing other objects that defines the allowed actions over these profile fields",
             "type" : "object",
@@ -60305,8 +61232,20 @@
         "description" : "Contains, besides the user's additional contact informations, data for managing them",
         "type" : "object",
         "properties" : {
+          "user" : {
+            "description" : "The user which owns this contacts",
+            "allOf" : [ {
+              "$ref" : "#/components/schemas/User"
+            } ]
+          },
+          "canEdit" : {
+            "description" : "Indicates whether the additional contact informations can be edited by the authenticated user",
+            "type" : "boolean"
+          },
           "canManage" : {
-            "description" : "Indicates whether the additional contact informations can be managed by the authenticated user",
+            "deprecated" : true,
+            "x-remove-version" : 4.15,
+            "description" : "Use `canEdit` instead.\n\n\nIndicates whether the additional contact informations can be managed by the authenticated user",
             "type" : "boolean"
           },
           "canCreate" : {
@@ -60568,8 +61507,14 @@
           "user" : {
             "$ref" : "#/components/schemas/User"
           },
+          "canEdit" : {
+            "description" : "Indicates whether the delivery methods can be edited by the authenticated user",
+            "type" : "boolean"
+          },
           "canManage" : {
-            "description" : "Indicates whether the delivery methods can be managed by the authenticated user",
+            "deprecated" : true,
+            "x-remove-version" : 4.15,
+            "description" : "Use `canEdit` instead.\n\n\nIndicates whether the delivery methods can be managed by the authenticated user",
             "type" : "boolean"
           },
           "canCreate" : {
@@ -60673,8 +61618,8 @@
             "description" : "Indicates whether a new identity provider can be linked to the user",
             "type" : "boolean"
           },
-          "canManage" : {
-            "description" : "Indicates whether existing links can be managed",
+          "canEdit" : {
+            "description" : "Indicates whether existing links can be edited",
             "type" : "boolean"
           },
           "identityProviders" : {
@@ -60902,8 +61847,14 @@
           "user" : {
             "$ref" : "#/components/schemas/User"
           },
+          "canEdit" : {
+            "description" : "Indicates whether the operator groups can be edited by the authenticated user",
+            "type" : "boolean"
+          },
           "canManage" : {
-            "description" : "Indicates whether the operator groups can be managed by the authenticated user",
+            "deprecated" : true,
+            "x-remove-version" : 4.15,
+            "description" : "Use `canEdit` instead.\n\n\nIndicates whether the operator groups can be managed by the authenticated user",
             "type" : "boolean"
           },
           "canCreate" : {
@@ -61135,7 +62086,7 @@
           "recurringPayments" : {
             "deprecated" : true,
             "x-remove-version" : 4.15,
-            "description" : "DEPRECATED: As of Cyclos 4.13, the recurring payments permissions are the same as scheduled payments. Use `scheduledPayments` instead.",
+            "description" : "As of Cyclos 4.13, the recurring payments permissions are the same as scheduled payments. Use `scheduledPayments` instead.",
             "$ref" : "#/components/schemas/UserScheduledPaymentsPermissions"
           },
           "paymentRequests" : {
@@ -61180,7 +62131,7 @@
           "personalizeNfcTokens" : {
             "deprecated" : true,
             "x-remove-version" : 4.15,
-            "description" : "DEPRECATED: Filter the `tokens` list with `type.physicalType = 'nfcTag'` and `activate = true`.\n\nNFC tokens the authenticated user can personalize for the given user",
+            "description" : "Filter the `tokens` list with `type.physicalType = 'nfcTag'` and `activate = true`.\n\n\nNFC tokens the authenticated user can personalize for the given user",
             "type" : "array",
             "items" : {
               "$ref" : "#/components/schemas/TokenType"
@@ -61191,6 +62142,9 @@
           },
           "notificationSettings" : {
             "$ref" : "#/components/schemas/UserNotificationSettingsPermissions"
+          },
+          "privacySettings" : {
+            "$ref" : "#/components/schemas/UserPrivacySettingsPermissions"
           }
         }
       },
@@ -61198,8 +62152,20 @@
         "description" : "Contains information for a list of phones",
         "type" : "object",
         "properties" : {
+          "user" : {
+            "description" : "The user which owns this phones",
+            "allOf" : [ {
+              "$ref" : "#/components/schemas/User"
+            } ]
+          },
+          "canEdit" : {
+            "description" : "Can the authenticated user edit phones of this user?",
+            "type" : "boolean"
+          },
           "canManage" : {
-            "description" : "Can the authenticated user manage phones of this user?",
+            "deprecated" : true,
+            "x-remove-version" : 4.15,
+            "description" : "Use `canEdit` instead.\n\n\nCan the authenticated user manage phones of this user?",
             "type" : "boolean"
           },
           "canCreateLandLine" : {
@@ -61208,6 +62174,10 @@
           },
           "canCreateMobile" : {
             "description" : "Can the authenticated user create new mobile phones for this user?",
+            "type" : "boolean"
+          },
+          "enablePrivacy" : {
+            "description" : "Indicates whether phone privacy can be used for this user",
             "type" : "boolean"
           },
           "smsEnabled" : {
@@ -61242,6 +62212,16 @@
           },
           "mobileAvailability" : {
             "$ref" : "#/components/schemas/AvailabilityEnum"
+          }
+        }
+      },
+      "UserPrivacySettingsPermissions" : {
+        "description" : "Permissions regarding the privacy settings of other users",
+        "type" : "object",
+        "properties" : {
+          "view" : {
+            "description" : "Can the current user view the privacy settings of other users?",
+            "type" : "boolean"
           }
         }
       },
@@ -62436,6 +63416,12 @@
         }, {
           "type" : "object",
           "properties" : {
+            "owner" : {
+              "description" : "The user a generated voucher was assigned to, if any.",
+              "allOf" : [ {
+                "$ref" : "#/components/schemas/User"
+              } ]
+            },
             "buyer" : {
               "description" : "The voucher buyer. Is not returned when the voucher was generated or when searching for bought vouchers of a user.",
               "allOf" : [ {
@@ -62823,6 +63809,10 @@
           "properties" : {
             "user" : {
               "$ref" : "#/components/schemas/User"
+            },
+            "canEdit" : {
+              "description" : "-> True if the authenticated user can edit the settings for the given user and also if the given user has its webshop enable, otherwise false.",
+              "type" : "boolean"
             }
           }
         } ]
