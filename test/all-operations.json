@@ -99,6 +99,11 @@
                   "$ref": "#/components/schemas/RefObject"
                 }
               },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RefObject"
+                }
+              },
               "image/*": {
                 "schema": {
                   "type": "string",

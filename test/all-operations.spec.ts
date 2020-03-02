@@ -182,7 +182,7 @@ describe('Generation tests using all-operations.json', () => {
     expect(success).toBeDefined();
     if (success) {
       expect(success.statusCode).toBe('200');
-      expect(success.content.length).toBe(3);
+      expect(success.content.length).toBe(4);
       const json = success.content.find(c => c.mediaType === 'application/json');
       expect(json).toBeDefined();
       if (json) {
