@@ -190,7 +190,7 @@ export class ApiRequestConfiguration {
   }
 
   /** Set to session key */
-  nextAsSession(sessionKey: string): void {
+  session(sessionKey: string): void {
     this.nextAuthHeader = 'Session';
     this.nextAuthValue = sessionKey;
   }
