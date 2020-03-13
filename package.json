@@ -34,6 +34,7 @@
     "@types/node": "^12.12.29",
     "@types/rimraf": "^2.0.3",
     "argparse": "^1.0.10",
+    "eol": "^0.9.1",
     "esm": "^3.2.25",
     "fs-extra": "^8.1.0",
     "handlebars": "^4.7.3",
