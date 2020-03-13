@@ -271,12 +271,12 @@ describe('Generation tests using all-types.json', () => {
       expect(decl.properties[0].name).toBe('age');
       expect(decl.properties[0].type).toBe('null | number');
       expect(decl.properties[1].name).toBe('description');
-      expect(decl.properties[1].type).toBe('null | string');
+      expect(decl.properties[1].type).toBe('string');
       expect(decl.properties[2].name).toBe('name');
       expect(decl.properties[2].type).toBe('string');
       expect(decl.properties[2].isOptional).toBeFalse();
       const text = ts.substring(decl.start || 0, decl.end || ts.length);
-      expect(text).toContain('[key: string]: ABRefObject | null | number | string;');
+      expect(text).toContain('[key: string]: ABRefObject | null | number | string | undefined;');
       done();
     });
   });

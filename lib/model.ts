@@ -117,6 +117,9 @@ export class Model extends GenType {
         const prop = new Property(propName, properties[propName], required.includes(propName), this.options);
         propertiesByName.set(propName, prop);
         appendType(prop.type);
+        if (!prop.required) {
+          propTypes.add('undefined');
+        }
       }
       if (schema.additionalProperties === true) {
         this.additionalPropertiesType = 'any';
