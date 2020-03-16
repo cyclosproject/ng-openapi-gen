@@ -1,8 +1,9 @@
 import { OpenAPIObject, OperationObject, PathItemObject, ReferenceObject, SchemaObject } from '@loopback/openapi-v3-types';
 import fs from 'fs-extra';
-import $RefParser from 'json-schema-ref-parser';
+import $RefParser, { HTTPResolverOptions } from 'json-schema-ref-parser';
 import mkdirp from 'mkdirp';
 import path from 'path';
+import rimraf from 'rimraf';
 import { parseOptions } from './cmd-args';
 import { HTTP_METHODS, methodName, simpleName, syncDirs } from './gen-utils';
 import { Globals } from './globals';
@@ -12,7 +13,6 @@ import { Operation } from './operation';
 import { Options } from './options';
 import { Service } from './service';
 import { Templates } from './templates';
-import rimraf from 'rimraf';
 
 /**
  * Main generator class
@@ -296,7 +296,16 @@ export async function runNgOpenApiGen() {
   const refParser = new $RefParser();
   const input = options.input;
   try {
-    const openApi = await refParser.bundle(input, { dereference: { circular: false } }) as OpenAPIObject;
+    const openApi = await refParser.bundle(input, {
+      dereference: {
+        circular: false
+      },
+      resolve: {
+        http: {
+          timeout: 20000
+        } as HTTPResolverOptions
+      }
+    }) as OpenAPIObject;
     const gen = new NgOpenApiGen(openApi, options);
     gen.generate();
   } catch (err) {
