@@ -92,9 +92,9 @@
       "RefEnum": {
         "type": "string",
         "enum": [
-          "valueA",
-          "valueB",
-          "valueC"
+          "value'A",
+          "value'B",
+          "value'C"
         ]
       },
       "RefIntEnum": {
