@@ -116,10 +116,8 @@ export class Model extends GenType {
       for (const propName of propNames) {
         const prop = new Property(propName, properties[propName], required.includes(propName), this.options);
         propertiesByName.set(propName, prop);
-
-        // Fix the type name if it's the same type as this Model being created
-        // TODO: Probably the wrong place for this code
-        if (prop.schema.$ref && simpleName(prop.schema.$ref) === this.name) {
+        // Make sure that unqualified self-referencing types are correct
+        if (prop.schema.$ref && prop.type !== this.typeName && simpleName(prop.schema.$ref) === this.name) {
           prop.type = this.typeName;
         }
         appendType(prop.type);
