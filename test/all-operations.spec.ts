@@ -102,7 +102,7 @@ describe('Generation tests using all-operations.json', () => {
     const noTag = gen.services.get('noTag');
     expect(noTag).toBeDefined();
     if (!noTag) return;
-    expect(noTag.operations.length).toBe(3);
+    expect(noTag.operations.length).toBe(4);
 
     const ts = gen.templates.apply('service', noTag);
     const parser = new TypescriptParser();
@@ -394,5 +394,21 @@ describe('Generation tests using all-operations.json', () => {
     expect((vars[5].successResponse as Content).mediaType).toBe('image/*');
     expect((vars[5].successResponse as Content).type).toBe('Blob');
 
+  });
+
+  it('GET /path5', () => {
+    const operation = gen.operations.get('path5Get');
+    expect(operation).toBeDefined();
+    if (!operation) return;
+    expect(operation.path).toBe('/path5');
+    expect(operation.method).toBe('get');
+    expect(operation.allResponses.length).toBe(1);
+    const success = operation.successResponse;
+    if (success) {
+      const json = success.content.find(c => c.mediaType === 'application/json');
+      expect(json).toBeDefined();
+      const resp200 = operation.allResponses.find(r => r.statusCode === '200');
+      expect(resp200).toBe(success);
+    }
   });
 });

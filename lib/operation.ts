@@ -128,10 +128,15 @@ export class Operation {
 
   private collectResponses(): { success: Response | undefined, all: Response[] } {
     let successResponse: Response | undefined = undefined;
+    let responseDesc = undefined;
     const allResponses: Response[] = [];
     const responses = this.spec.responses || {};
     for (const statusCode of Object.keys(responses)) {
-      const responseDesc = responses[statusCode] as ResponseObject;
+      if (responses[statusCode].$ref) {
+        responseDesc = resolveRef(this.openApi, responses[statusCode].$ref);
+      } else {
+        responseDesc = responses[statusCode] as ResponseObject;
+      }
       const response = new Response(
         statusCode,
         responseDesc.description || '',
