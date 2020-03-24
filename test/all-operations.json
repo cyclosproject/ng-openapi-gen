@@ -308,6 +308,16 @@
           }
         }
       }
+    },
+    "/path5": {
+      "get": {
+        "summary": "A path that contains a reference to response objects",
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/RefResp"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -354,6 +364,18 @@
         "description": "Cookie param",
         "schema": {
           "type": "string"
+        }
+      }
+    },
+    "responses": {
+      "RefResp": {
+        "description": "I am a response",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object"
+            }
+          }
         }
       }
     }
