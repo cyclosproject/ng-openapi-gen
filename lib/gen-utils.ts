@@ -286,7 +286,7 @@ export function syncDirs(srcDir: string, destDir: string, removeStale: boolean):
     for (const file of destFiles) {
       const srcFile = path.join(srcDir, file);
       const destFile = path.join(destDir, file);
-      if (!fs.existsSync(srcFile)) {
+      if (!fs.existsSync(srcFile) && fs.lstatSync(destFile).isFile()) {
         fs.unlinkSync(destFile);
         console.debug('Removed stale file ' + destFile);
       }

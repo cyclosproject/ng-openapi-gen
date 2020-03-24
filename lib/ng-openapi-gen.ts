@@ -302,7 +302,7 @@ export async function runNgOpenApiGen() {
       },
       resolve: {
         http: {
-          timeout: 20000
+          timeout: options.fetchTimeout == null ? 20000 : options.fetchTimeout
         } as HTTPResolverOptions
       }
     }) as OpenAPIObject;

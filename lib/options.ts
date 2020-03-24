@@ -11,6 +11,9 @@ export interface Options {
   /** Tag name assumed for operations without tags. Defaults to the value of 'prefix', which defaults to 'Api'. */
   defaultTag?: string;
 
+  /** Indicates the timeout when fetching the input URL, in milliseconds. Defaults to 20 seconds (20000). */
+  fetchTimeout?: number;
+
   /** Specific tags to be included */
   includeTags?: string[];
 

@@ -19,6 +19,11 @@
       "type": "string",
       "default": "src/app/api"
     },
+    "fetchTimeout": {
+      "description": "Indicates the timeout when fetching the input URL, in milliseconds. Defaults to 20 seconds (20000).",
+      "type": "number",
+      "default": 20000
+    },
     "defaultTag": {
       "description": "Tag name assumed for operations without tags. Defaults to 'Api'.",
       "type": "string"

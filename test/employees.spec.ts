@@ -28,7 +28,6 @@ describe('Generation tests using employees.json', () => {
   it('Entity model', done => {
     const entity = gen.models.get('Entity');
     const ts = gen.templates.apply('model', entity);
-    console.log('>>>>> ', ts);
     const parser = new TypescriptParser();
     parser.parseSource(ts).then(ast => {
       expect(ast.imports.find(i => i.libraryName === './emp-id-model'))

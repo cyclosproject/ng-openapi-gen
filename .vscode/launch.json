@@ -10,6 +10,21 @@
         "${workspaceFolder}/tsconfig.json",
         "--config=jasmine.json"
       ]
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Run directly",
+      "program": "${workspaceFolder}/node_modules/.bin/ts-node",
+      "args": [
+        "${workspaceFolder}/lib/index.ts",
+        "-i",
+        "${workspaceFolder}/test/cyclos.json",
+        "-o",
+        "${workspaceFolder}/out/cyclos",
+        "--fetch-timeout",
+        "2000"
+      ]
     }
   ]
 }

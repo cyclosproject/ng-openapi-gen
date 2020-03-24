@@ -93,6 +93,9 @@ For help, run ng-openapi-gen --help`);
     } else if (value === 'false') {
       value = false;
     }
+    if (desc.type === 'number' && typeof value === 'string') {
+      value = parseInt(value, 10);
+    }
     if (value !== undefined) {
       options[key] = value;
     }
