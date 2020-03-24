@@ -1,7 +1,7 @@
 import { upperFirst, last } from 'lodash';
 import { ContentObject, MediaTypeObject, OpenAPIObject, OperationObject, ParameterObject, PathItemObject, ReferenceObject, RequestBodyObject, ResponseObject, SecurityRequirementObject, SecuritySchemeObject } from 'openapi3-ts';
 import { Content } from './content';
-import { resolveRef, tsComments, typeName } from './gen-utils';
+import { resolveRef, typeName } from './gen-utils';
 import { OperationVariant } from './operation-variant';
 import { Options } from './options';
 import { Parameter } from './parameter';
@@ -22,7 +22,6 @@ export class Operation {
   security: Security[][] = [];
   deprecated: boolean;
 
-  tsComments: string;
   requestBody?: RequestBody;
   successResponse?: Response;
   allResponses: Response[] = [];
@@ -39,8 +38,6 @@ export class Operation {
     public options: Options) {
     this.path = this.path.replace(/\'/g, '\\\'');
     this.tags = spec.tags || [];
-
-    this.tsComments = tsComments(spec.description || '', 1, spec.deprecated);
     this.pathVar = `${upperFirst(id)}Path`;
     this.methodName = spec['x-operation-name'] || this.id;
 

@@ -38,10 +38,6 @@ export class OperationVariant {
     this.isNumber = this.resultType === 'number';
     this.isBoolean = this.resultType === 'boolean';
     this.isOther = !this.isVoid && !this.isNumber && !this.isBoolean;
-    let description = (operation.spec.description || '').trim();
-    if (description !== '') {
-      description += '\n\n';
-    }
     this.responseMethodTsComments = tsComments(this.responseMethodDescription(), 1, operation.deprecated);
     this.bodyMethodTsComments = tsComments(this.bodyMethodDescription(), 1, operation.deprecated);
   }
@@ -69,6 +65,13 @@ To access the full response (for headers, for example), \`${this.responseMethodN
 
   private descriptionPrefix() {
     let description = (this.operation.spec.description || '').trim();
+    let summary = this.operation.spec.summary;
+    if (summary) {
+      if (!summary.endsWith('.')) {
+        summary += '.';
+      }
+      description = summary + '\n\n' + description;
+    }
     if (description !== '') {
       description += '\n\n';
     }
