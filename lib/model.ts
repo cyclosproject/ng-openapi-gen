@@ -116,6 +116,10 @@ export class Model extends GenType {
       for (const propName of propNames) {
         const prop = new Property(propName, properties[propName], required.includes(propName), this.options);
         propertiesByName.set(propName, prop);
+        // Make sure that unqualified self-referencing types are correct
+        if (prop.schema.$ref && prop.type !== this.typeName && simpleName(prop.schema.$ref) === this.name) {
+          prop.type = this.typeName;
+        }
         appendType(prop.type);
         if (!prop.required) {
           propTypes.add('undefined');
