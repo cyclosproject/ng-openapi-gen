@@ -13,6 +13,8 @@ export class Parameter {
   required: boolean;
   in: ParameterLocation;
   type: string;
+  style?: string;
+  explode?: boolean;
 
   constructor(public spec: ParameterObject, options: Options) {
     this.name = spec.name;
@@ -21,5 +23,18 @@ export class Parameter {
     this.in = spec.in || 'query';
     this.required = this.in === 'path' || spec.required || false;
     this.type = tsType(spec.schema, options);
+    this.style = spec.style;
+    this.explode = spec.explode;
+  }
+
+  get parameterOptions(): string {
+    const options: any = {};
+    if (this.style) {
+      options.style = this.style;
+    }
+    if (this.explode) {
+      options.explode = this.explode;
+    }
+    return JSON.stringify(options);
   }
 }
