@@ -1,6 +1,6 @@
-{{! WARNING! If any changes are performed in this template MUST be mirrored in `test/mock/request-builder.ts` }}
+// WARNING! If any changes are performed in this file MUST be mirrored in `templates/requestBuilder.handlebars`
 /* tslint:disable */
-import { HttpRequest, HttpParameterCodec, HttpParams, HttpHeaders } from '@angular/common/http';
+import { Blob, FormData, HttpRequest, HttpParameterCodec, HttpParams, HttpHeaders } from './lib';
 
 /**
  * Custom parameter codec to correctly handle the plus sign in parameter
@@ -49,12 +49,13 @@ abstract class Parameter {
 
   serializeValue(value: any, separator = ','): string {
     if (value instanceof Array) {
-      return value.join(separator);
+      return value.map(v => this.serializeValue(v).split(separator).join(encodeURIComponent(separator))).join(separator);
     } else if (typeof value === 'object') {
       const array: string[] = [];
       for (const key of Object.keys(value)) {
-        const propVal = value[key];
+        let propVal = value[key];
         if (propVal !== null && propVal !== undefined) {
+          propVal = this.serializeValue(propVal).split(separator).join(encodeURIComponent(separator));
           if (this.options.explode) {
             array.push(`${key}=${propVal}`);
           } else {
@@ -194,7 +195,7 @@ class HeaderParameter extends Parameter {
 /**
  * Helper to build http requests from parameters
  */
-export class {{ requestBuilderClass }} {
+export class RequestBuilder {
 
   private _path = new Map<string, PathParameter>();
   private _query = new Map<string, QueryParameter>();
