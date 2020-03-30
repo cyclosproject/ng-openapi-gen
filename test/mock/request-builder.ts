@@ -48,7 +48,9 @@ abstract class Parameter {
   }
 
   serializeValue(value: any, separator = ','): string {
-    if (value instanceof Array) {
+    if (value === null || value === undefined) {
+      return '';
+    } else if (value instanceof Array) {
       return value.map(v => this.serializeValue(v).split(separator).join(encodeURIComponent(separator))).join(separator);
     } else if (typeof value === 'object') {
       const array: string[] = [];
@@ -65,8 +67,6 @@ abstract class Parameter {
         }
       }
       return array.join(separator);
-    } else if (value === null || value === undefined) {
-      return '';
     } else {
       return String(value);
     }
@@ -132,7 +132,7 @@ class QueryParameter extends Parameter {
             ? '|' : ',';
         return params.append(this.name, this.serializeValue(this.value, separator));
       }
-    } else if (typeof this.value === 'object') {
+    } else if (this.value !== null && typeof this.value === 'object') {
       // Object serialization
       if (this.options.style === 'deepObject') {
         // Append a parameter for each key, in the form `name[key]`
@@ -239,7 +239,7 @@ export class RequestBuilder {
     } else {
       this._bodyContentType = contentType;
     }
-    if (this._bodyContentType === 'application/x-www-form-urlencoded' && typeof value === 'object') {
+    if (this._bodyContentType === 'application/x-www-form-urlencoded' && value !== null && typeof value === 'object') {
       // Handle URL-encoded data
       const pairs: string[][] = [];
       for (const key of Object.keys(value)) {
@@ -258,7 +258,7 @@ export class RequestBuilder {
     } else if (this._bodyContentType === 'multipart/form-data') {
       // Handle multipart form data
       const formData = new FormData();
-      if (value != null) {
+      if (value !== null && value !== undefined) {
         for (const key of Object.keys(value)) {
           const val = value[key];
           if (val instanceof Array) {
