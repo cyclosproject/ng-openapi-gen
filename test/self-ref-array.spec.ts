@@ -22,14 +22,7 @@ describe('Generation tests using self-ref-array.json', () => {
       expect(ast.declarations[0]).toEqual(jasmine.any(InterfaceDeclaration));
       const decl = ast.declarations[0] as InterfaceDeclaration;
       expect(decl.name).toBe('Baz');
-      expect(decl.properties.length).toBe(2);
-      const desc = decl.properties.find(p => p.name === 'description');
-      expect(desc)
-        .withContext('description property')
-        .toBeDefined();
-      if (desc) {
-        expect(desc.type).toBe('string');
-      }
+      expect(decl.properties.length).toBe(1);
       const kids = decl.properties.find(p => p.name === 'childDetails');
       expect(kids)
         .withContext('childDetails property')

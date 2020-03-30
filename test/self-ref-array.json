@@ -9,14 +9,10 @@
     "schemas": {
       "Foo.Bar.Baz": {
         "required": [
-          "description",
           "childDetails"
         ],
         "type": "object",
         "properties": {
-          "description": {
-            "type": "string"
-          },
           "childDetails": {
             "type": "array",
             "items": {
