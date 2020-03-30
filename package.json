@@ -1,6 +1,6 @@
 {
   "name": "ng-openapi-gen",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "license": "MIT",
   "author": "Cyclos development team",
   "description": "An OpenAPI 3 codegen for Angular 7+",
@@ -21,7 +21,8 @@
     "test": "jasmine-ts tsconfig.json --config=jasmine.json",
     "tslint": "tslint -c tslint.json -p tsconfig.json",
     "compile": "tsc --project tsconfig.json && ncp \"LICENSE\" dist && ncp \"README.md\" \"dist/README.md\" && ncp \"templates\" \"dist/templates\" && ncp \"node_modules\" \"dist/node_modules\" && rimraf \"dist/test\" && replace-in-file \"\\\"private\\\": true\" \"\\\"private\\\": false\" dist/package.json",
-    "build": "npm run tslint && npm run compile && npm test"
+    "build": "npm run tslint && npm run compile && npm test",
+    "test:watch": "nodemon --watch './**/*' --exec 'npm run test'"
   },
   "dependencies": {
     "@loopback/openapi-v3-types": "^1.2.1",
@@ -58,6 +59,7 @@
     "jasmine-ts": "^0.3.0",
     "mem": "^5.1.1",
     "ncp": "^2.0.0",
+    "nodemon": "^2.0.2",
     "replace-in-file": "^4.3.1",
     "tslint": "^5.20.1",
     "typescript-parser": "^2.6.1"
