@@ -14,8 +14,6 @@ describe('Generation tests using self-ref-array.json', () => {
     const baz = gen.models.get('Foo.Bar.Baz');
     const ts = gen.templates.apply('model', baz);
 
-    console.warn(ts);
-
     const parser = new TypescriptParser();
     parser.parseSource(ts).then(ast => {
       expect(ast.declarations.length).toBe(1);
