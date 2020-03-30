@@ -9,7 +9,7 @@ import selfRef from './self-ref-array.json';
 const gen = new NgOpenApiGen(selfRef, options);
 gen.generate();
 
-fdescribe('Generation tests using self-ref-array.json', () => {
+describe('Generation tests using self-ref-array.json', () => {
   it('Baz model', done => {
     const baz = gen.models.get('Foo.Bar.Baz');
     const ts = gen.templates.apply('model', baz);
