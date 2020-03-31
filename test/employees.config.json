@@ -1,8 +1,0 @@
-{
-  "$schema": "../ng-openapi-gen-schema.json",
-  "input": "employees.json",
-  "output": "out/employees",
-  "modelPrefix": "EMP",
-  "modelSuffix": "Model",
-  "ignoreUnusedModels": false
-}

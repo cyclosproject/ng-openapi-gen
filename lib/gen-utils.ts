@@ -4,6 +4,7 @@ import path from 'path';
 import { camelCase, deburr, kebabCase, upperCase, upperFirst } from 'lodash';
 import { OpenAPIObject, ReferenceObject, SchemaObject } from 'openapi3-ts';
 import { Options } from './options';
+import { Model } from './model';
 
 export const HTTP_METHODS = ['get', 'put', 'post', 'delete', 'options', 'head', 'patch', 'trace'];
 
@@ -147,41 +148,47 @@ export function serviceClass(baseName: string, options: Options) {
 /**
  * Returns the TypeScript type for the given type and options
  */
-export function tsType(schemaOrRef: SchemaObject | ReferenceObject | undefined, options: Options): string {
+export function tsType(schemaOrRef: SchemaObject | ReferenceObject | undefined, options: Options, container?: Model): string {
   if (schemaOrRef && (schemaOrRef as SchemaObject).nullable) {
     return `null | ${toType(schemaOrRef, options)}`;
   }
-  return toType(schemaOrRef, options);
+  return toType(schemaOrRef, options, container);
 }
 
-function toType(schemaOrRef: SchemaObject | ReferenceObject | undefined, options: Options): string {
+function toType(schemaOrRef: SchemaObject | ReferenceObject | undefined, options: Options, container?: Model): string {
   if (!schemaOrRef) {
     // No schema
     return 'any';
   }
   if (schemaOrRef.$ref) {
     // A reference
-    return qualifiedName(simpleName(schemaOrRef.$ref), options);
+    const name = simpleName(schemaOrRef.$ref);
+    if (container && container.name === name) {
+      // When referencing the same container, use its type name
+      return container.typeName;
+    } else {
+      return qualifiedName(name, options);
+    }
   }
   const schema = schemaOrRef as SchemaObject;
 
   // An union of types
   const union = schema.oneOf || schema.anyOf || [];
   if (union.length > 0) {
-    return union.map(u => toType(u, options)).join(' | ');
+    return union.map(u => toType(u, options, container)).join(' | ');
   }
 
   // All the types
   const allOf = schema.allOf || [];
   if (allOf.length > 0) {
-    return allOf.map(u => toType(u, options)).join(' & ');
+    return allOf.map(u => toType(u, options, container)).join(' & ');
   }
 
   const type = schema.type || 'any';
 
   // An array
   if (type === 'array' || schema.items) {
-    return `Array<${toType(schema.items || {}, options)}>`;
+    return `Array<${toType(schema.items || {}, options, container)}>`;
   }
 
   // An object
@@ -202,14 +209,14 @@ function toType(schemaOrRef: SchemaObject | ReferenceObject | undefined, options
       if (!propRequired) {
         result += '?';
       }
-      result += `: ${toType(property, options)}`;
+      result += `: ${toType(property, options, container)}`;
     }
     if (schema.additionalProperties) {
       const additionalProperties = schema.additionalProperties === true ? {} : schema.additionalProperties;
       if (!first) {
         result += ', ';
       }
-      result += `[key: string]: ${toType(additionalProperties, options)}`;
+      result += `[key: string]: ${toType(additionalProperties, options, container)}`;
     }
     result += ' }';
     return result;
