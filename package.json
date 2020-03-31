@@ -32,7 +32,7 @@
     "@types/json-schema": "^7.0.4",
     "@types/lodash": "^4.14.149",
     "@types/mkdirp": "^0.5.2",
-    "@types/node": "^12.12.31",
+    "@types/node": "^12.12.34",
     "@types/rimraf": "^2.0.4",
     "argparse": "^1.0.10",
     "eol": "^0.9.1",
