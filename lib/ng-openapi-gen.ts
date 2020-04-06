@@ -310,5 +310,6 @@ export async function runNgOpenApiGen() {
     gen.generate();
   } catch (err) {
     console.error(`Error on API generation from ${input}: ${err}`);
+    process.exit(1);
   }
 }
