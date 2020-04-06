@@ -1,6 +1,6 @@
 {
   "name": "ng-openapi-gen",
-  "version": "0.10.0",
+  "version": "0.10.1",
   "license": "MIT",
   "author": "Cyclos development team",
   "description": "An OpenAPI 3 codegen for Angular 7+",
@@ -38,14 +38,14 @@
     "eol": "^0.9.1",
     "esm": "^3.2.25",
     "fs-extra": "^8.1.0",
-    "handlebars": "^4.7.3",
+    "handlebars": "^4.7.6",
     "jsesc": "^2.5.2",
     "json-schema": "^0.2.5",
     "json-schema-ref-parser": "^7.1.4",
     "lodash": "^4.17.15",
-    "mkdirp": "^0.5.4",
+    "mkdirp": "^0.5.5",
     "rimraf": "^2.7.1",
-    "ts-node": "^8.8.1",
+    "ts-node": "^8.8.2",
     "typescript": "^3.8.3"
   },
   "peerDependencies": {
