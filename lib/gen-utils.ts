@@ -146,6 +146,17 @@ export function serviceClass(baseName: string, options: Options) {
 }
 
 /**
+ * Escapes the name of a property / parameter if not valid JS identifier
+ */
+export function escapeId(name: string) {
+  if (/^[a-zA-Z]\w+$/.test(name)) {
+    return name;
+  } else {
+    return `'${name.replace(/\'/g, '\\\'')}'`;
+  }
+}
+
+/**
  * Returns the TypeScript type for the given type and options
  */
 export function tsType(schemaOrRef: SchemaObject | ReferenceObject | undefined, options: Options, container?: Model): string {

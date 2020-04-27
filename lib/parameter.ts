@@ -1,5 +1,5 @@
 import { ParameterLocation, ParameterObject } from 'openapi3-ts';
-import { tsComments, tsType, methodName } from './gen-utils';
+import { escapeId, tsComments, tsType } from './gen-utils';
 import { Options } from './options';
 
 /**
@@ -8,6 +8,7 @@ import { Options } from './options';
 export class Parameter {
 
   var: string;
+  varAccess: string;
   name: string;
   tsComments: string;
   required: boolean;
@@ -18,7 +19,8 @@ export class Parameter {
 
   constructor(public spec: ParameterObject, options: Options) {
     this.name = spec.name;
-    this.var = methodName(this.name);
+    this.var = escapeId(this.name);
+    this.varAccess = this.var.includes('\'') ? `[${this.var}]` : `.${this.var}`;
     this.tsComments = tsComments(spec.description || '', 2, spec.deprecated);
     this.in = spec.in || 'query';
     this.required = this.in === 'path' || spec.required || false;

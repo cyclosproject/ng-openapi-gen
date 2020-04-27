@@ -142,14 +142,14 @@ describe('Generation tests using all-types.json', () => {
     const ts = gen.templates.apply('model', disjunct);
     const parser = new TypescriptParser();
     parser.parseSource(ts).then(ast => {
-      expect(ast.imports.length).toBe(4);
+      expect(ast.imports.length).toBe(5);
       expect(ast.imports.find(i => i.libraryName === './referenced-in-nullable-one-of')).withContext('referenced-in-nullable-one-of import').toBeDefined();
       expect(ast.declarations.length).toBe(1);
       expect(ast.declarations[0]).toEqual(jasmine.any(TypeAliasDeclaration));
       const decl = ast.declarations[0] as TypeAliasDeclaration;
       expect(decl.name).toBe('Disjunct');
       const text = ts.substring(decl.start || 0, decl.end || ts.length);
-      expect(text).toBe('export type Disjunct = { \'ref\'?: ReferencedInNullableOneOf } | ABRefObject | XYRefObject | ReferencedInOneOf;');
+      expect(text).toBe('export type Disjunct = { \'ref\'?: ReferencedInNullableOneOf } | ABRefObject | XYRefObject | ReferencedInOneOf | EscapedProperties;');
       done();
     });
   });
@@ -350,4 +350,21 @@ describe('Generation tests using all-types.json', () => {
     });
   });
 
+  it('EscapedProperties model', done => {
+    const escaped = gen.models.get('EscapedProperties');
+    const ts = gen.templates.apply('model', escaped);
+    const parser = new TypescriptParser();
+    parser.parseSource(ts).then(ast => {
+      expect(ast.imports.length).toBe(0);
+      expect(ast.declarations.length).toBe(1);
+      expect(ast.declarations[0]).toEqual(jasmine.any(InterfaceDeclaration));
+      const decl = ast.declarations[0] as InterfaceDeclaration;
+      expect(decl.name).toBe('EscapedProperties');
+      expect(decl.properties.length).toBe(3);
+      expect(decl.properties[0].name).toBe('123');
+      expect(decl.properties[1].name).toBe('=');
+      expect(decl.properties[2].name).toBe('a-b');
+      done();
+    });
+  });
 });

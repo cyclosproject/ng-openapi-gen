@@ -1,5 +1,5 @@
 import { ReferenceObject, SchemaObject } from 'openapi3-ts';
-import { tsComments, tsType } from './gen-utils';
+import { tsComments, tsType, escapeId } from './gen-utils';
 import { Model } from './model';
 import { Options } from './options';
 
@@ -8,6 +8,7 @@ import { Options } from './options';
  */
 export class Property {
 
+  identifier: string;
   tsComments: string;
   type: string;
 
@@ -19,6 +20,7 @@ export class Property {
     options: Options) {
 
     this.type = tsType(this.schema, options, model);
+    this.identifier = escapeId(this.name);
 
     const description = (schema as SchemaObject).description || '';
     this.tsComments = tsComments(description, 1, (schema as SchemaObject).deprecated);

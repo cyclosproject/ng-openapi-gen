@@ -140,6 +140,20 @@
           }
         ]
       },
+      "EscapedProperties": {
+        "type": "object",
+        "properties": {
+          "=": {
+            "type": "string"
+          },
+          "a-b": {
+            "type": "string"
+          },
+          "123": {
+            "type": "string"
+          }
+        }
+      },
       "union": {
         "anyOf": [
           {
@@ -183,6 +197,9 @@
           },
           {
             "$ref": "#/components/schemas/ReferencedInOneOf"
+          },
+          {
+            "$ref": "#/components/schemas/EscapedProperties"
           }
         ]
       },

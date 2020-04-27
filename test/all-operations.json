@@ -84,6 +84,33 @@
             "schema": {
               "type": "boolean"
             }
+          },
+          {
+            "name": "=",
+            "description": "Should be escaped",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "123",
+            "description": "Should be escaped",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "a-b",
+            "description": "Should be escaped",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
