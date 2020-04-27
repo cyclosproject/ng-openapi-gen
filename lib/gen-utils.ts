@@ -278,6 +278,23 @@ export function resolveRef(openApi: OpenAPIObject, ref: string): any {
 }
 
 /**
+ * Recursively deletes a directory
+ */
+export function deleteDirRecursive(dir: string) {
+  if (fs.existsSync(dir)) {
+    fs.readdirSync(dir).forEach((file: any) => {
+      const curPath = path.join(dir, file);
+      if (fs.lstatSync(curPath).isDirectory()) { // recurse
+        deleteDirRecursive(curPath);
+      } else { // delete file
+        fs.unlinkSync(curPath);
+      }
+    });
+    fs.rmdirSync(dir);
+  }
+}
+
+/**
  * Synchronizes the files from the source to the target directory. Optionally remove stale files.
  */
 export function syncDirs(srcDir: string, destDir: string, removeStale: boolean): any {
