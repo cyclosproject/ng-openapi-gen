@@ -3,7 +3,7 @@ import fs from 'fs-extra';
 import $RefParser, { HTTPResolverOptions } from 'json-schema-ref-parser';
 import mkdirp from 'mkdirp';
 import path from 'path';
-import rimraf from 'rimraf';
+import * as Path from 'path';
 import { parseOptions } from './cmd-args';
 import { HTTP_METHODS, methodName, simpleName, syncDirs } from './gen-utils';
 import { Globals } from './globals';
@@ -101,10 +101,24 @@ export class NgOpenApiGen {
     syncDirs(this.tempDir, this.outDir, this.options.removeStaleFiles !== false);
 
     // Finally, remove the temp directory
-    rimraf.sync(this.tempDir);
+    this.deleteFolderRecursive(this.tempDir);
 
     console.info(`Generation from ${this.options.input} finished with ${models.length} models and ${services.length} services.`);
   }
+
+  private deleteFolderRecursive(path: string) {
+    if (fs.existsSync(path)) {
+      fs.readdirSync(path).forEach((file: any) => {
+        const curPath = Path.join(path, file);
+        if (fs.lstatSync(curPath).isDirectory()) { // recurse
+          this.deleteFolderRecursive(curPath);
+        } else { // delete file
+          fs.unlinkSync(curPath);
+        }
+      });
+      fs.rmdirSync(path);
+    }
+  };
 
   private write(template: string, model: any, baseName: string, subDir?: string) {
     const ts = this.templates.apply(template, model);
