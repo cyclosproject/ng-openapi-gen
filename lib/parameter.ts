@@ -27,9 +27,10 @@ export class Parameter {
     this.type = tsType(spec.schema, options);
     this.style = spec.style;
     this.explode = spec.explode;
+    this.parameterOptions = this.createParameterOptions();
   }
 
-  get parameterOptions(): string {
+  createParameterOptions(): string {
     const options: any = {};
     if (this.style) {
       options.style = this.style;
