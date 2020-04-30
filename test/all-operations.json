@@ -44,7 +44,9 @@
           "required": true,
           "schema": {
             "$ref": "#/components/schemas/RefObject"
-          }
+          },
+          "style": "form",
+          "explode": true
         },
         {
           "name": "X-Exclude",
