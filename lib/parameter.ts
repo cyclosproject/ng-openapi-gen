@@ -16,6 +16,7 @@ export class Parameter {
   type: string;
   style?: string;
   explode?: boolean;
+  parameterOptions: string;
 
   constructor(public spec: ParameterObject, options: Options) {
     this.name = spec.name;
