@@ -4,7 +4,7 @@
     if (params) {
 
 {{#operation.parameters}}
-      rb.{{in}}('{{{name}}}', params{{{varAccess}}});
+      rb.{{in}}('{{{name}}}', params{{{varAccess}}}, {{{parameterOptions}}});
 {{/operation.parameters}}
 
 {{#requestBody}}
