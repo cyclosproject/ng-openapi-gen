@@ -167,16 +167,17 @@ export class Operation {
       if (content && content.length > 0) {
         for (const type of content) {
           if (type && type.mediaType) {
-            const variantMethodPart = this.variantMethodPart(type);
-            map.set(content.length === 1 && !this.options.skipJsonSuffix ? '' :
-              this.options.skipJsonSuffix && variantMethodPart === '$Json' ? '' :
-                variantMethodPart, type);
+            map.set(this.variantMethodPart(type), type);
           }
         }
       }
     }
     if (map.size === 0) {
       map.set('', null);
+    } else if (map.size === 1 && !this.options.skipJsonSuffix) {
+      const content = [...map.values()][0];
+      map.clear();
+      map.set('', content);
     }
     return map;
   }
@@ -208,7 +209,7 @@ export class Operation {
       if (plus >= 0) {
         type = type.substr(plus + 1);
       }
-      return `$${typeName(type)}`;
+      return this.options.skipJsonSuffix && type === 'json' ? '' : `$${typeName(type)}`;
     } else {
       return '';
     }
