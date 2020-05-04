@@ -81,4 +81,7 @@ export interface Options {
 
   /** When specified, filters the generated services, excluding any param corresponding to this list of params. */
   excludeParameters?: string[];
+
+  /** When specified, does not generate a $Json suffix. */
+  skipJsonSuffix?: boolean;
 }

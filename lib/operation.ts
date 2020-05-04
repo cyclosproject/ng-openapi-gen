@@ -167,17 +167,16 @@ export class Operation {
       if (content && content.length > 0) {
         for (const type of content) {
           if (type && type.mediaType) {
-            map.set(this.variantMethodPart(type), type);
+            const variantMethodPart = this.variantMethodPart(type);
+            map.set(content.length === 1 && !this.options.skipJsonSuffix ? '' :
+              this.options.skipJsonSuffix && variantMethodPart === '$Json' ? '' :
+                variantMethodPart, type);
           }
         }
       }
     }
     if (map.size === 0) {
       map.set('', null);
-    } else if (map.size === 1) {
-      const content = [...map.values()][0];
-      map.clear();
-      map.set('', content);
     }
     return map;
   }

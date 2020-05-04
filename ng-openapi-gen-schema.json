@@ -152,6 +152,11 @@
       "description": "When set to true, a index.ts file will be generated that exports all generated files.",
       "default": false,
       "type": "boolean"
+    },
+    "skipJsonSuffix": {
+      "description": "When specified, does not generate a $Json suffix.",
+      "default": false,
+      "type": "boolean"
     }
   }
 }
