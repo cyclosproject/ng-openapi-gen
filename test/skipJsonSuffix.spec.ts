@@ -29,7 +29,7 @@ describe('Generation tests using skipJsonSuffix.config', () => {
           expect(method).withContext(`method ${name}`).toBeUndefined();
         }
         assertMethodExists('fooGet$Response');
-        assertMethodExists('fooGet');//Json
+        assertMethodExists('fooGet'); // Json
         assertMethodExists('fooGet$Plain');
         assertMethodNotExists('fooGet$Json');
         assertMethodExists('barGet$Response');
