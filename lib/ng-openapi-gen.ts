@@ -50,59 +50,58 @@ export class NgOpenApiGen {
    * Actually generates the files
    */
   generate(): void {
-    // Prepare the temporary directory to generate sources on it
-    if (fs.existsSync(this.tempDir)) {
-      fs.emptyDirSync(this.tempDir);
-    } else {
-      fs.mkdirsSync(this.tempDir);
-    }
-
-    // Generate each model
-    const models = [...this.models.values()];
-    for (const model of models) {
-      this.write('model', model, model.fileName, 'models');
-    }
-
-    // Generate each service
-    const services = [...this.services.values()];
-    for (const service of services) {
-      this.write('service', service, service.fileName, 'services');
-    }
-
-    // Context object passed to general templates
-    const general = {
-      services: services,
-      models: models
-    };
-
-    // Generate the general files
-    this.write('configuration', general, this.globals.configurationFile);
-    this.write('response', general, this.globals.responseFile);
-    this.write('requestBuilder', general, this.globals.requestBuilderFile);
-    this.write('baseService', general, this.globals.baseServiceFile);
-    if (this.globals.moduleClass && this.globals.moduleFile) {
-      this.write('module', general, this.globals.moduleFile);
-    }
-
-    const modelImports = this.globals.modelIndexFile || this.options.indexFile
-      ? models.map(m => new Import(m.name, './models', m.options)) : null;
-    if (this.globals.modelIndexFile) {
-      this.write('modelIndex', { ...general, modelImports }, this.globals.modelIndexFile);
-    }
-    if (this.globals.serviceIndexFile) {
-      this.write('serviceIndex', general, this.globals.serviceIndexFile);
-    }
-    if (this.options.indexFile) {
-      this.write('index', { ...general, modelImports }, 'index');
-    }
-
-    // Now synchronize the temp to the output folder
-    syncDirs(this.tempDir, this.outDir, this.options.removeStaleFiles !== false);
-
-    // Finally, remove the temp directory
+    // Make sure the temporary directory is empty before starting
     deleteDirRecursive(this.tempDir);
+    fs.mkdirsSync(this.tempDir);
 
-    console.info(`Generation from ${this.options.input} finished with ${models.length} models and ${services.length} services.`);
+    try {
+      // Generate each model
+      const models = [...this.models.values()];
+      for (const model of models) {
+        this.write('model', model, model.fileName, 'models');
+      }
+
+      // Generate each service
+      const services = [...this.services.values()];
+      for (const service of services) {
+        this.write('service', service, service.fileName, 'services');
+      }
+
+      // Context object passed to general templates
+      const general = {
+        services: services,
+        models: models
+      };
+
+      // Generate the general files
+      this.write('configuration', general, this.globals.configurationFile);
+      this.write('response', general, this.globals.responseFile);
+      this.write('requestBuilder', general, this.globals.requestBuilderFile);
+      this.write('baseService', general, this.globals.baseServiceFile);
+      if (this.globals.moduleClass && this.globals.moduleFile) {
+        this.write('module', general, this.globals.moduleFile);
+      }
+
+      const modelImports = this.globals.modelIndexFile || this.options.indexFile
+        ? models.map(m => new Import(m.name, './models', m.options)) : null;
+      if (this.globals.modelIndexFile) {
+        this.write('modelIndex', { ...general, modelImports }, this.globals.modelIndexFile);
+      }
+      if (this.globals.serviceIndexFile) {
+        this.write('serviceIndex', general, this.globals.serviceIndexFile);
+      }
+      if (this.options.indexFile) {
+        this.write('index', { ...general, modelImports }, 'index');
+      }
+
+      // Now synchronize the temp to the output folder
+      syncDirs(this.tempDir, this.outDir, this.options.removeStaleFiles !== false);
+
+      console.info(`Generation from ${this.options.input} finished with ${models.length} models and ${services.length} services.`);
+    } finally {
+      // Always remove the temporary directory
+      deleteDirRecursive(this.tempDir);
+    }
   }
 
   private write(template: string, model: any, baseName: string, subDir?: string) {
