@@ -32,9 +32,9 @@ describe('Generation tests using skipJsonSuffix.config', () => {
         assertMethodExists('fooGet');//Json
         assertMethodExists('fooGet$Plain');
         assertMethodNotExists('fooGet$Json');
-        assertMethodExists('barGet$Plain$Response');
-        assertMethodExists('barGet$Plain');
-        assertMethodNotExists('barGet');
+        assertMethodExists('barGet$Response');
+        assertMethodExists('barGet');
+        assertMethodNotExists('barGet$Plain');
 
         done();
       });

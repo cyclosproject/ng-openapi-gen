@@ -174,7 +174,7 @@ export class Operation {
     }
     if (map.size === 0) {
       map.set('', null);
-    } else if (map.size === 1 && !this.options.skipJsonSuffix) {
+    } else if (map.size === 1) {
       const content = [...map.values()][0];
       map.clear();
       map.set('', content);
