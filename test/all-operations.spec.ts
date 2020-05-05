@@ -161,7 +161,6 @@ describe('Generation tests using all-operations.json', () => {
     expect(operation.method).toBe('get');
     expect(operation.parameters.length).toBe(8); // 2 shared, 6 own
     const params = operation.parameters;
-    console.dir(params);
     expect(params[0].name).toBe('common1');
     expect(params[0].type).toBe('RefString');
     expect(params[0].in).toBe('query');
