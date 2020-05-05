@@ -1,0 +1,6 @@
+{
+  "$schema": "../ng-openapi-gen-schema.json",
+  "input": "skipJsonSuffix.json",
+  "output": "out/skipJsonSuffix",
+  "skipJsonSuffix": true
+}

@@ -1,0 +1,36 @@
+{
+  "openapi": "3.0",
+  "info": {
+    "title": "Test with skipJsonSuffix",
+    "version": "1.0"
+  },
+  "paths": {
+    "/foo": {
+      "get": {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/plain": {}
+            }
+          }
+        }
+      }
+    },
+    "/bar": {
+      "get": {
+        "responses": {
+          "200": {
+            "content": {
+              "text/plain": {}
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -209,7 +209,7 @@ export class Operation {
       if (plus >= 0) {
         type = type.substr(plus + 1);
       }
-      return `$${typeName(type)}`;
+      return this.options.skipJsonSuffix && type === 'json' ? '' : `$${typeName(type)}`;
     } else {
       return '';
     }
