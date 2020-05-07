@@ -1,4 +1,4 @@
-name: build
+name: test
 
 on:
   push:
@@ -16,4 +16,4 @@ jobs:
       with:
         node-version: 12.x
     - run: npm install
-    - run: npm run compile
+    - run: npm run test
