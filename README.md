@@ -1,6 +1,9 @@
 ng-openapi-gen: An OpenAPI 3 code generator for Angular
 ---
 
+![Build status](https://github.com/cyclosproject/ng-openapi-gen/workflows/build/badge.svg)
+![Test status](https://github.com/cyclosproject/ng-openapi-gen/workflows/test/badge.svg)
+
 This project is a NPM module that generates model interfaces and web service clients from an [OpenApi 3](https://www.openapis.org/) [specification](https://github.com/OAI/OpenAPI-Specification).
 The generated classes follow the principles of [Angular](https://angular.io/).
 The generated code is compatible with Angular 7+.
