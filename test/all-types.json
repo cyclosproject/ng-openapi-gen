@@ -118,6 +118,15 @@
           300
         ]
       },
+      "NullableObject": {
+        "nullable": true,
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        }
+      },
       "a.b.RefObject": {
         "type": "object",
         "required": [
@@ -317,6 +326,9 @@
               "refObjectProp"
             ],
             "properties": {
+              "nullableObject": {
+                "$ref": "#/components/schemas/NullableObject"
+              },
               "refEnumProp": {
                 "$ref": "#/components/schemas/RefEnum",
                 "description": "Property which references an enumerated string"

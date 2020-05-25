@@ -1,5 +1,5 @@
-import { ReferenceObject, SchemaObject } from 'openapi3-ts';
-import { tsComments, tsType, escapeId } from './gen-utils';
+import { ReferenceObject, SchemaObject, isReferenceObject } from 'openapi3-ts';
+import { tsComments, tsType, escapeId, resolveRef } from './gen-utils';
 import { Model } from './model';
 import { Options } from './options';
 
@@ -20,6 +20,12 @@ export class Property {
     options: Options) {
 
     this.type = tsType(this.schema, options, model);
+    if (isReferenceObject(schema)) {
+      const ref = resolveRef(model.openApi, schema.$ref) as SchemaObject;
+      if (ref.nullable) {
+        this.type += ' | null';
+      }
+    }
     this.identifier = escapeId(this.name);
 
     const description = (schema as SchemaObject).description || '';

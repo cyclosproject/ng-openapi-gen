@@ -1,4 +1,4 @@
-import { SchemaObject } from 'openapi3-ts';
+import { SchemaObject, OpenAPIObject } from 'openapi3-ts';
 import { EnumValue } from './enum-value';
 import { GenType } from './gen-type';
 import { qualifiedName, simpleName, tsComments, tsType, unqualifiedName } from './gen-utils';
@@ -28,7 +28,7 @@ export class Model extends GenType {
   properties: Property[];
   additionalPropertiesType: string;
 
-  constructor(name: string, public schema: SchemaObject, options: Options) {
+  constructor(public openApi: OpenAPIObject, name: string, public schema: SchemaObject, options: Options) {
     super(name, unqualifiedName, options);
 
     const description = schema.description || '';

@@ -85,6 +85,22 @@ describe('Generation tests using all-types.json', () => {
     });
   });
 
+  it('NullableObject model', done => {
+    const refObject = gen.models.get('NullableObject');
+    const ts = gen.templates.apply('model', refObject);
+    const parser = new TypescriptParser();
+    parser.parseSource(ts).then(ast => {
+      expect(ast.imports.length).toBe(0);
+      expect(ast.declarations.length).toBe(1);
+      expect(ast.declarations[0]).toEqual(jasmine.any(InterfaceDeclaration));
+      const decl = ast.declarations[0] as InterfaceDeclaration;
+      expect(decl.name).toBe('NullableObject');
+      expect(decl.properties.length).toBe(1);
+      expect(decl.properties[0].type).toBe('string');
+      done();
+    });
+  });
+
   it('a.b.RefObject model', done => {
     const refObject = gen.models.get('a.b.RefObject');
     const ts = gen.templates.apply('model', refObject);
@@ -286,17 +302,19 @@ describe('Generation tests using all-types.json', () => {
     const ts = gen.templates.apply('model', container);
     const parser = new TypescriptParser();
     parser.parseSource(ts).then(ast => {
-      expect(ast.imports.length).toBe(5);
+      expect(ast.imports.length).toBe(6);
       expect(ast.imports.find(i => i.libraryName === './ref-enum')).withContext('ref-enum import').toBeDefined();
       expect(ast.imports.find(i => i.libraryName === './a/b/ref-object')).withContext('a/b/ref-object import').toBeDefined();
       expect(ast.imports.find(i => i.libraryName === './x/y/ref-object')).withContext('x/y/ref-object import').toBeDefined();
       expect(ast.imports.find(i => i.libraryName === './union')).withContext('union import').toBeDefined();
       expect(ast.imports.find(i => i.libraryName === './disjunct')).withContext('disjunct import').toBeDefined();
+      expect(ast.imports.find(i => i.libraryName === './nullable-object')).withContext('nullable-object import').toBeDefined();
+
       expect(ast.declarations.length).toBe(1);
       expect(ast.declarations[0]).toEqual(jasmine.any(InterfaceDeclaration));
       const decl = ast.declarations[0] as InterfaceDeclaration;
       expect(decl.name).toBe('Container');
-      expect(decl.properties.length).toBe(21);
+      expect(decl.properties.length).toBe(22);
 
       // Assert the simple types
       function assertProperty(name: string, type: string, required = false) {
@@ -313,6 +331,7 @@ describe('Generation tests using all-types.json', () => {
       assertProperty('booleanProp', 'boolean');
       assertProperty('anyProp', 'any');
 
+      assertProperty('nullableObject', 'NullableObject | null');
       assertProperty('refEnumProp', 'RefEnum', true);
       assertProperty('refObjectProp', 'ABRefObject', true);
       assertProperty('unionProp', 'Union');

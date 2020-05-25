@@ -143,7 +143,7 @@ export class NgOpenApiGen {
     const schemas = (this.openApi.components || {}).schemas || {};
     for (const name of Object.keys(schemas)) {
       const schema = schemas[name];
-      const model = new Model(name, schema, this.options);
+      const model = new Model(this.openApi, name, schema, this.options);
       this.models.set(name, model);
     }
   }
