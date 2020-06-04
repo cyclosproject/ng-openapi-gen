@@ -48,15 +48,6 @@
           }
         }
       },
-      "AddressLocation": {
-        "type": "object",
-        "properties": {
-          "address": {
-            "type": "string",
-            "description": "Street address"
-          }
-        }
-      },
       "Place": {
         "allOf": [
           {
@@ -68,7 +59,13 @@
                 "$ref": "#/components/schemas/GPSLocation"
               },
               {
-                "$ref": "#/components/schemas/AddressLocation"
+                "type": "object",
+                "properties": {
+                  "address": {
+                    "type": "string",
+                    "description": "Street address"
+                  }
+                }
               }
             ]
           },
