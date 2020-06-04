@@ -161,7 +161,7 @@ export function escapeId(name: string) {
  */
 export function tsType(schemaOrRef: SchemaObject | ReferenceObject | undefined, options: Options, container?: Model): string {
   if (schemaOrRef && (schemaOrRef as SchemaObject).nullable) {
-    return `null | ${toType(schemaOrRef, options)}`;
+    return `null | (${toType(schemaOrRef, options)})`;
   }
   return toType(schemaOrRef, options, container);
 }
@@ -186,7 +186,7 @@ function toType(schemaOrRef: SchemaObject | ReferenceObject | undefined, options
   // An union of types
   const union = schema.oneOf || schema.anyOf || [];
   if (union.length > 0) {
-    return union.map(u => toType(u, options, container)).join(' | ');
+    return `(${union.map(u => toType(u, options, container)).join(' | ')})`;
   }
 
   // All the types

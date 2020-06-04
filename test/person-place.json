@@ -39,10 +39,38 @@
           }
         ]
       },
+      "GPSLocation": {
+        "type": "object",
+        "properties": {
+          "gps": {
+            "type": "string",
+            "description": "GPS coordinates"
+          }
+        }
+      },
+      "AddressLocation": {
+        "type": "object",
+        "properties": {
+          "address": {
+            "type": "string",
+            "description": "Street address"
+          }
+        }
+      },
       "Place": {
         "allOf": [
           {
             "$ref": "#/components/schemas/Entity"
+          },
+          {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/GPSLocation"
+              },
+              {
+                "$ref": "#/components/schemas/AddressLocation"
+              }
+            ]
           },
           {
             "type": "object",

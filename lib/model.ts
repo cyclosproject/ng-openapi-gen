@@ -1,9 +1,10 @@
 import { SchemaObject, OpenAPIObject } from 'openapi3-ts';
 import { EnumValue } from './enum-value';
 import { GenType } from './gen-type';
-import { qualifiedName, simpleName, tsComments, tsType, unqualifiedName } from './gen-utils';
+import { tsComments, tsType, unqualifiedName } from './gen-utils';
 import { Options } from './options';
 import { Property } from './property';
+
 
 /**
  * Context to generate a model
@@ -47,7 +48,7 @@ export class Model extends GenType {
       }
     }
 
-    this.isObject = type === 'object' || !!schema.properties || (schema.allOf || []).length > 0;
+    this.isObject = type === 'object' || !!schema.properties;
     this.isEnum = (this.enumValues || []).length > 0;
     this.isSimple = !this.isObject && !this.isEnum;
 
@@ -61,7 +62,7 @@ export class Model extends GenType {
       sortedNames.sort();
       this.properties = sortedNames.map(propName => propertiesByName.get(propName) as Property);
     } else {
-      // Simple / array / enum / union
+      // Simple / array / enum / union / intersection
       this.simpleType = tsType(schema, options);
     }
     this.collectImports(schema);
@@ -86,18 +87,7 @@ export class Model extends GenType {
   }
 
   private collectObject(schema: SchemaObject, propertiesByName: Map<string, Property>) {
-    const allOf = schema.allOf || [];
-    if (allOf.length > 0) {
-      for (const part of allOf) {
-        if (part.$ref) {
-          // A superclass
-          const ref = simpleName(part.$ref);
-          this.superClasses.push(qualifiedName(ref, this.options));
-        } else {
-          this.collectObject(part, propertiesByName);
-        }
-      }
-    } else if (schema.type === 'object' || !!schema.properties) {
+    if (schema.type === 'object' || !!schema.properties) {
       // An object definition
       const properties = schema.properties || {};
       const required = schema.required || [];
