@@ -69,7 +69,7 @@ describe('Generation tests using person-place.json', () => {
       expect(decl.name).toBe('PPPlaceModel');
       // There's no support for additional properties in typescript-parser. Check as text.
       const text = ts.substring(decl.start || 0, decl.end || ts.length);
-      expect(text).toContain('PPEntityModel & (PPGpsLocationModel | PPAddressLocationModel) & { \'description\'\?: string, [key: string]: string }');
+      expect(text).toContain('PPEntityModel & (PPGpsLocationModel | { \'address\'?: string }) & { \'description\'\?: string, [key: string]: string }');
       done();
     });
   });
