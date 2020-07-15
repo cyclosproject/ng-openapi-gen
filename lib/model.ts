@@ -24,8 +24,6 @@ export class Model extends GenType {
   elementType: string;
 
   // Object properties
-  hasSuperClasses: boolean;
-  superClasses: string[];
   properties: Property[];
   additionalPropertiesType: string;
 
@@ -48,16 +46,14 @@ export class Model extends GenType {
       }
     }
 
-    this.isObject = type === 'object' || !!schema.properties;
+    this.isObject = (type === 'object' || !!schema.properties) && !schema.nullable;
     this.isEnum = (this.enumValues || []).length > 0;
     this.isSimple = !this.isObject && !this.isEnum;
 
     if (this.isObject) {
       // Object
-      this.superClasses = [];
       const propertiesByName = new Map<string, Property>();
       this.collectObject(schema, propertiesByName);
-      this.hasSuperClasses = this.superClasses.length > 0;
       const sortedNames = [...propertiesByName.keys()];
       sortedNames.sort();
       this.properties = sortedNames.map(propName => propertiesByName.get(propName) as Property);
