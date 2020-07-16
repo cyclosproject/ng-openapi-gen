@@ -42,7 +42,7 @@
     "jsesc": "^2.5.2",
     "json-schema": "^0.2.5",
     "json-schema-ref-parser": "^7.1.4",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.19",
     "mkdirp": "^0.5.5",
     "rimraf": "^2.7.1",
     "ts-node": "^8.10.1",
