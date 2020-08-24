@@ -314,7 +314,7 @@ describe('Generation tests using all-types.json', () => {
       expect(ast.declarations[0]).toEqual(jasmine.any(InterfaceDeclaration));
       const decl = ast.declarations[0] as InterfaceDeclaration;
       expect(decl.name).toBe('Container');
-      expect(decl.properties.length).toBe(22);
+      expect(decl.properties.length).toBe(23);
 
       // Assert the simple types
       function assertProperty(name: string, type: string, required = false) {
@@ -348,6 +348,7 @@ describe('Generation tests using all-types.json', () => {
       assertProperty('dynamic', '{ [key: string]: XYRefObject }');
       assertProperty('stringEnumProp', '\'a\' | \'b\' | \'c\'');
       assertProperty('intEnumProp', '1 | 2 | 3');
+      assertProperty('boolEnumProp', 'false');
 
       done();
     });
