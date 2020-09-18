@@ -3,7 +3,9 @@
   "id": "https://github.com/cyclosproject/ng-openapi-gen/blob/master/ng-openapi-gen-schema.json",
   "title": "Options for ng-openapi-gen",
   "type": "object",
-  "required": ["input"],
+  "required": [
+    "input"
+  ],
   "properties": {
     "$schema": {
       "type": "string"
@@ -124,7 +126,11 @@
     "enumStyle": {
       "description": "Determines how root enums will be generated. Possible values are:\n\n- `alias`: just generate a type alias with the possible values;\n- `upper` for an enum with UPPER_CASE names, and;\n- `pascal` for enum PascalCase names. Defaults to 'pascal'.",
       "default": "pascal",
-      "enum": ["alias", "upper", "pascal"]
+      "enum": [
+        "alias",
+        "upper",
+        "pascal"
+      ]
     },
     "templates": {
       "description": "Custom templates directory. Any `.handlebars` files here will be used instead of the corresponding default.",
@@ -146,6 +152,11 @@
       "description": "When set to true, no verbose output will be displayed.",
       "default": "false",
       "type": "boolean"
+    },
+    "customApiConfiguration": {
+      "description": "When set, the ApiConfiguration file not be generated and only a custom import will be used",
+      "default": "",
+      "type": "string"
     }
   }
 }

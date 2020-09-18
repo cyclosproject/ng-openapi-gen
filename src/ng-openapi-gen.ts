@@ -75,7 +75,9 @@ export class NgOpenApiGen {
     };
 
     // Generate the general files
-    this.write('configuration', general, this.globals.configurationFile);
+    if (!this.globals.customApiConfiguration) {
+      this.write('configuration', general, this.globals.configurationFile);
+    }
     this.write('response', general, this.globals.responseFile);
     this.write('requestBuilder', general, this.globals.requestBuilderFile);
     this.write('baseService', general, this.globals.baseServiceFile);

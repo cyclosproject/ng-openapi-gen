@@ -79,4 +79,7 @@ export interface Options {
 
   /** When true, no verbose output will be displayed */
   silent?: boolean;
+
+  /** When set, the ApiConfiguration file not be generated and only a custom import will be used */
+  customApiConfiguration?: string;
 }
