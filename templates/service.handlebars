@@ -9,20 +9,19 @@ import { {{requestBuilderClass}} } from '../{{requestBuilderFile}}';
 import { Observable } from 'rxjs';
 import { map, filter } from 'rxjs/operators';
 
-{{#imports}}import { {{{typeName}}}{{#useAlias}} as {{{qualifiedName}}}{{/useAlias}} } from
-'{{{file}}}';
+{{#imports}}import { {{{typeName}}}{{#useAlias}} as {{{qualifiedName}}}{{/useAlias}} } from '{{{file}}}';
 {{/imports}}
 
 {{{tsComments}}}@Injectable({
-providedIn: 'root',
+  providedIn: 'root',
 })
 export class {{typeName}} extends {{baseServiceClass}} {
-constructor(
-config: {{configurationClass}},
-http: HttpClient
-) {
-super(config, http);
-}
+  constructor(
+    config: {{configurationClass}},
+    http: HttpClient
+  ) {
+    super(config, http);
+  }
 
 {{#operations}}
 {{>operationPath}}

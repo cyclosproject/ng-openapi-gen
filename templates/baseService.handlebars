@@ -5,30 +5,30 @@ import { HttpClient } from '@angular/common/http';
 import { {{configurationClass}} } from './{{configurationFile}}';
 
 /**
-* Base class for services
-*/
+ * Base class for services
+ */
 @Injectable()
 export class {{baseServiceClass}} {
-constructor(
-protected config: {{configurationClass}},
-protected http: HttpClient
-) {
-}
+  constructor(
+    protected config: {{configurationClass}},
+    protected http: HttpClient
+  ) {
+  }
 
-private _rootUrl: string = '';
+  private _rootUrl: string = '';
 
-/**
-* Returns the root url for all operations in this service. If not set directly in this
-* service, will fallback to `{{configurationClass}}.rootUrl`.
-*/
-get rootUrl(): string {
-return this._rootUrl || this.config.rootUrl;
-}
+  /**
+   * Returns the root url for all operations in this service. If not set directly in this
+   * service, will fallback to `{{configurationClass}}.rootUrl`.
+   */
+  get rootUrl(): string {
+    return this._rootUrl || this.config.rootUrl;
+  }
 
-/**
-* Sets the root URL for API operations in this service.
-*/
-set rootUrl(rootUrl: string) {
-this._rootUrl = rootUrl;
-}
+  /**
+   * Sets the root URL for API operations in this service.
+   */
+  set rootUrl(rootUrl: string) {
+    this._rootUrl = rootUrl;
+  }
 }

@@ -13,5 +13,10 @@
   },
   "[json]": {
     "editor.formatOnSave": true
+  },
+  "[handlebars]": {
+    "editor.formatOnSave": false,
+    "editor.formatOnPaste": false,
+    "editor.suggest.insertMode": "replace"
   }
 }
