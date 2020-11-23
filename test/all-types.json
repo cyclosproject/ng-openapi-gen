@@ -94,7 +94,8 @@
         "enum": [
           "value'A",
           "value'B",
-          "value'C"
+          "value'C",
+          ""
         ]
       },
       "RefIntEnum": {

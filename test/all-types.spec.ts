@@ -41,10 +41,11 @@ describe('Generation tests using all-types.json', () => {
       expect(ast.declarations[0]).toEqual(jasmine.any(EnumDeclaration));
       const decl = ast.declarations[0] as EnumDeclaration;
       expect(decl.name).toBe('RefEnum');
-      expect(decl.members.length).toBe(3);
+      expect(decl.members.length).toBe(4);
       expect(decl.members[0]).toBe('ValueA');
       expect(decl.members[1]).toBe('ValueB');
       expect(decl.members[2]).toBe('ValueC');
+      expect(decl.members[3]).toBe('_');
       done();
     });
   });
