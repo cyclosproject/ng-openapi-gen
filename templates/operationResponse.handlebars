@@ -2,15 +2,14 @@
 
     const rb = new {{@root.requestBuilderClass}}(this.rootUrl, {{@root.typeName}}.{{operation.pathVar}}, '{{operation.method}}');
     if (params) {
-
 {{#operation.parameters}}
       rb.{{in}}('{{{name}}}', params{{{varAccess}}}, {{{parameterOptions}}});
 {{/operation.parameters}}
-
 {{#requestBody}}
       rb.body(params.body, '{{{mediaType}}}');
 {{/requestBody}}
     }
+
     return this.http.request(rb.build({
       responseType: '{{responseType}}',
       accept: '{{accept}}'
