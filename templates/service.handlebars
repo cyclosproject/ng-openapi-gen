@@ -1,4 +1,5 @@
 /* tslint:disable */
+/* eslint-disable */
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { {{baseServiceClass}} } from '../{{baseServiceFile}}';
@@ -8,19 +9,20 @@ import { {{requestBuilderClass}} } from '../{{requestBuilderFile}}';
 import { Observable } from 'rxjs';
 import { map, filter } from 'rxjs/operators';
 
-{{#imports}}import { {{{typeName}}}{{#useAlias}} as {{{qualifiedName}}}{{/useAlias}} } from '{{{file}}}';
+{{#imports}}import { {{{typeName}}}{{#useAlias}} as {{{qualifiedName}}}{{/useAlias}} } from
+'{{{file}}}';
 {{/imports}}
 
 {{{tsComments}}}@Injectable({
-  providedIn: 'root',
+providedIn: 'root',
 })
 export class {{typeName}} extends {{baseServiceClass}} {
-  constructor(
-    config: {{configurationClass}},
-    http: HttpClient
-  ) {
-    super(config, http);
-  }
+constructor(
+config: {{configurationClass}},
+http: HttpClient
+) {
+super(config, http);
+}
 
 {{#operations}}
 {{>operationPath}}

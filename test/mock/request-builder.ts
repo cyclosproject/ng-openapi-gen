@@ -1,5 +1,6 @@
 // WARNING! If any changes are performed in this file MUST be mirrored in `templates/requestBuilder.handlebars`
 /* tslint:disable */
+/* eslint-disable */
 import { Blob, FormData, HttpRequest, HttpParameterCodec, HttpParams, HttpHeaders } from './lib';
 
 /**

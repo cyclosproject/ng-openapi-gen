@@ -1,5 +1,7 @@
 /* tslint:disable */
-{{#imports}}import { {{{typeName}}}{{#useAlias}} as {{{qualifiedName}}}{{/useAlias}} } from '{{{file}}}';
+/* eslint-disable */
+{{#imports}}import { {{{typeName}}}{{#useAlias}} as {{{qualifiedName}}}{{/useAlias}} } from
+'{{{file}}}';
 {{/imports}}
 {{{tsComments}}}{{#isObject}}{{>object}}{{/isObject
 }}{{#isEnum}}{{>enum}}{{/isEnum
