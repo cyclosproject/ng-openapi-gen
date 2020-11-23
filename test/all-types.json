@@ -423,6 +423,12 @@
                   3
                 ]
               },
+              "boolEnumProp": {
+                "type": "boolean",
+                "enum": [
+                  false
+                ]
+              },
               "nestedObject": {
                 "type": "object",
                 "properties": {

@@ -236,7 +236,7 @@ function toType(schemaOrRef: SchemaObject | ReferenceObject | undefined, options
   // Inline enum
   const enumValues = schema.enum || [];
   if (enumValues.length > 0) {
-    if (type === 'number' || type === 'integer') {
+    if (type === 'number' || type === 'integer' || type === 'boolean') {
       return enumValues.join(' | ');
     } else {
       return enumValues.map(v => `'${jsesc(v)}'`).join(' | ');
