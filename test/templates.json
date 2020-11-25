@@ -1,0 +1,412 @@
+{
+  "openapi": "3.0",
+  "info": {
+    "title": "Test with several operations",
+    "version": "1.0"
+  },
+  "servers": [
+    {
+      "url": "/api/{version}",
+      "variables": {
+        "version": {
+          "default": "1.0"
+        }
+      }
+    }
+  ],
+  "tags": [
+    {
+      "name": "tag1",
+      "description": "Description of tag1"
+    },
+    {
+      "name": "tag2"
+    },
+    {
+      "name": "unused",
+      "description": "Unused description"
+    }
+  ],
+  "paths": {
+    "/path1": {
+      "parameters": [
+        {
+          "name": "common1",
+          "description": "Common param 1",
+          "schema": {
+            "$ref": "#/components/schemas/RefString"
+          }
+        },
+        {
+          "name": "common2",
+          "description": "Common param 2",
+          "in": "header",
+          "required": true,
+          "schema": {
+            "$ref": "#/components/schemas/RefObject"
+          },
+          "style": "form",
+          "explode": true
+        },
+        {
+          "name": "X-Exclude",
+          "description": "Should be excluded",
+          "in": "header",
+          "required": false,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "get": {
+        "operationId": "path1Get",
+        "tags": [
+          "tag1"
+        ],
+        "description": "Path 1 GET description",
+        "parameters": [
+          {
+            "name": "get1",
+            "description": "GET param 1",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/RefString"
+            }
+          },
+          {
+            "name": "get2",
+            "description": "GET param 2",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "get3",
+            "description": "GET param 3",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "=",
+            "description": "Should be escaped",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "123",
+            "description": "Should be escaped",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "a-b",
+            "description": "Should be escaped",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RefObject"
+                }
+              },
+              "application/dummy+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RefObject"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RefObject"
+                }
+              },
+              "image/*": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "path1Post",
+        "tags": [
+          "tag2"
+        ],
+        "summary": "POST on path1",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RefObject"
+              }
+            },
+            "text/plain": {
+              "schema": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "post1",
+            "description": "POST param 1",
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ]
+      }
+    },
+    "/path2/{id}": {
+      "get": {
+        "operationId": "path2Get",
+        "tags": [
+          "tag1"
+        ],
+        "summary": "GET on path2",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/param1Ref"
+          },
+          {
+            "$ref": "#/components/parameters/param2Ref"
+          },
+          {
+            "$ref": "#/components/parameters/param3Ref"
+          }
+        ]
+      }
+    },
+    "/path3/{id}": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "schema": {
+            "type": "number"
+          }
+        }
+      ],
+      "delete": {
+        "operationId": "path3Del",
+        "summary": "DELETE on path3",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              },
+              "application/*+json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/path4": {
+      "put": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RefObject"
+              }
+            },
+            "text/plain": {
+              "schema": {
+                "type": "string"
+              }
+            },
+            "*/*": {
+              "schema": {
+                "type": "string",
+                "format": "binary"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Done. Might return a text or an image.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "image/*": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/path'with'quotes": {
+      "get": {
+        "x-operation-name": "withQuotes",
+        "responses": {
+          "200": {
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/path5": {
+      "get": {
+        "summary": "A path that contains a reference to response objects",
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/RefResp"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "RefString": {
+        "type": "string"
+      },
+      "RefObject": {
+        "type": "object",
+        "additionalProperties": true
+      },
+      "Error": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer"
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "parameters": {
+      "param1Ref": {
+        "name": "param1",
+        "in": "query",
+        "description": "Query param",
+        "schema": {
+          "$ref": "#/components/schemas/RefString"
+        }
+      },
+      "param2Ref": {
+        "name": "param2",
+        "in": "header",
+        "description": "Header param",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "param3Ref": {
+        "name": "param3",
+        "in": "cookie",
+        "description": "Cookie param",
+        "schema": {
+          "type": "string"
+        }
+      }
+    },
+    "responses": {
+      "RefResp": {
+        "description": "I am a response",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      }
+    }
+  }
+}

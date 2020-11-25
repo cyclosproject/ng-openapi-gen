@@ -300,6 +300,19 @@ components:
         - INTERNAL_SERVER_ERROR
 ```
 
+## Custom Handlebars helpers
+
+You can integrate your own Handlebar helpers for custom templates. To do so simply provide a `handlebars.js` file in the same directory as your templates that exports a function that recieves the Handlebars instance that will be used when generating the code from your templates.
+
+```js
+module.exports = function(handlebars) {
+  // Adding a custom handlebars helper: loud
+  handlebars.registerHelper('loud', function (aString) {
+    return aString.toUpperCase()
+  });
+};
+```
+
 ## Developing and contributing
 
 The generator itself is written in TypeScript. When building, the code is transpiled to JavaScript in the `dist` folder. And the `dist` folder is the one that gets published to NPM. Even to prevent publishing from the wrong path, the `package.json` file has `"private": true`, which gets replaced by `false` in the build process.
