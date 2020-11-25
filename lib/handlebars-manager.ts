@@ -9,7 +9,7 @@ export class HandlebarsManager {
 
   public instance: typeof Handlebars = Handlebars;
 
-  public readCustomJsFile(options: Options) {
+  public readCustomJsFile(options: Options): void {
     const customDir = options.templates || '';
 
     // Attempt to find "handlebars.js" in template folder to allow for custom
@@ -24,7 +24,5 @@ export class HandlebarsManager {
         handlebarsFn.call(this.instance, this.instance);
       }
     }
-
-    return Promise.resolve();
   }
 }
