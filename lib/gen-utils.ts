@@ -7,6 +7,7 @@ import { Options } from './options';
 import { Model } from './model';
 
 export const HTTP_METHODS = ['get', 'put', 'post', 'delete', 'options', 'head', 'patch', 'trace'];
+type SchemaOrRef = SchemaObject | ReferenceObject;
 
 /**
  * Returns the simple name, that is, the last part after '/'
@@ -159,26 +160,22 @@ export function escapeId(name: string) {
 /**
  * Returns the TypeScript type for the given type and options
  */
-export function tsType(schemaOrRef: SchemaObject | ReferenceObject | undefined, options: Options, container?: Model): string {
-  if (schemaOrRef && (schemaOrRef as SchemaObject).nullable) {
-    return `null | ${toType(schemaOrRef, options)}`;
-  }
-  return toType(schemaOrRef, options, container);
-}
-
-function toType(schemaOrRef: SchemaObject | ReferenceObject | undefined, options: Options, container?: Model): string {
+export function tsType(schemaOrRef: SchemaOrRef | undefined, options: Options, openApi: OpenAPIObject, container?: Model): string {
   if (!schemaOrRef) {
     // No schema
     return 'any';
   }
   if (schemaOrRef.$ref) {
     // A reference
+    const resolved = resolveRef(openApi, schemaOrRef.$ref);
+    const nullable = !!(resolved && (resolved as SchemaObject).nullable);
+    const prefix = nullable ? 'null | ' : '';
     const name = simpleName(schemaOrRef.$ref);
     if (container && container.name === name) {
       // When referencing the same container, use its type name
-      return container.typeName;
+      return prefix + container.typeName;
     } else {
-      return qualifiedName(name, options);
+      return prefix + qualifiedName(name, options);
     }
   }
   const schema = schemaOrRef as SchemaObject;
@@ -186,20 +183,20 @@ function toType(schemaOrRef: SchemaObject | ReferenceObject | undefined, options
   // An union of types
   const union = schema.oneOf || schema.anyOf || [];
   if (union.length > 0) {
-    return union.map(u => toType(u, options, container)).join(' | ');
+    return union.map(u => tsType(u, options, openApi, container)).join(' | ');
   }
 
   // All the types
   const allOf = schema.allOf || [];
   if (allOf.length > 0) {
-    return allOf.map(u => toType(u, options, container)).join(' & ');
+    return allOf.map(u => tsType(u, options, openApi, container)).join(' & ');
   }
 
   const type = schema.type || 'any';
 
   // An array
   if (type === 'array' || schema.items) {
-    return `Array<${toType(schema.items || {}, options, container)}>`;
+    return `Array<${tsType(schema.items || {}, options, openApi, container)}>`;
   }
 
   // An object
@@ -220,14 +217,14 @@ function toType(schemaOrRef: SchemaObject | ReferenceObject | undefined, options
       if (!propRequired) {
         result += '?';
       }
-      result += `: ${toType(property, options, container)}`;
+      result += `: ${tsType(property, options, openApi, container)}`;
     }
     if (schema.additionalProperties) {
       const additionalProperties = schema.additionalProperties === true ? {} : schema.additionalProperties;
       if (!first) {
         result += ', ';
       }
-      result += `[key: string]: ${toType(additionalProperties, options, container)}`;
+      result += `[key: string]: ${tsType(additionalProperties, options, openApi, container)}`;
     }
     result += ' }';
     return result;

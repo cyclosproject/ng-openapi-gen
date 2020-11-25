@@ -88,7 +88,7 @@ export class Operation {
         if (param.in === 'cookie') {
           console.warn(`Ignoring cookie parameter ${this.id}.${param.name} as cookie parameters cannot be sent in XmlHttpRequests.`);
         } else if (this.paramIsNotExcluded(param)) {
-          result.push(new Parameter(param as ParameterObject, this.options));
+          result.push(new Parameter(param as ParameterObject, this.options, this.openApi));
         }
       }
 
@@ -103,7 +103,7 @@ export class Operation {
       return Object.keys(param).map(key => {
         const scope = param[key];
         const security: SecuritySchemeObject = resolveRef(this.openApi, `#/components/securitySchemes/${key}`);
-        return new Security(key, security, scope, this.options);
+        return new Security(key, security, scope, this.options, this.openApi);
       });
     });
   }
@@ -117,7 +117,7 @@ export class Operation {
     const result: Content[] = [];
     if (desc) {
       for (const type of Object.keys(desc)) {
-        result.push(new Content(type, desc[type] as MediaTypeObject, this.options));
+        result.push(new Content(type, desc[type] as MediaTypeObject, this.options, this.openApi));
       }
     }
     return result;

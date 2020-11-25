@@ -62,7 +62,7 @@ export class Model extends GenType {
       this.properties = sortedNames.map(propName => propertiesByName.get(propName) as Property);
     } else {
       // Simple / array / enum / union
-      this.simpleType = tsType(schema, options);
+      this.simpleType = tsType(schema, options, openApi);
     }
     this.collectImports(schema);
     this.updateImports();
@@ -114,7 +114,7 @@ export class Model extends GenType {
         }
       };
       for (const propName of propNames) {
-        const prop = new Property(this, propName, properties[propName], required.includes(propName), this.options);
+        const prop = new Property(this, propName, properties[propName], required.includes(propName), this.options, this.openApi);
         propertiesByName.set(propName, prop);
         appendType(prop.type);
         if (!prop.required) {
@@ -124,7 +124,7 @@ export class Model extends GenType {
       if (schema.additionalProperties === true) {
         this.additionalPropertiesType = 'any';
       } else if (schema.additionalProperties) {
-        const propType = tsType(schema.additionalProperties, this.options);
+        const propType = tsType(schema.additionalProperties, this.options, this.openApi);
         appendType(propType);
         this.additionalPropertiesType = [...propTypes].sort().join(' | ');
       }

@@ -40,6 +40,9 @@
               },
               {
                 "$ref": "#/components/schemas/AdditionalProperties"
+              },
+              {
+                "$ref": "#/components/schemas/Nullables"
               }
             ]
           }
@@ -280,6 +283,42 @@
         },
         "additionalProperties": {
           "$ref": "#/components/schemas/a.b.RefObject"
+        }
+      },
+      "Nullables": {
+        "type": "object",
+        "required": [
+          "nullableObject",
+          "inlinedNullableObject",
+          "withNullableProperty"
+        ],
+        "properties": {
+          "nullableObject": {
+            "$ref": "#/components/schemas/NullableObject"
+          },
+          "withNullableProperty": {
+            "type": "object",
+            "required": [
+              "someProperty"
+            ],
+            "properties": {
+              "someProperty": {
+                "$ref": "#/components/schemas/NullableObject"
+              }
+            }
+          },
+          "inlinedNullableObject": {
+            "type": "object",
+            "nullable": true,
+            "required": [
+              "someProperty"
+            ],
+            "properties": {
+              "someProperty": {
+                "type": "string"
+              }
+            }
+          }
         }
       },
       "Containers": {
