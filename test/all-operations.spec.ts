@@ -159,7 +159,7 @@ describe('Generation tests using all-operations.json', () => {
     expect(operation.tags).toContain('tag1');
     expect(operation.path).toBe('/path1');
     expect(operation.method).toBe('get');
-    expect(operation.parameters.length).toBe(8); // 2 shared, 6 own
+    expect(operation.parameters.length).toBe(9); // 2 shared, 7 own
     const params = operation.parameters;
     expect(params[0].name).toBe('common1');
     expect(params[0].type).toBe('RefString');
@@ -178,21 +178,25 @@ describe('Generation tests using all-operations.json', () => {
     expect(params[4].varAccess).toBe('.get3');
     expect(params[4].type).toBe('boolean');
     expect(params[4].in).toBe('query');
-    expect(params[5].name).toBe('=');
-    expect(params[5].var).toBe('\'=\'');
-    expect(params[5].varAccess).toBe('[\'=\']');
-    expect(params[5].type).toBe('string');
-    expect(params[5].in).toBe('query');
-    expect(params[6].name).toBe('123');
-    expect(params[6].var).toBe('\'123\'');
-    expect(params[6].varAccess).toBe('[\'123\']');
+    expect(params[5].name).toBe('get4');
+    expect(params[5].type).toBe('Array<string>');
+    expect(params[5].style).toBe('form');
+    expect(params[5].explode).toBe(false);
+    expect(params[6].name).toBe('=');
+    expect(params[6].var).toBe('\'=\'');
+    expect(params[6].varAccess).toBe('[\'=\']');
     expect(params[6].type).toBe('string');
     expect(params[6].in).toBe('query');
-    expect(params[7].name).toBe('a-b');
-    expect(params[7].var).toBe('\'a-b\'');
-    expect(params[7].varAccess).toBe('[\'a-b\']');
+    expect(params[7].name).toBe('123');
+    expect(params[7].var).toBe('\'123\'');
+    expect(params[7].varAccess).toBe('[\'123\']');
     expect(params[7].type).toBe('string');
     expect(params[7].in).toBe('query');
+    expect(params[8].name).toBe('a-b');
+    expect(params[8].var).toBe('\'a-b\'');
+    expect(params[8].varAccess).toBe('[\'a-b\']');
+    expect(params[8].type).toBe('string');
+    expect(params[8].in).toBe('query');
     expect(operation.requestBody).toBeUndefined();
     expect(operation.allResponses.length).toBe(2);
     const success = operation.successResponse;

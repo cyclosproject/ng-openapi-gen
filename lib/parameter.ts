@@ -36,7 +36,7 @@ export class Parameter {
     if (this.style) {
       options.style = this.style;
     }
-    if (this.explode) {
+    if (!!this.explode === this.explode) {
       options.explode = this.explode;
     }
     return JSON.stringify(options);
