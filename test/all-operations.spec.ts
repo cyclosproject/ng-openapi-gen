@@ -15,7 +15,7 @@ describe('Generation tests using all-operations.json', () => {
   });
 
   it('Tags', () => {
-    expect(gen.services.size).toBe(3);
+    expect(gen.services.size).toBe(4);
   });
 
   it('Tag 1', done => {
@@ -98,11 +98,19 @@ describe('Generation tests using all-operations.json', () => {
     });
   });
 
+  it('Tag with nesting', () => {
+    const tagWithNesting = gen.services.get('tag.tag2.tag3.tag4.tag5');
+    expect(tagWithNesting).toBeDefined();
+    if (!tagWithNesting) return;
+
+    expect(tagWithNesting.namespace).toBe('tag/tag2/tag3/tag4');
+  });
+
   it('No tag', done => {
     const noTag = gen.services.get('noTag');
     expect(noTag).toBeDefined();
     if (!noTag) return;
-    expect(noTag.operations.length).toBe(4);
+    expect(noTag.operations.length).toBe(3);
 
     const ts = gen.templates.apply('service', noTag);
     const parser = new TypescriptParser();
