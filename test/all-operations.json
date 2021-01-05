@@ -88,6 +88,19 @@
             }
           },
           {
+            "name": "get4",
+            "description": "GET param 4",
+            "in": "query",
+            "style": "form",
+            "explode": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
             "name": "=",
             "description": "Should be escaped",
             "in": "query",
