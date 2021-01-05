@@ -2,13 +2,19 @@ import { OpenAPIObject } from 'openapi3-ts';
 import { ClassDeclaration, TypescriptParser } from 'typescript-parser';
 import { Content } from '../lib/content';
 import { NgOpenApiGen } from '../lib/ng-openapi-gen';
+import { Options } from '../lib/options';
 import options from './all-operations.config.json';
 import allOperationsSpec from './all-operations.json';
 
-const gen = new NgOpenApiGen(allOperationsSpec as OpenAPIObject, options);
-gen.generate();
+
 
 describe('Generation tests using all-operations.json', () => {
+  let gen: NgOpenApiGen;
+
+  beforeEach(() => {
+    gen = new NgOpenApiGen(allOperationsSpec as OpenAPIObject, options);
+    gen.generate();
+  });
 
   it('Root URL', () => {
     expect(gen.globals.rootUrl).toBe('/api/1.0');
@@ -110,7 +116,7 @@ describe('Generation tests using all-operations.json', () => {
     const noTag = gen.services.get('noTag');
     expect(noTag).toBeDefined();
     if (!noTag) return;
-    expect(noTag.operations.length).toBe(3);
+    expect(noTag.operations.length).toBe(4);
 
     const ts = gen.templates.apply('service', noTag);
     const parser = new TypescriptParser();
@@ -439,5 +445,19 @@ describe('Generation tests using all-operations.json', () => {
       const resp200 = operation.allResponses.find(r => r.statusCode === '200');
       expect(resp200).toBe(success);
     }
+  });
+
+  it('GET /path6', () => {
+    const optionsWithCustomizedResponseType = { ...options } as Options;
+    optionsWithCustomizedResponseType.customizedResponseType = {
+      '/path6': {
+        toUse: 'arraybuffer'
+      }
+    };
+    gen = new NgOpenApiGen(allOperationsSpec as OpenAPIObject, optionsWithCustomizedResponseType);
+    gen.generate();
+    const operation = gen.operations.get('path6Get');
+    expect(operation).toBeDefined();
+    expect(operation?.variants[0].responseType).toBe('arraybuffer');
   });
 });

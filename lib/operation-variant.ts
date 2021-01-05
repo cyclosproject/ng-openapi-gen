@@ -27,7 +27,7 @@ export class OperationVariant {
     this.responseMethodName = `${methodName}$Response`;
     if (successResponse) {
       this.resultType = successResponse.type;
-      this.responseType = this.inferResponseType(successResponse.mediaType);
+      this.responseType = this.inferResponseType(successResponse.mediaType, operation, options);
       this.accept = successResponse.mediaType;
     } else {
       this.resultType = 'void';
@@ -42,7 +42,12 @@ export class OperationVariant {
     this.bodyMethodTsComments = tsComments(this.bodyMethodDescription(), 1, operation.deprecated);
   }
 
-  private inferResponseType(mediaType: string): string {
+  private inferResponseType(mediaType: string, operation: Operation, { customizedResponseType = {} }: Pick<Options, 'customizedResponseType'>): string {
+    const customizedResponseTypeByPath = customizedResponseType[operation.path];
+    if (customizedResponseTypeByPath) {
+      return customizedResponseTypeByPath.toUse;
+    }
+
     mediaType = mediaType.toLowerCase();
     if (mediaType.endsWith('/json') || mediaType.endsWith('+json')) {
       return 'json';

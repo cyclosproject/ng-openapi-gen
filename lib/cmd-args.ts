@@ -78,7 +78,10 @@ For help, run ng-openapi-gen --help`);
       throw new Error(`The given configuration file doesn't exist: ${args.config}.`);
     }
   }
+  objectifyCustomizedResponseType(args);
+
   const props = schema.properties;
+
   for (const key of Object.keys(args)) {
     let value = args[key];
     if (key === 'config' || value == null) {
@@ -106,3 +109,13 @@ For help, run ng-openapi-gen --help`);
   return options;
 }
 
+function objectifyCustomizedResponseType(args: { customizedResponseType?: string }): void {
+
+  if (!args.customizedResponseType) return;
+
+  try {
+    args.customizedResponseType = JSON.parse(args.customizedResponseType);
+  } catch (error) {
+    throw new Error(`Invalid JSON string: [${args.customizedResponseType}] \n for --customizedResponseType`);
+  }
+}
