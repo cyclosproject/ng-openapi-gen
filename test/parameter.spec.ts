@@ -1,23 +1,24 @@
 import { Parameter } from '../lib/parameter';
 
-const parameterNotExploded = new Parameter({ 
-    explode: false, 
-    name: 'par1', 
-    in: 'query', 
-    description: 'Description of par1', 
-    style: 'form',
-    schema: { 
-      type: 'array', 
-      items: { 
-        type: 'string' 
-      }
-    } 
-  }, 
-  { 
-    input: 'fake.json'
-  }, 
+const parameterNotExploded = new Parameter(
   {
-    openapi: '', 
+    explode: false,
+    name: 'par1',
+    in: 'query',
+    description: 'Description of par1',
+    style: 'form',
+    schema: {
+      type: 'array',
+      items: {
+        type: 'string'
+      }
+    }
+  },
+  {
+    input: 'fake.json'
+  },
+  {
+    openapi: '',
     info: {
       title: 'fake open api',
       version: '3.0.0'
@@ -25,24 +26,25 @@ const parameterNotExploded = new Parameter({
     paths: []
   });
 
-const parameterExploded = new Parameter({ 
+const parameterExploded = new Parameter(
+  {
     explode: true,
-    name: 'par1', 
-    in: 'query', 
-    description: 'Description of par1', 
+    name: 'par1',
+    in: 'query',
+    description: 'Description of par1',
     style: 'form',
-    schema: { 
-      type: 'array', 
-      items: { 
-        type: 'string' 
+    schema: {
+      type: 'array',
+      items: {
+        type: 'string'
       }
-    } 
-  }, 
-  { 
-    input: 'fake.json'
-  }, 
+    }
+  },
   {
-    openapi: '', 
+    input: 'fake.json'
+  },
+  {
+    openapi: '',
     info: {
       title: 'fake open api',
       version: '3.0.0'
@@ -50,22 +52,23 @@ const parameterExploded = new Parameter({
     paths: []
   });
 
-  const parameter = new Parameter({ 
-    name: 'par1', 
-    in: 'query', 
-    description: 'Description of par1', 
-    schema: { 
-      type: 'array', 
-      items: { 
-        type: 'string' 
-      }
-    } 
-  }, 
-  { 
-    input: 'fake.json'
-  }, 
+const parameter = new Parameter(
   {
-    openapi: '', 
+    name: 'par1',
+    in: 'query',
+    description: 'Description of par1',
+    schema: {
+      type: 'array',
+      items: {
+        type: 'string'
+      }
+    }
+  },
+  {
+    input: 'fake.json'
+  },
+  {
+    openapi: '',
     info: {
       title: 'fake open api',
       version: '3.0.0'
@@ -75,9 +78,8 @@ const parameterExploded = new Parameter({
 
 describe('Parameters constructor', () => {
   it('paramter options should be serialized', () => {
-    expect(parameterNotExploded.parameterOptions).toBe("{\"style\":\"form\",\"explode\":false}");
-    expect(parameterExploded.parameterOptions).toBe("{\"style\":\"form\",\"explode\":true}");
-    expect(parameter.parameterOptions).toBe("{}");
-
+    expect(parameterNotExploded.parameterOptions).toBe('{"style":"form","explode":false}');
+    expect(parameterExploded.parameterOptions).toBe('{"style":"form","explode":true}');
+    expect(parameter.parameterOptions).toBe('{}');
   });
 });
