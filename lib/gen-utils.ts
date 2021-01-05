@@ -51,14 +51,14 @@ export function modelFile(pathToModels: string, name: string, options: Options):
 }
 
 /**
- * Returns the namespace path, that is, the part before the last '.' splitted by '/' instead of '.'.
+ * Returns the namespace path, that is, the part before the last '.' split by '/' instead of '.'.
  * If there's no namespace, returns undefined.
  */
 export function namespace(name: string): string | undefined {
   name = name.replace(/^\.+/g, '');
   name = name.replace(/\.+$/g, '');
   const pos = name.lastIndexOf('.');
-  return pos < 0 ? undefined : name.substring(0, pos).replace('.', '/');
+  return pos < 0 ? undefined : name.substring(0, pos).replace(/\./g, '/');
 }
 
 /**
