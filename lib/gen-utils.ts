@@ -230,7 +230,7 @@ export function tsType(schemaOrRef: SchemaOrRef | undefined, options: Options, o
     result += ' }';
     intersectionType.push(result);
   }
-  
+
   if (intersectionType.length > 0) {
     return intersectionType.join(' & ');
   }

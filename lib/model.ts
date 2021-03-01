@@ -97,8 +97,8 @@ export class Model extends GenType {
           this.collectObject(part, propertiesByName);
         }
       }
-    } 
-    
+    }
+
     if (schema.type === 'object' || !!schema.properties) {
       // An object definition
       const properties = schema.properties || {};
