@@ -186,17 +186,18 @@ export function tsType(schemaOrRef: SchemaOrRef | undefined, options: Options, o
     return union.map(u => tsType(u, options, openApi, container)).join(' | ');
   }
 
-  // All the types
-  const allOf = schema.allOf || [];
-  if (allOf.length > 0) {
-    return allOf.map(u => tsType(u, options, openApi, container)).join(' & ');
-  }
-
   const type = schema.type || 'any';
 
   // An array
   if (type === 'array' || schema.items) {
     return `Array<${tsType(schema.items || {}, options, openApi, container)}>`;
+  }
+
+  // All the types
+  const allOf = schema.allOf || [];
+  let intersectionType: string[] = [];
+  if (allOf.length > 0) {
+    intersectionType = allOf.map(u => tsType(u, options, openApi, container));
   }
 
   // An object
@@ -227,7 +228,11 @@ export function tsType(schemaOrRef: SchemaOrRef | undefined, options: Options, o
       result += `[key: string]: ${tsType(additionalProperties, options, openApi, container)}`;
     }
     result += ' }';
-    return result;
+    intersectionType.push(result);
+  }
+
+  if (intersectionType.length > 0) {
+    return intersectionType.join(' & ');
   }
 
   // Inline enum
