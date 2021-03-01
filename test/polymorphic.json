@@ -30,6 +30,26 @@
           }
         },
         "additionalProperties": false
+      },
+      "Foo.Bar.Dooz": {
+        "type": "object",
+        "properties": {
+          "doozObject": {
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Foo.Bar.Tazk"
+              }
+            ],
+            "properties": {
+              "doozNumber": {
+                "type": "integer",
+                "format": "int32"
+              }
+            },
+            "additionalProperties": false
+          }
+        }
       }
     }
   }

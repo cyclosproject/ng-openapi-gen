@@ -21,4 +21,20 @@ describe('Generation of derived classes using polymorphic.json (as is generated 
     });
     done();
   });
+
+  it('Dooz model', (done) => {
+    const tazk = gen.models.get('Foo.Bar.Dooz');
+    const ts = gen.templates.apply('model', tazk);
+    const parser = new TypescriptParser();
+    parser.parseSource(ts).then((ast) => {
+      expect(ast.declarations.length).toBe(1);
+      expect(ast.declarations[0]).toEqual(jasmine.any(InterfaceDeclaration));
+      const decl = ast.declarations[0] as InterfaceDeclaration;
+      expect(decl.name).toBe('Dooz');
+      expect(decl.properties).toHaveSize(1);
+      expect(decl.properties[0].name).toBe('doozObject');
+      expect(decl.properties[0].type).toBe('FooBarTazk & { \'doozNumber\'?: number }')
+    });
+    done();
+  });
 });
