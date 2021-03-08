@@ -183,7 +183,11 @@ export function tsType(schemaOrRef: SchemaOrRef | undefined, options: Options, o
   // An union of types
   const union = schema.oneOf || schema.anyOf || [];
   if (union.length > 0) {
-    return union.map(u => tsType(u, options, openApi, container)).join(' | ');
+    if (union.length > 1) {
+      return `(${union.map(u => tsType(u, options, openApi, container)).join(' | ')})`;
+    } else {
+      return union.map(u => tsType(u, options, openApi, container)).join(' | ');
+    }
   }
 
   const type = schema.type || 'any';
