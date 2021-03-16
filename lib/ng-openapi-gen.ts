@@ -1,6 +1,6 @@
 import { OpenAPIObject, OperationObject, PathItemObject, ReferenceObject, SchemaObject } from '@loopback/openapi-v3-types';
 import fs from 'fs-extra';
-import $RefParser, { HTTPResolverOptions } from 'json-schema-ref-parser';
+import $RefParser, { HTTPResolverOptions } from '@apidevtools/json-schema-ref-parser';
 import mkdirp from 'mkdirp';
 import path from 'path';
 import { parseOptions } from './cmd-args';

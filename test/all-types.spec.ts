@@ -166,7 +166,7 @@ describe('Generation tests using all-types.json', () => {
       const decl = ast.declarations[0] as TypeAliasDeclaration;
       expect(decl.name).toBe('Disjunct');
       const text = ts.substring(decl.start || 0, decl.end || ts.length);
-      expect(text).toBe('export type Disjunct = { \'ref\'?: ReferencedInNullableOneOf | null } | ABRefObject | XYRefObject | ReferencedInOneOf | EscapedProperties;');
+      expect(text).toBe('export type Disjunct = ({ \'ref\'?: ReferencedInNullableOneOf | null } | ABRefObject | XYRefObject | ReferencedInOneOf | EscapedProperties);');
       done();
     });
   });
