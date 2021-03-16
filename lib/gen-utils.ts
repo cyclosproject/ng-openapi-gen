@@ -208,6 +208,9 @@ export function tsType(schemaOrRef: SchemaOrRef | undefined, options: Options, o
     const required = schema.required;
     for (const propName of Object.keys(properties)) {
       const property = properties[propName];
+      if (!property) {
+        continue;
+      }
       const propRequired = required && required.includes(propName);
       if (first) {
         first = false;
@@ -218,7 +221,11 @@ export function tsType(schemaOrRef: SchemaOrRef | undefined, options: Options, o
       if (!propRequired) {
         result += '?';
       }
-      result += `: ${tsType(property, options, openApi, container)}`;
+      let propertyType = tsType(property, options, openApi, container);
+      if ((property as SchemaObject).nullable) {
+        propertyType = `${propertyType} | null`;
+      }
+      result += `: ${propertyType}`;
     }
     if (schema.additionalProperties) {
       const additionalProperties = schema.additionalProperties === true ? {} : schema.additionalProperties;

@@ -43,6 +43,9 @@
               },
               {
                 "$ref": "#/components/schemas/Nullables"
+              },
+              {
+                "$ref": "#/components/schemas/InlineObject"
               }
             ]
           }
@@ -128,6 +131,38 @@
         "properties": {
           "name": {
             "type": "string"
+          }
+        }
+      },
+      "InlineObject": {
+        "type": "object",
+        "properties": {
+          "object": {
+            "type": "object",
+            "properties": {
+              "string": {
+                "type": "string"
+              },
+              "nullableString": {
+                "nullable": true,
+                "type": "string"
+              },
+              "ref": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/RefEnum"
+                  }
+                ]
+              },
+              "nullableRef": {
+                "nullable": true,
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/RefEnum"
+                  }
+                ]
+              }
+            }
           }
         }
       },
