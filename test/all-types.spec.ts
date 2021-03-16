@@ -149,7 +149,7 @@ describe('Generation tests using all-types.json', () => {
       const decl = ast.declarations[0] as TypeAliasDeclaration;
       expect(decl.name).toBe('Union');
       const text = ts.substring(decl.start || 0, decl.end || ts.length);
-      expect(text).toBe('export type Union = { [key: string]: any } | RefEnum | RefIntEnum | RefNamedIntEnum | Container;');
+      expect(text).toBe('export type Union = ({ [key: string]: any } | RefEnum | RefIntEnum | RefNamedIntEnum | Container);');
       done();
     });
   });
@@ -391,7 +391,7 @@ describe('Generation tests using all-types.json', () => {
       assertProperty('arrayOfABRefObjectsProp', 'Array<ABRefObject>');
       assertProperty('arrayOfAnyProp', 'Array<any>');
       assertProperty('nestedObject', '{ \'p1\'?: string, \'p2\'?: number, ' +
-        '\'deeper\'?: { \'d1\': ABRefObject, \'d2\'?: string | Array<ABRefObject> | number } }');
+        '\'deeper\'?: { \'d1\': ABRefObject, \'d2\'?: (string | Array<ABRefObject> | number) } }');
       assertProperty('dynamic', '{ [key: string]: XYRefObject }');
       assertProperty('stringEnumProp', '\'a\' | \'b\' | \'c\'');
       assertProperty('intEnumProp', '1 | 2 | 3');
