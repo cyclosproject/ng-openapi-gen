@@ -366,6 +366,23 @@
           }
         }
       }
+    },
+    "/path6": {
+      "get": {
+        "summary": "This path will return binary by using responseType:\"arraybuffer\" in generated service",
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
