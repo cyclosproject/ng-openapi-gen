@@ -49,7 +49,7 @@ export class OperationVariant {
     }
 
     mediaType = mediaType.toLowerCase();
-    if (mediaType.endsWith('/json') || mediaType.endsWith('+json')) {
+    if (mediaType.includes('/json') || mediaType.includes('+json')) {
       return 'json';
     } else if (mediaType.startsWith('text/')) {
       return 'text';
