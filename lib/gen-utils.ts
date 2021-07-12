@@ -73,7 +73,9 @@ export function typeName(name: string): string {
  */
 export function enumName(value: string, options: Options): string {
   let name = toBasicChars(value, true);
-  if (options.enumStyle === 'upper') {
+  if (options.enumStyle === 'ignorecase') {
+    return name;
+  } else if (options.enumStyle === 'upper') {
     name = upperCase(name).replace(/\s+/g, '_');
   } else {
     name = upperFirst(camelCase(name));
