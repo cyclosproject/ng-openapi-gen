@@ -26,7 +26,7 @@
   },
   "dependencies": {
     "@loopback/openapi-v3-types": "^1.2.1",
-    "@types/argparse": "^1.0.38",
+    "@types/argparse": "^2.0.10",
     "@types/fs-extra": "^9.0.8",
     "@types/jsesc": "^2.5.1",
     "@types/json-schema": "^7.0.7",
