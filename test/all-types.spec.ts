@@ -98,7 +98,7 @@ describe('Generation tests using all-types.json', () => {
       expect(decl.name).toBe('NullableObject');
       // There's no support for additional properties in typescript-parser. Check as text.
       const text = ts.substring(decl.start || 0, decl.end || ts.length);
-      expect(text).toContain('= { \'name\'?: string }');
+      expect(text).toContain('= {\n\'name\'?: string;\n}');
       done();
     });
   });
@@ -149,7 +149,7 @@ describe('Generation tests using all-types.json', () => {
       const decl = ast.declarations[0] as TypeAliasDeclaration;
       expect(decl.name).toBe('Union');
       const text = ts.substring(decl.start || 0, decl.end || ts.length);
-      expect(text).toBe('export type Union = ({ [key: string]: any } | RefEnum | RefIntEnum | RefNamedIntEnum | Container);');
+      expect(text).toBe('export type Union = ({\n[key: string]: any;\n} | RefEnum | RefIntEnum | RefNamedIntEnum | Container);');
       done();
     });
   });
@@ -166,7 +166,7 @@ describe('Generation tests using all-types.json', () => {
       const decl = ast.declarations[0] as TypeAliasDeclaration;
       expect(decl.name).toBe('Disjunct');
       const text = ts.substring(decl.start || 0, decl.end || ts.length);
-      expect(text).toBe('export type Disjunct = ({ \'ref\'?: ReferencedInNullableOneOf | null } | ABRefObject | XYRefObject | ReferencedInOneOf | EscapedProperties);');
+      expect(text).toBe('export type Disjunct = ({\n\'ref\'?: ReferencedInNullableOneOf | null;\n} | ABRefObject | XYRefObject | ReferencedInOneOf | EscapedProperties);');
       done();
     });
   });
@@ -311,13 +311,13 @@ describe('Generation tests using all-types.json', () => {
       expect(decl.name).toBe('Nullables');
       expect(decl.properties.length).toBe(3);
       expect(decl.properties[0].name).toBe('inlinedNullableObject');
-      expect(decl.properties[0].type).withContext('inlinedNullableObject property').toBe('null | { \'someProperty\': string }');
+      expect(decl.properties[0].type).withContext('inlinedNullableObject property').toBe('null | {\n\'someProperty\': string;\n}');
       expect(decl.properties[0].isOptional).toBeFalse();
       expect(decl.properties[1].name).toBe('nullableObject');
       expect(decl.properties[1].type).withContext('nullableObject property').toBe('null | NullableObject');
       expect(decl.properties[1].isOptional).toBeFalse();
       expect(decl.properties[2].name).toBe('withNullableProperty');
-      expect(decl.properties[2].type).withContext('withNullableProperty property').toBe('{ \'someProperty\': null | NullableObject }');
+      expect(decl.properties[2].type).withContext('withNullableProperty property').toBe('{\n\'someProperty\': null | NullableObject;\n}');
       expect(decl.properties[2].isOptional).toBeFalse();
       done();
     });
@@ -338,7 +338,7 @@ describe('Generation tests using all-types.json', () => {
       expect(decl.properties.length).toBe(1);
       const prop = decl.properties[0];
       expect(prop.name).toBe('object');
-      expect(prop.type).withContext('object property').toBe('{ \'string\'?: string, \'nullableString\'?: string | null, \'ref\'?: RefEnum, \'nullableRef\'?: RefEnum | null }');
+      expect(prop.type).withContext('object property').toBe('{\n\'string\'?: string;\n\'nullableString\'?: string | null;\n\'ref\'?: RefEnum;\n\'nullableRef\'?: RefEnum | null;\n}');
       expect(prop.isOptional).toBeTrue();
       done();
     });
@@ -376,7 +376,7 @@ describe('Generation tests using all-types.json', () => {
                 return i;
               }
               break;
-            case ',':
+            case ';':
               if (recursion === 0) {
                 return i;
               }
@@ -423,9 +423,9 @@ describe('Generation tests using all-types.json', () => {
       assertProperty('arrayOfRefEnumsProp', 'Array<RefEnum>');
       assertProperty('arrayOfABRefObjectsProp', 'Array<ABRefObject>');
       assertProperty('arrayOfAnyProp', 'Array<any>');
-      assertProperty('nestedObject', '{ \'p1\'?: string, \'p2\'?: number, ' +
-        '\'deeper\'?: { \'d1\': ABRefObject, \'d2\'?: (string | Array<ABRefObject> | number) } }');
-      assertProperty('dynamic', '{ [key: string]: XYRefObject }');
+      assertProperty('nestedObject', '{\n\'p1\'?: string;\n\'p2\'?: number;\n' +
+        '\'deeper\'?: {\n\'d1\': ABRefObject;\n\'d2\'?: (string | Array<ABRefObject> | number);\n};\n}');
+      assertProperty('dynamic', '{\n[key: string]: XYRefObject;\n}');
       assertProperty('stringEnumProp', '\'a\' | \'b\' | \'c\'');
       assertProperty('intEnumProp', '1 | 2 | 3');
       assertProperty('boolEnumProp', 'false');

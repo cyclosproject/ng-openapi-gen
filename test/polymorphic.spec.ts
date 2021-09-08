@@ -33,7 +33,7 @@ describe('Generation of derived classes using polymorphic.json (as is generated 
       expect(decl.name).toBe('Dooz');
       expect(decl.properties).toHaveSize(1);
       expect(decl.properties[0].name).toBe('doozObject');
-      expect(decl.properties[0].type).toBe('FooBarTazk & { \'doozNumber\'?: number }');
+      expect(decl.properties[0].type).toBe('FooBarTazk & {\n\'doozNumber\'?: number;\n}');
     });
     done();
   });

@@ -37,7 +37,7 @@ describe('Generation tests using self-ref.json', () => {
       const object = decl.properties.find(p => p.name === 'objectProperty');
       expect(object).withContext('objectProperty property').toBeDefined();
       if (object) {
-        expect(object.type).toBe(`{ 'nestedArray': Array<Baz>, 'nestedRef': Baz }`);
+        expect(object.type).toBe(`{\n'nestedArray': Array<Baz>;\n'nestedRef': Baz;\n}`);
       }
 
       done();
