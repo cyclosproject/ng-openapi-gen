@@ -12,6 +12,9 @@ export class EnumValue {
   constructor(public type: string, name: string | undefined, _value: any, public options: Options) {
     const value = String(_value);
     this.name = name || enumName(value, options);
+    if (this.name === '') {
+      this.name = '_';
+    }
     if (type === 'string') {
       this.value = `'${jsesc(value)}'`;
     } else {

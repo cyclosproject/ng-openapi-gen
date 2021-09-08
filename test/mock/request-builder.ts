@@ -1,5 +1,6 @@
 // WARNING! If any changes are performed in this file MUST be mirrored in `templates/requestBuilder.handlebars`
 /* tslint:disable */
+/* eslint-disable */
 import { Blob, FormData, HttpRequest, HttpParameterCodec, HttpParams, HttpHeaders } from './lib';
 
 /**
@@ -152,7 +153,7 @@ class QueryParameter extends Parameter {
         }
       } else {
         // Append a single parameter whose values are a comma-separated list of key,value,key,value...
-        const array = [];
+        const array: any[] = [];
         for (const key of Object.keys(this.value)) {
           const propVal = this.value[key];
           if (propVal !== null && propVal !== undefined) {

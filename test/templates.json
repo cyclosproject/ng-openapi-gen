@@ -1,0 +1,43 @@
+{
+  "openapi": "3.0",
+  "info": {
+    "title": "Test with only one operation that uses custom handlebars helpers",
+    "version": "1.0"
+  },
+  "servers": [
+    {
+      "url": "/api/{version}",
+      "variables": {
+        "version": {
+          "default": "1.0"
+        }
+      }
+    }
+  ],
+  "tags": [
+    {
+      "name": "tag1",
+      "description": "Description of tag1"
+    }
+  ],
+  "paths": {
+    "/path1": {
+      "parameters": [],
+      "get": {
+        "operationId": "path1Get",
+        "tags": [
+          "tag1"
+        ],
+        "description": "Path 1 GET description",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    }
+  }
+}

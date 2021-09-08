@@ -1,11 +1,12 @@
 import { OpenAPIObject, OperationObject, PathItemObject, ReferenceObject, SchemaObject } from '@loopback/openapi-v3-types';
 import fs from 'fs-extra';
-import $RefParser, { HTTPResolverOptions } from 'json-schema-ref-parser';
+import $RefParser, { HTTPResolverOptions } from '@apidevtools/json-schema-ref-parser';
 import mkdirp from 'mkdirp';
 import path from 'path';
 import { parseOptions } from './cmd-args';
 import { HTTP_METHODS, methodName, simpleName, syncDirs, deleteDirRecursive } from './gen-utils';
 import { Globals } from './globals';
+import { HandlebarsManager } from './handlebars-manager';
 import { Import } from './imports';
 import { Model } from './model';
 import { Operation } from './operation';
@@ -18,6 +19,7 @@ import { Templates } from './templates';
  */
 export class NgOpenApiGen {
   globals: Globals;
+  handlebarsManager: HandlebarsManager;
   templates: Templates;
   models = new Map<string, Model>();
   services = new Map<string, Service>();
@@ -36,6 +38,7 @@ export class NgOpenApiGen {
     }
     this.tempDir = this.outDir + '$';
 
+    this.initHandlebars();
     this.readTemplates();
     this.readModels();
     this.readServices();
@@ -112,13 +115,18 @@ export class NgOpenApiGen {
     fs.writeFileSync(file, ts, { encoding: 'utf-8' });
   }
 
+  private initHandlebars() {
+    this.handlebarsManager = new HandlebarsManager();
+    this.handlebarsManager.readCustomJsFile(this.options);
+  }
+
   private readTemplates() {
     const hasLib = __dirname.endsWith(path.sep + 'lib');
     const builtInDir = path.join(__dirname, hasLib ? '../templates' : 'templates');
     const customDir = this.options.templates || '';
     this.globals = new Globals(this.options);
     this.globals.rootUrl = this.readRootUrl();
-    this.templates = new Templates(builtInDir, customDir);
+    this.templates = new Templates(builtInDir, customDir, this.handlebarsManager.instance);
     this.templates.setGlobals(this.globals);
   }
 

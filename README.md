@@ -300,6 +300,47 @@ components:
         - INTERNAL_SERVER_ERROR
 ```
 
+## Customizing templates
+
+You can customize the Handlebars templates by copying the desired files from the [templates](https://github.com/cyclosproject/ng-openapi-gen/tree/master/templates) folder (only the ones you need to customize) to some folder in your project, and then reference it in the configuration file.
+
+For example, to make objects extend a base interface, copy the 
+[object.handlebars](https://github.com/cyclosproject/ng-openapi-gen/tree/master/templates) file to your `src/templates` folder. 
+Then, in `ng-openapi-gen.json` file, set the following: `"templates": "src/templates"`.
+Finally, the customized `src/templates/object.handlebars` would look like the following (based on the 0.17.2 version, subject to change in the future):
+
+```handlebars
+{{^hasSuperClasses}}import { BaseModel } from
+'app/base-model';{{/hasSuperClasses}}
+
+export interface {{typeName}}
+{{#hasSuperClasses}} extends {{#superClasses}}{{{.}}}{{^@last}},
+{{/@last}}{{/superClasses}}{{/hasSuperClasses}}
+{{^hasSuperClasses}} extends BaseModel{{/hasSuperClasses}}
+{
+{{#properties}}
+{{{tsComments}}}{{{identifier}}}{{^required}}?{{/required}}: {{{type}}};
+{{/properties}}
+{{#additionalPropertiesType}}
+
+[key: string]: {{{.}}};
+{{/additionalPropertiesType}}
+}
+```
+
+## Custom Handlebars helpers
+
+You can integrate your own Handlebar helpers for custom templates. To do so simply provide a `handlebars.js` file in the same directory as your templates that exports a function that recieves the Handlebars instance that will be used when generating the code from your templates.
+
+```js
+module.exports = function(handlebars) {
+  // Adding a custom handlebars helper: loud
+  handlebars.registerHelper('loud', function (aString) {
+    return aString.toUpperCase()
+  });
+};
+```
+
 ## Developing and contributing
 
 The generator itself is written in TypeScript. When building, the code is transpiled to JavaScript in the `dist` folder. And the `dist` folder is the one that gets published to NPM. Even to prevent publishing from the wrong path, the `package.json` file has `"private": true`, which gets replaced by `false` in the build process.

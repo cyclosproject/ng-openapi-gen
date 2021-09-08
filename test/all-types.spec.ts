@@ -41,10 +41,11 @@ describe('Generation tests using all-types.json', () => {
       expect(ast.declarations[0]).toEqual(jasmine.any(EnumDeclaration));
       const decl = ast.declarations[0] as EnumDeclaration;
       expect(decl.name).toBe('RefEnum');
-      expect(decl.members.length).toBe(3);
+      expect(decl.members.length).toBe(4);
       expect(decl.members[0]).toBe('ValueA');
       expect(decl.members[1]).toBe('ValueB');
       expect(decl.members[2]).toBe('ValueC');
+      expect(decl.members[3]).toBe('_');
       done();
     });
   });
@@ -165,7 +166,7 @@ describe('Generation tests using all-types.json', () => {
       const decl = ast.declarations[0] as TypeAliasDeclaration;
       expect(decl.name).toBe('Disjunct');
       const text = ts.substring(decl.start || 0, decl.end || ts.length);
-      expect(text).toBe('export type Disjunct = ({ \'ref\'?: (ReferencedInNullableOneOf) } | ABRefObject | XYRefObject | ReferencedInOneOf | EscapedProperties);');
+      expect(text).toBe('export type Disjunct = ({ \'ref\'?: ReferencedInNullableOneOf | null } | ABRefObject | XYRefObject | ReferencedInOneOf | EscapedProperties);');
       done();
     });
   });
@@ -297,6 +298,52 @@ describe('Generation tests using all-types.json', () => {
     });
   });
 
+  it('Nullables model', done => {
+    const ref = gen.models.get('Nullables');
+    const ts = gen.templates.apply('model', ref);
+    const parser = new TypescriptParser();
+    parser.parseSource(ts).then(ast => {
+      expect(ast.imports.length).toBe(1);
+      expect(ast.imports.find(i => i.libraryName === './nullable-object')).withContext('nullable-object import').toBeDefined();
+      expect(ast.declarations.length).toBe(1);
+      expect(ast.declarations[0]).toEqual(jasmine.any(InterfaceDeclaration));
+      const decl = ast.declarations[0] as InterfaceDeclaration;
+      expect(decl.name).toBe('Nullables');
+      expect(decl.properties.length).toBe(3);
+      expect(decl.properties[0].name).toBe('inlinedNullableObject');
+      expect(decl.properties[0].type).withContext('inlinedNullableObject property').toBe('null | { \'someProperty\': string }');
+      expect(decl.properties[0].isOptional).toBeFalse();
+      expect(decl.properties[1].name).toBe('nullableObject');
+      expect(decl.properties[1].type).withContext('nullableObject property').toBe('null | NullableObject');
+      expect(decl.properties[1].isOptional).toBeFalse();
+      expect(decl.properties[2].name).toBe('withNullableProperty');
+      expect(decl.properties[2].type).withContext('withNullableProperty property').toBe('{ \'someProperty\': null | NullableObject }');
+      expect(decl.properties[2].isOptional).toBeFalse();
+      done();
+    });
+  });
+
+
+  it('InlineObject model', done => {
+    const ref = gen.models.get('InlineObject');
+    const ts = gen.templates.apply('model', ref);
+    const parser = new TypescriptParser();
+    parser.parseSource(ts).then(ast => {
+      expect(ast.imports.length).toBe(1);
+      expect(ast.imports.find(i => i.libraryName === './ref-enum')).withContext('ref-enum import').toBeDefined();
+      expect(ast.declarations.length).toBe(1);
+      expect(ast.declarations[0]).toEqual(jasmine.any(InterfaceDeclaration));
+      const decl = ast.declarations[0] as InterfaceDeclaration;
+      expect(decl.name).toBe('InlineObject');
+      expect(decl.properties.length).toBe(1);
+      const prop = decl.properties[0];
+      expect(prop.name).toBe('object');
+      expect(prop.type).withContext('object property').toBe('{ \'string\'?: string, \'nullableString\'?: string | null, \'ref\'?: RefEnum, \'nullableRef\'?: RefEnum | null }');
+      expect(prop.isOptional).toBeTrue();
+      done();
+    });
+  });
+
   it('Container model', done => {
     const container = gen.models.get('Container');
     const ts = gen.templates.apply('model', container);
@@ -381,6 +428,7 @@ describe('Generation tests using all-types.json', () => {
       assertProperty('dynamic', '{ [key: string]: XYRefObject }');
       assertProperty('stringEnumProp', '\'a\' | \'b\' | \'c\'');
       assertProperty('intEnumProp', '1 | 2 | 3');
+      assertProperty('boolEnumProp', 'false');
 
       done();
     });

@@ -7,6 +7,7 @@ import { Options } from './options';
 import { Model } from './model';
 
 export const HTTP_METHODS = ['get', 'put', 'post', 'delete', 'options', 'head', 'patch', 'trace'];
+type SchemaOrRef = SchemaObject | ReferenceObject;
 
 /**
  * Returns the simple name, that is, the last part after '/'
@@ -50,14 +51,14 @@ export function modelFile(pathToModels: string, name: string, options: Options):
 }
 
 /**
- * Returns the namespace path, that is, the part before the last '.' splitted by '/' instead of '.'.
+ * Returns the namespace path, that is, the part before the last '.' split by '/' instead of '.'.
  * If there's no namespace, returns undefined.
  */
 export function namespace(name: string): string | undefined {
   name = name.replace(/^\.+/g, '');
   name = name.replace(/\.+$/g, '');
   const pos = name.lastIndexOf('.');
-  return pos < 0 ? undefined : name.substring(0, pos).replace('.', '/');
+  return pos < 0 ? undefined : name.substring(0, pos).replace(/\./g, '/');
 }
 
 /**
@@ -159,26 +160,22 @@ export function escapeId(name: string) {
 /**
  * Returns the TypeScript type for the given type and options
  */
-export function tsType(schemaOrRef: SchemaObject | ReferenceObject | undefined, options: Options, container?: Model): string {
-  if (schemaOrRef && (schemaOrRef as SchemaObject).nullable) {
-    return `null | (${toType(schemaOrRef, options)})`;
-  }
-  return toType(schemaOrRef, options, container);
-}
-
-function toType(schemaOrRef: SchemaObject | ReferenceObject | undefined, options: Options, container?: Model): string {
+export function tsType(schemaOrRef: SchemaOrRef | undefined, options: Options, openApi: OpenAPIObject, container?: Model): string {
   if (!schemaOrRef) {
     // No schema
     return 'any';
   }
   if (schemaOrRef.$ref) {
     // A reference
+    const resolved = resolveRef(openApi, schemaOrRef.$ref);
+    const nullable = !!(resolved && (resolved as SchemaObject).nullable);
+    const prefix = nullable ? 'null | ' : '';
     const name = simpleName(schemaOrRef.$ref);
     if (container && container.name === name) {
       // When referencing the same container, use its type name
-      return container.typeName;
+      return prefix + container.typeName;
     } else {
-      return qualifiedName(name, options);
+      return prefix + qualifiedName(name, options);
     }
   }
   const schema = schemaOrRef as SchemaObject;
@@ -186,20 +183,25 @@ function toType(schemaOrRef: SchemaObject | ReferenceObject | undefined, options
   // An union of types
   const union = schema.oneOf || schema.anyOf || [];
   if (union.length > 0) {
-    return `(${union.map(u => toType(u, options, container)).join(' | ')})`;
-  }
-
-  // All the types
-  const allOf = schema.allOf || [];
-  if (allOf.length > 0) {
-    return allOf.map(u => toType(u, options, container)).join(' & ');
+    if (union.length > 1) {
+      return `(${union.map(u => tsType(u, options, openApi, container)).join(' | ')})`;
+    } else {
+      return union.map(u => tsType(u, options, openApi, container)).join(' | ');
+    }
   }
 
   const type = schema.type || 'any';
 
   // An array
   if (type === 'array' || schema.items) {
-    return `Array<${toType(schema.items || {}, options, container)}>`;
+    return `Array<${tsType(schema.items || {}, options, openApi, container)}>`;
+  }
+
+  // All the types
+  const allOf = schema.allOf || [];
+  let intersectionType: string[] = [];
+  if (allOf.length > 0) {
+    intersectionType = allOf.map(u => tsType(u, options, openApi, container));
   }
 
   // An object
@@ -210,6 +212,9 @@ function toType(schemaOrRef: SchemaObject | ReferenceObject | undefined, options
     const required = schema.required;
     for (const propName of Object.keys(properties)) {
       const property = properties[propName];
+      if (!property) {
+        continue;
+      }
       const propRequired = required && required.includes(propName);
       if (first) {
         first = false;
@@ -220,23 +225,31 @@ function toType(schemaOrRef: SchemaObject | ReferenceObject | undefined, options
       if (!propRequired) {
         result += '?';
       }
-      result += `: ${toType(property, options, container)}`;
+      let propertyType = tsType(property, options, openApi, container);
+      if ((property as SchemaObject).nullable) {
+        propertyType = `${propertyType} | null`;
+      }
+      result += `: ${propertyType}`;
     }
     if (schema.additionalProperties) {
       const additionalProperties = schema.additionalProperties === true ? {} : schema.additionalProperties;
       if (!first) {
         result += ', ';
       }
-      result += `[key: string]: ${toType(additionalProperties, options, container)}`;
+      result += `[key: string]: ${tsType(additionalProperties, options, openApi, container)}`;
     }
     result += ' }';
-    return result;
+    intersectionType.push(result);
+  }
+
+  if (intersectionType.length > 0) {
+    return intersectionType.join(' & ');
   }
 
   // Inline enum
   const enumValues = schema.enum || [];
   if (enumValues.length > 0) {
-    if (type === 'number' || type === 'integer') {
+    if (type === 'number' || type === 'integer' || type === 'boolean') {
       return enumValues.join(' | ');
     } else {
       return enumValues.map(v => `'${jsesc(v)}'`).join(' | ');

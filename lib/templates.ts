@@ -1,5 +1,4 @@
 import fs from 'fs';
-import * as Handlebars from 'handlebars';
 import path from 'path';
 import { Globals } from './globals';
 import eol from 'eol';
@@ -12,27 +11,27 @@ export class Templates {
   private templates: { [key: string]: HandlebarsTemplateDelegate } = {};
   private globals: { [key: string]: any } = {};
 
-  constructor(builtInDir: string, customDir: string) {
+  constructor(builtInDir: string, customDir: string, handlebars: typeof Handlebars) {
     const builtInTemplates = fs.readdirSync(builtInDir);
     const customTemplates = customDir === '' ? [] : fs.readdirSync(customDir);
     // Read all built-in templates, but taking into account an override, if any
     for (const file of builtInTemplates) {
       const dir = customTemplates.includes(file) ? customDir : builtInDir;
-      this.parseTemplate(dir, file);
+      this.parseTemplate(dir, file, handlebars);
     }
     // Also read any custom templates which are not built-in
     for (const file of customTemplates) {
-      this.parseTemplate(customDir, file);
+      this.parseTemplate(customDir, file, handlebars);
     }
   }
 
-  private parseTemplate(dir: string, file: string) {
+  private parseTemplate(dir: string, file: string, handlebars: typeof Handlebars) {
     const baseName = this.baseName(file);
     if (baseName) {
       const text = eol.auto(fs.readFileSync(path.join(dir, file), 'utf-8'));
-      const compiled = Handlebars.compile(text);
+      const compiled = handlebars.compile(text);
       this.templates[baseName] = compiled;
-      Handlebars.registerPartial(baseName, compiled);
+      handlebars.registerPartial(baseName, compiled);
     }
   }
 

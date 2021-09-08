@@ -40,6 +40,12 @@
               },
               {
                 "$ref": "#/components/schemas/AdditionalProperties"
+              },
+              {
+                "$ref": "#/components/schemas/Nullables"
+              },
+              {
+                "$ref": "#/components/schemas/InlineObject"
               }
             ]
           }
@@ -94,7 +100,8 @@
         "enum": [
           "value'A",
           "value'B",
-          "value'C"
+          "value'C",
+          ""
         ]
       },
       "RefIntEnum": {
@@ -124,6 +131,38 @@
         "properties": {
           "name": {
             "type": "string"
+          }
+        }
+      },
+      "InlineObject": {
+        "type": "object",
+        "properties": {
+          "object": {
+            "type": "object",
+            "properties": {
+              "string": {
+                "type": "string"
+              },
+              "nullableString": {
+                "nullable": true,
+                "type": "string"
+              },
+              "ref": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/RefEnum"
+                  }
+                ]
+              },
+              "nullableRef": {
+                "nullable": true,
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/RefEnum"
+                  }
+                ]
+              }
+            }
           }
         }
       },
@@ -281,6 +320,42 @@
           "$ref": "#/components/schemas/a.b.RefObject"
         }
       },
+      "Nullables": {
+        "type": "object",
+        "required": [
+          "nullableObject",
+          "inlinedNullableObject",
+          "withNullableProperty"
+        ],
+        "properties": {
+          "nullableObject": {
+            "$ref": "#/components/schemas/NullableObject"
+          },
+          "withNullableProperty": {
+            "type": "object",
+            "required": [
+              "someProperty"
+            ],
+            "properties": {
+              "someProperty": {
+                "$ref": "#/components/schemas/NullableObject"
+              }
+            }
+          },
+          "inlinedNullableObject": {
+            "type": "object",
+            "nullable": true,
+            "required": [
+              "someProperty"
+            ],
+            "properties": {
+              "someProperty": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
       "Containers": {
         "type": "array",
         "items": {
@@ -420,6 +495,12 @@
                   1,
                   2,
                   3
+                ]
+              },
+              "boolEnumProp": {
+                "type": "boolean",
+                "enum": [
+                  false
                 ]
               },
               "nestedObject": {

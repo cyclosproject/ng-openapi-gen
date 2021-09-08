@@ -157,6 +157,30 @@
       "description": "When specified, does not generate a $Json suffix.",
       "default": false,
       "type": "boolean"
+    },
+    "customizedResponseType": {
+      "type": "object",
+      "description": "Defines which paths to use which responseType, commonly used when build-in deduction can't fullfill your needs",
+      "minProperties": 1,
+      "patternProperties": {
+        ".*": {
+          "required": [
+            "toUse"
+          ],
+          "type": "object",
+          "properties": {
+            "toUse": {
+              "type": "string",
+              "enum": [
+                "arraybuffer",
+                "blob",
+                "json",
+                "document"
+              ]
+            }
+          }
+        }
+      }
     }
   }
 }

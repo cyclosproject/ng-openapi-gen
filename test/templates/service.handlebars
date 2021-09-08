@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { {{baseServiceClass}} } from '../{{baseServiceFile}}';
@@ -12,7 +11,7 @@ import { map, filter } from 'rxjs/operators';
 {{#imports}}import { {{{typeName}}}{{#useAlias}} as {{{qualifiedName}}}{{/useAlias}} } from '{{{file}}}';
 {{/imports}}
 
-{{{tsComments}}}@Injectable({
+{{{loud tsComments}}}@Injectable({
   providedIn: 'root',
 })
 export class {{typeName}} extends {{baseServiceClass}} {

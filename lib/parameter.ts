@@ -1,4 +1,4 @@
-import { ParameterLocation, ParameterObject } from 'openapi3-ts';
+import { OpenAPIObject, ParameterLocation, ParameterObject } from 'openapi3-ts';
 import { escapeId, tsComments, tsType } from './gen-utils';
 import { Options } from './options';
 
@@ -18,14 +18,14 @@ export class Parameter {
   explode?: boolean;
   parameterOptions: string;
 
-  constructor(public spec: ParameterObject, options: Options) {
+  constructor(public spec: ParameterObject, options: Options, openApi: OpenAPIObject) {
     this.name = spec.name;
     this.var = escapeId(this.name);
     this.varAccess = this.var.includes('\'') ? `[${this.var}]` : `.${this.var}`;
     this.tsComments = tsComments(spec.description || '', 2, spec.deprecated);
     this.in = spec.in || 'query';
     this.required = this.in === 'path' || spec.required || false;
-    this.type = tsType(spec.schema, options);
+    this.type = tsType(spec.schema, options, openApi);
     this.style = spec.style;
     this.explode = spec.explode;
     this.parameterOptions = this.createParameterOptions();
@@ -36,7 +36,7 @@ export class Parameter {
     if (this.style) {
       options.style = this.style;
     }
-    if (this.explode) {
+    if (!!this.explode === this.explode) {
       options.explode = this.explode;
     }
     return JSON.stringify(options);

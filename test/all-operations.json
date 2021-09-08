@@ -23,6 +23,9 @@
       "name": "tag2"
     },
     {
+      "name": "tag.tag2.tag3.tag4.tag5"
+    },
+    {
       "name": "unused",
       "description": "Unused description"
     }
@@ -85,6 +88,19 @@
             "description": "GET param 3",
             "schema": {
               "type": "boolean"
+            }
+          },
+          {
+            "name": "get4",
+            "description": "GET param 4",
+            "in": "query",
+            "style": "form",
+            "explode": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
             }
           },
           {
@@ -340,10 +356,30 @@
     },
     "/path5": {
       "get": {
+        "tags": [
+          "tag.tag2.tag3.tag4.tag5"
+        ],
         "summary": "A path that contains a reference to response objects",
         "responses": {
           "200": {
             "$ref": "#/components/responses/RefResp"
+          }
+        }
+      }
+    },
+    "/path6": {
+      "get": {
+        "summary": "This path will return binary by using responseType:\"arraybuffer\" in generated service",
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
           }
         }
       }
