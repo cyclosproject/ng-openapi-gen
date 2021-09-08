@@ -98,7 +98,7 @@ describe('Generation tests using all-types.json', () => {
       expect(decl.name).toBe('NullableObject');
       // There's no support for additional properties in typescript-parser. Check as text.
       const text = ts.substring(decl.start || 0, decl.end || ts.length);
-      expect(text).toContain('= null | ({ \'name\'?: string })');
+      expect(text).toContain('= { \'name\'?: string }');
       done();
     });
   });
@@ -286,14 +286,14 @@ describe('Generation tests using all-types.json', () => {
       expect(decl.name).toBe('AdditionalProperties');
       expect(decl.properties.length).toBe(3);
       expect(decl.properties[0].name).toBe('age');
-      expect(decl.properties[0].type).toBe('null | (number)');
+      expect(decl.properties[0].type).toBe('null | number');
       expect(decl.properties[1].name).toBe('description');
       expect(decl.properties[1].type).toBe('string');
       expect(decl.properties[2].name).toBe('name');
       expect(decl.properties[2].type).toBe('string');
       expect(decl.properties[2].isOptional).toBeFalse();
       const text = ts.substring(decl.start || 0, decl.end || ts.length);
-      expect(text).toContain('[key: string]: (number) | ABRefObject | null | string | undefined;');
+      expect(text).toContain('[key: string]: ABRefObject | null | number | string | undefined;');
       done();
     });
   });
@@ -411,7 +411,7 @@ describe('Generation tests using all-types.json', () => {
       assertProperty('booleanProp', 'boolean');
       assertProperty('anyProp', 'any');
 
-      assertProperty('nullableObject', 'NullableObject');
+      assertProperty('nullableObject', 'null | NullableObject');
       assertProperty('refEnumProp', 'RefEnum', true);
       assertProperty('refObjectProp', 'ABRefObject', true);
       assertProperty('unionProp', 'Union');
