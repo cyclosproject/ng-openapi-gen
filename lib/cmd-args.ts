@@ -10,8 +10,7 @@ const DefaultConfig = 'ng-openapi-gen.json';
 
 function createParser() {
   const argParser = new ArgumentParser({
-    version: pkg.version,
-    addHelp: true,
+    add_help: true,
     description: `
 Generator for API clients described with OpenAPI 3.0 specification for
 Angular 6+ projects. Requires a configuration file, which defaults to
@@ -25,14 +24,23 @@ argument could be set as '--service-suffix Suffix'
 As the only required argument is the input for OpenAPI specification,
 a configuration file is only required if no --input argument is set.`.trim()
   });
-  argParser.addArgument(
-    ['-c', '--config'],
+  argParser.add_argument(
+    '-v',
+    '--version',
+    {
+      action: 'version',
+      version: pkg.version
+    }
+  );
+  argParser.add_argument(
+    '-c',
+    '--config',
     {
       help: `
 The configuration file to be used. If not specified, assumes that
 ${DefaultConfig} in the current directory`.trim(),
       dest: 'config',
-      defaultValue: `./${DefaultConfig}`
+      default: `./${DefaultConfig}`
     }
   );
   const props = schema.properties;
@@ -51,7 +59,7 @@ ${DefaultConfig} in the current directory`.trim(),
     if (kebab !== key) {
       names.push('--' + kebab);
     }
-    argParser.addArgument(names, {
+    argParser.add_argument(...(names as [string]), {
       help: desc.description,
       dest: key
     });
@@ -64,7 +72,7 @@ ${DefaultConfig} in the current directory`.trim(),
  */
 export function parseOptions(sysArgs?: string[]): Options {
   const argParser = createParser();
-  const args = argParser.parseArgs(sysArgs);
+  const args = argParser.parse_args(sysArgs);
   let options: any = {};
   if (args.config) {
     if (fs.existsSync(args.config)) {
