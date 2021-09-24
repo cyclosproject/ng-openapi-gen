@@ -47,20 +47,12 @@ describe('Generation tests using person-place.json', () => {
       expect(ast.imports.find(i => i.libraryName === './pp-entity-model')).withContext('entity import').toBeDefined();
       expect(ast.imports.find(i => i.libraryName === './pp-person-place-model')).withContext('person-place import').toBeDefined();
       expect(ast.declarations.length).toBe(1);
-      expect(ast.declarations[0]).toEqual(jasmine.any(InterfaceDeclaration));
-      const decl = ast.declarations[0] as InterfaceDeclaration;
+      expect(ast.declarations[0]).toEqual(jasmine.any(TypeAliasDeclaration));
+      const decl = ast.declarations[0] as TypeAliasDeclaration;
       expect(decl.name).toBe('PPPersonModel');
-      expect(decl.properties.length).toBe(2);
-      const name = decl.properties.find(p => p.name === 'name');
-      expect(name).withContext('name property').toBeDefined();
-      if (name) {
-        expect(name.type).toBe('string');
-      }
-      const places = decl.properties.find(p => p.name === 'places');
-      expect(places).withContext('places property').toBeDefined();
-      if (places) {
-        expect(places.type).toBe('Array<PPPersonPlaceModel>');
-      }
+      // There's no support for additional properties in typescript-parser. Check as text.
+      const text = ts.substring(decl.start || 0, decl.end || ts.length);
+      expect(text).toContain('PPEntityModel & {\n\'name\'?: string;\n\'places\'?: Array<PPPersonPlaceModel>;\n}');
       done();
     });
   });
@@ -72,18 +64,12 @@ describe('Generation tests using person-place.json', () => {
     parser.parseSource(ts).then(ast => {
       expect(ast.imports.find(i => i.libraryName === './pp-entity-model')).withContext('entity import').toBeDefined();
       expect(ast.declarations.length).toBe(1);
-      expect(ast.declarations[0]).toEqual(jasmine.any(InterfaceDeclaration));
-      const decl = ast.declarations[0] as InterfaceDeclaration;
+      expect(ast.declarations[0]).toEqual(jasmine.any(TypeAliasDeclaration));
+      const decl = ast.declarations[0] as TypeAliasDeclaration;
       expect(decl.name).toBe('PPPlaceModel');
-      expect(decl.properties.length).toBe(1);
-      const description = decl.properties.find(p => p.name === 'description');
-      expect(description).withContext('description property').toBeDefined();
-      if (description) {
-        expect(description.type).toBe('string');
-      }
       // There's no support for additional properties in typescript-parser. Check as text.
       const text = ts.substring(decl.start || 0, decl.end || ts.length);
-      expect(text).toContain('[key: string]: string');
+      expect(text).toContain('PPEntityModel & (PPGpsLocationModel | {\n\n/**\n * Street address\n */\n\'address\'?: string;\n}) & {\n\'description\'\?: string;\n[key: string]: string;\n}');
       done();
     });
   });

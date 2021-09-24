@@ -1,9 +1,10 @@
 import { SchemaObject, OpenAPIObject } from 'openapi3-ts';
 import { EnumValue } from './enum-value';
 import { GenType } from './gen-type';
-import { qualifiedName, simpleName, tsComments, tsType, unqualifiedName } from './gen-utils';
+import { tsComments, tsType, unqualifiedName } from './gen-utils';
 import { Options } from './options';
 import { Property } from './property';
+
 
 /**
  * Context to generate a model
@@ -23,8 +24,6 @@ export class Model extends GenType {
   elementType: string;
 
   // Object properties
-  hasSuperClasses: boolean;
-  superClasses: string[];
   properties: Property[];
   additionalPropertiesType: string;
 
@@ -47,21 +46,19 @@ export class Model extends GenType {
       }
     }
 
-    this.isObject = type === 'object' || !!schema.properties || (schema.allOf || []).length > 0;
+    this.isObject = (type === 'object' || !!schema.properties) && !schema.nullable;
     this.isEnum = (this.enumValues || []).length > 0;
     this.isSimple = !this.isObject && !this.isEnum;
 
     if (this.isObject) {
       // Object
-      this.superClasses = [];
       const propertiesByName = new Map<string, Property>();
       this.collectObject(schema, propertiesByName);
-      this.hasSuperClasses = this.superClasses.length > 0;
       const sortedNames = [...propertiesByName.keys()];
       sortedNames.sort();
       this.properties = sortedNames.map(propName => propertiesByName.get(propName) as Property);
     } else {
-      // Simple / array / enum / union
+      // Simple / array / enum / union / intersection
       this.simpleType = tsType(schema, options, openApi);
     }
     this.collectImports(schema);
@@ -86,19 +83,6 @@ export class Model extends GenType {
   }
 
   private collectObject(schema: SchemaObject, propertiesByName: Map<string, Property>) {
-    const allOf = schema.allOf || [];
-    if (allOf.length > 0) {
-      for (const part of allOf) {
-        if (part.$ref) {
-          // A superclass
-          const ref = simpleName(part.$ref);
-          this.superClasses.push(qualifiedName(ref, this.options));
-        } else {
-          this.collectObject(part, propertiesByName);
-        }
-      }
-    }
-
     if (schema.type === 'object' || !!schema.properties) {
       // An object definition
       const properties = schema.properties || {};

@@ -1,4 +1,4 @@
-export interface {{typeName}}{{#hasSuperClasses}} extends {{#superClasses}}{{{.}}}{{^@last}}, {{/@last}}{{/superClasses}}{{/hasSuperClasses}} {
+export interface {{typeName}} {
 {{#properties}}
 {{{tsComments}}}{{{identifier}}}{{^required}}?{{/required}}: {{{type}}};
 {{/properties}}

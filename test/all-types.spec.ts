@@ -93,11 +93,12 @@ describe('Generation tests using all-types.json', () => {
     parser.parseSource(ts).then(ast => {
       expect(ast.imports.length).toBe(0);
       expect(ast.declarations.length).toBe(1);
-      expect(ast.declarations[0]).toEqual(jasmine.any(InterfaceDeclaration));
-      const decl = ast.declarations[0] as InterfaceDeclaration;
+      expect(ast.declarations[0]).toEqual(jasmine.any(TypeAliasDeclaration));
+      const decl = ast.declarations[0] as TypeAliasDeclaration;
       expect(decl.name).toBe('NullableObject');
-      expect(decl.properties.length).toBe(1);
-      expect(decl.properties[0].type).toBe('string');
+      // There's no support for additional properties in typescript-parser. Check as text.
+      const text = ts.substring(decl.start || 0, decl.end || ts.length);
+      expect(text).toContain('= {\n\'name\'?: string;\n}');
       done();
     });
   });
@@ -126,10 +127,9 @@ describe('Generation tests using all-types.json', () => {
       expect(ast.imports.length).toBe(1);
       expect(ast.imports.find(i => i.libraryName === '../../a/b/ref-object')).withContext('a/b/ref-object import').toBeDefined();
       expect(ast.declarations.length).toBe(1);
-      expect(ast.declarations[0]).toEqual(jasmine.any(InterfaceDeclaration));
-      const decl = ast.declarations[0] as InterfaceDeclaration;
+      expect(ast.declarations[0]).toEqual(jasmine.any(TypeAliasDeclaration));
+      const decl = ast.declarations[0] as TypeAliasDeclaration;
       expect(decl.name).toBe('RefObject');
-      expect(decl.properties.length).toBe(0);
       // There's no support for additional properties in typescript-parser. Check as text.
       const text = ts.substring(decl.start || 0, decl.end || ts.length);
       expect(text).toContain('[key: string]: any');
@@ -149,7 +149,7 @@ describe('Generation tests using all-types.json', () => {
       const decl = ast.declarations[0] as TypeAliasDeclaration;
       expect(decl.name).toBe('Union');
       const text = ts.substring(decl.start || 0, decl.end || ts.length);
-      expect(text).toBe('export type Union = ({ [key: string]: any } | RefEnum | RefIntEnum | RefNamedIntEnum | Container);');
+      expect(text).toBe('export type Union = ({\n[key: string]: any;\n} | RefEnum | RefIntEnum | RefNamedIntEnum | Container);');
       done();
     });
   });
@@ -166,7 +166,7 @@ describe('Generation tests using all-types.json', () => {
       const decl = ast.declarations[0] as TypeAliasDeclaration;
       expect(decl.name).toBe('Disjunct');
       const text = ts.substring(decl.start || 0, decl.end || ts.length);
-      expect(text).toBe('export type Disjunct = ({ \'ref\'?: ReferencedInNullableOneOf | null } | ABRefObject | XYRefObject | ReferencedInOneOf | EscapedProperties);');
+      expect(text).toBe('export type Disjunct = ({\n\'ref\'?: ReferencedInNullableOneOf | null;\n} | ABRefObject | XYRefObject | ReferencedInOneOf | EscapedProperties);');
       done();
     });
   });
@@ -311,13 +311,13 @@ describe('Generation tests using all-types.json', () => {
       expect(decl.name).toBe('Nullables');
       expect(decl.properties.length).toBe(3);
       expect(decl.properties[0].name).toBe('inlinedNullableObject');
-      expect(decl.properties[0].type).withContext('inlinedNullableObject property').toBe('null | { \'someProperty\': string }');
+      expect(decl.properties[0].type).withContext('inlinedNullableObject property').toBe('null | {\n\'someProperty\': string;\n}');
       expect(decl.properties[0].isOptional).toBeFalse();
       expect(decl.properties[1].name).toBe('nullableObject');
       expect(decl.properties[1].type).withContext('nullableObject property').toBe('null | NullableObject');
       expect(decl.properties[1].isOptional).toBeFalse();
       expect(decl.properties[2].name).toBe('withNullableProperty');
-      expect(decl.properties[2].type).withContext('withNullableProperty property').toBe('{ \'someProperty\': null | NullableObject }');
+      expect(decl.properties[2].type).withContext('withNullableProperty property').toBe('{\n\'someProperty\': null | NullableObject;\n}');
       expect(decl.properties[2].isOptional).toBeFalse();
       done();
     });
@@ -338,7 +338,7 @@ describe('Generation tests using all-types.json', () => {
       expect(decl.properties.length).toBe(1);
       const prop = decl.properties[0];
       expect(prop.name).toBe('object');
-      expect(prop.type).withContext('object property').toBe('{ \'string\'?: string, \'nullableString\'?: string | null, \'ref\'?: RefEnum, \'nullableRef\'?: RefEnum | null }');
+      expect(prop.type).withContext('object property').toBe('{\n\'string\'?: string;\n\'nullableString\'?: string | null;\n\'ref\'?: RefEnum;\n\'nullableRef\'?: RefEnum | null;\n}');
       expect(prop.isOptional).toBeTrue();
       done();
     });
@@ -358,18 +358,51 @@ describe('Generation tests using all-types.json', () => {
       expect(ast.imports.find(i => i.libraryName === './nullable-object')).withContext('nullable-object import').toBeDefined();
 
       expect(ast.declarations.length).toBe(1);
-      expect(ast.declarations[0]).toEqual(jasmine.any(InterfaceDeclaration));
-      const decl = ast.declarations[0] as InterfaceDeclaration;
+      expect(ast.declarations[0]).toEqual(jasmine.any(TypeAliasDeclaration));
+      const decl = ast.declarations[0] as TypeAliasDeclaration;
       expect(decl.name).toBe('Container');
-      expect(decl.properties.length).toBe(23);
+      const text = ts.substring(decl.start || 0, decl.end || ts.length);
+
+      function findEndOfType(substr: string) {
+        let recursion = 0;
+        let i = 0;
+        for (i = 0; i < substr.length; i++) {
+          switch (substr.charAt(i)) {
+            case '{':
+              recursion++;
+              break;
+            case '}':
+              if (--recursion < 0) {
+                return i;
+              }
+              break;
+            case ';':
+              if (recursion === 0) {
+                return i;
+              }
+              break;
+          }
+        }
+        return i;
+      }
 
       // Assert the simple types
       function assertProperty(name: string, type: string, required = false) {
-        const prop = decl.properties.find(p => p.name === name);
-        expect(prop).withContext(`${name} property`).toBeDefined();
-        if (prop) {
-          expect(prop.type).withContext(`${name} type`).toEqual(type);
-          expect(prop.isOptional).withContext(`${name} required`).toBe(!required);
+        const idx = text.indexOf(name);
+        if (idx === -1) {
+          fail(`Property not found: ${name}`);
+        }
+        const textFromProperty = text.substring(idx);
+        const start = textFromProperty.indexOf(':');
+        const end = findEndOfType(textFromProperty);
+        expect(textFromProperty.substring(start + 1, end).trim()).withContext(`${name} type`).toBe(type);
+
+        // Test for required or optional
+        const requiredToken = textFromProperty.charAt(start - 1);
+        if (required) {
+          expect(requiredToken).withContext(`${name} required`).not.toBe('?');
+        } else {
+          expect(requiredToken).withContext(`${name} optional`).toBe('?');
         }
       }
       assertProperty('stringProp', 'string');
@@ -390,9 +423,9 @@ describe('Generation tests using all-types.json', () => {
       assertProperty('arrayOfRefEnumsProp', 'Array<RefEnum>');
       assertProperty('arrayOfABRefObjectsProp', 'Array<ABRefObject>');
       assertProperty('arrayOfAnyProp', 'Array<any>');
-      assertProperty('nestedObject', '{ \'p1\'?: string, \'p2\'?: number, ' +
-        '\'deeper\'?: { \'d1\': ABRefObject, \'d2\'?: (string | Array<ABRefObject> | number) } }');
-      assertProperty('dynamic', '{ [key: string]: XYRefObject }');
+      assertProperty('nestedObject', '{\n\'p1\'?: string;\n\'p2\'?: number;\n' +
+        '\'deeper\'?: {\n\'d1\': ABRefObject;\n\'d2\'?: (string | Array<ABRefObject> | number);\n};\n}');
+      assertProperty('dynamic', '{\n[key: string]: XYRefObject;\n}');
       assertProperty('stringEnumProp', '\'a\' | \'b\' | \'c\'');
       assertProperty('intEnumProp', '1 | 2 | 3');
       assertProperty('boolEnumProp', 'false');

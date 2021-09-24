@@ -206,8 +206,7 @@ export function tsType(schemaOrRef: SchemaOrRef | undefined, options: Options, o
 
   // An object
   if (type === 'object' || schema.properties) {
-    let result = '{ ';
-    let first = true;
+    let result = '{\n';
     const properties = schema.properties || {};
     const required = schema.required;
     for (const propName of Object.keys(properties)) {
@@ -215,13 +214,11 @@ export function tsType(schemaOrRef: SchemaOrRef | undefined, options: Options, o
       if (!property) {
         continue;
       }
-      const propRequired = required && required.includes(propName);
-      if (first) {
-        first = false;
-      } else {
-        result += ', ';
+      if ((property as SchemaObject).description) {
+        result += tsComments((property as SchemaObject).description, 0);
       }
       result += `'${propName}'`;
+      const propRequired = required && required.includes(propName);
       if (!propRequired) {
         result += '?';
       }
@@ -229,16 +226,13 @@ export function tsType(schemaOrRef: SchemaOrRef | undefined, options: Options, o
       if ((property as SchemaObject).nullable) {
         propertyType = `${propertyType} | null`;
       }
-      result += `: ${propertyType}`;
+      result += `: ${propertyType};\n`;
     }
     if (schema.additionalProperties) {
       const additionalProperties = schema.additionalProperties === true ? {} : schema.additionalProperties;
-      if (!first) {
-        result += ', ';
-      }
-      result += `[key: string]: ${tsType(additionalProperties, options, openApi, container)}`;
+      result += `[key: string]: ${tsType(additionalProperties, options, openApi, container)};\n`;
     }
-    result += ' }';
+    result += '}';
     intersectionType.push(result);
   }
 
