@@ -25,27 +25,15 @@
     "test:watch": "nodemon --watch './**/*' --exec 'npm run test'"
   },
   "dependencies": {
-    "@loopback/openapi-v3-types": "^1.2.1",
-    "@types/argparse": "^2.0.10",
-    "@types/fs-extra": "^9.0.8",
-    "@types/jsesc": "^2.5.1",
-    "@types/json-schema": "^7.0.7",
-    "@types/lodash": "^4.14.168",
-    "@types/mkdirp": "^1.0.1",
-    "@types/node": "^14.14.35",
-    "@types/rimraf": "^3.0.0",
     "argparse": "^2.0.1",
     "eol": "^0.9.1",
-    "esm": "^3.2.25",
     "fs-extra": "^9.1.0",
     "handlebars": "^4.7.7",
     "jsesc": "^3.0.2",
     "json-schema": "^0.3.0",
-    "json-schema-ref-parser": "^9.0.7",
+    "@apidevtools/json-schema-ref-parser": "^9.0.7",
     "lodash": "^4.17.21",
     "mkdirp": "^1.0.4",
-    "rimraf": "^3.0.2",
-    "ts-node": "^7.0.1",
     "typescript": "^4.2.3"
   },
   "peerDependencies": {
@@ -53,7 +41,15 @@
     "rxjs": ">=6.0.0"
   },
   "devDependencies": {
+    "@loopback/openapi-v3-types": "^1.2.1",
+    "@types/argparse": "^2.0.10",
+    "@types/fs-extra": "^9.0.8",
     "@types/jasmine": "^3.6.6",
+    "@types/jsesc": "^2.5.1",
+    "@types/json-schema": "^7.0.7",
+    "@types/lodash": "^4.14.168",
+    "@types/mkdirp": "^1.0.1",
+    "@types/node": "^14.14.35",
     "jasmine": "^3.6.4",
     "jasmine-spec-reporter": "^6.0.0",
     "jasmine-ts": "^0.3.0",
@@ -61,6 +57,8 @@
     "ncp": "^2.0.0",
     "nodemon": "^2.0.7",
     "replace-in-file": "^6.2.0",
+    "rimraf": "^3.0.2",
+    "ts-node": "^7.0.1",
     "tslint": "^5.20.1",
     "typescript-parser": "^2.6.1"
   }
