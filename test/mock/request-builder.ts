@@ -120,7 +120,6 @@ class PathParameter extends Parameter {
     result = result.replace('%3B', ';');
     result = result.replace('%2C', ',');
     return result;
-    // return super.serializeValue(value, separator);
   }
 }
 
@@ -363,4 +362,3 @@ export class RequestBuilder {
     });
   }
 }
-
