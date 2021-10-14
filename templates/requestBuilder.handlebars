@@ -253,7 +253,7 @@ export class RequestBuilder {
     }
     if (this._bodyContentType === 'application/x-www-form-urlencoded' && value !== null && typeof value === 'object') {
       // Handle URL-encoded data
-      const pairs: string[][] = [];
+      const pairs: Array<[string, string]> = [];
       for (const key of Object.keys(value)) {
         let val = value[key];
         if (!(val instanceof Array)) {
