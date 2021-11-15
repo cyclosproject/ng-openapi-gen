@@ -356,11 +356,16 @@ describe('Generation tests using all-operations.json', () => {
     expect(success).withContext('success response').toBeDefined();
     if (success) {
       expect(success.statusCode).toBe('200');
-      expect(success.content.length).toBe(2);
+      expect(success.content.length).toBe(3);
       const plain = success.content.find(c => c.mediaType === 'text/plain');
       expect(plain).withContext('plain response').toBeDefined();
       if (plain) {
         expect(plain.type).toBe('string');
+      }
+      const binary = success.content.find(c => c.mediaType === 'text/binary');
+      expect(binary).withContext('binary response').toBeDefined();
+      if (binary) {
+        expect(binary.type).toBe('Blob');
       }
       const _any = success.content.find(c => c.mediaType === 'image/*');
       expect(_any).withContext('image response').toBeDefined();
@@ -391,44 +396,70 @@ describe('Generation tests using all-operations.json', () => {
 
     // Assert each variant
     const vars = operation.variants;
-    expect(vars.length).toBe(6); // 3 request bodies x 2 success responses
+    expect(vars.length).toBe(9); // 3 request bodies x 3 success responses
 
-    expect(vars[0].methodName).toBe('path4Put$Json$Plain');
-    expect((vars[0].requestBody as Content).mediaType).toBe('application/json');
-    expect((vars[0].requestBody as Content).type).toBe('RefObject');
-    expect((vars[0].successResponse as Content).mediaType).toBe('text/plain');
-    expect((vars[0].successResponse as Content).type).toBe('string');
+    const jsonPlain = vars[0];
+    expect(jsonPlain.methodName).toBe('path4Put$Json$Plain');
+    expect((jsonPlain.requestBody as Content).mediaType).toBe('application/json');
+    expect((jsonPlain.requestBody as Content).type).toBe('RefObject');
+    expect((jsonPlain.successResponse as Content).mediaType).toBe('text/plain');
+    expect((jsonPlain.successResponse as Content).type).toBe('string');
 
-    expect(vars[1].methodName).toBe('path4Put$Json$Image');
-    expect((vars[1].requestBody as Content).mediaType).toBe('application/json');
-    expect((vars[1].requestBody as Content).type).toBe('RefObject');
-    expect((vars[1].successResponse as Content).mediaType).toBe('image/*');
-    expect((vars[1].successResponse as Content).type).toBe('Blob');
+    const jsonBinary = vars[1];
+    expect(jsonBinary.methodName).toBe('path4Put$Json$Binary');
+    expect((jsonBinary.requestBody as Content).mediaType).toBe('application/json');
+    expect((jsonBinary.requestBody as Content).type).toBe('RefObject');
+    expect((jsonBinary.successResponse as Content).mediaType).toBe('text/binary');
+    expect((jsonBinary.successResponse as Content).type).toBe('Blob');
 
-    expect(vars[2].methodName).toBe('path4Put$Plain$Plain');
-    expect((vars[2].requestBody as Content).mediaType).toBe('text/plain');
-    expect((vars[2].requestBody as Content).type).toBe('string');
-    expect((vars[2].successResponse as Content).mediaType).toBe('text/plain');
-    expect((vars[2].successResponse as Content).type).toBe('string');
+    const jsonImage = vars[2];
+    expect(jsonImage.methodName).toBe('path4Put$Json$Image');
+    expect((jsonImage.requestBody as Content).mediaType).toBe('application/json');
+    expect((jsonImage.requestBody as Content).type).toBe('RefObject');
+    expect((jsonImage.successResponse as Content).mediaType).toBe('image/*');
+    expect((jsonImage.successResponse as Content).type).toBe('Blob');
 
-    expect(vars[3].methodName).toBe('path4Put$Plain$Image');
-    expect((vars[3].requestBody as Content).mediaType).toBe('text/plain');
-    expect((vars[3].requestBody as Content).type).toBe('string');
-    expect((vars[3].successResponse as Content).mediaType).toBe('image/*');
-    expect((vars[3].successResponse as Content).type).toBe('Blob');
+    const plainPlain = vars[3];
+    expect(plainPlain.methodName).toBe('path4Put$Plain$Plain');
+    expect((plainPlain.requestBody as Content).mediaType).toBe('text/plain');
+    expect((plainPlain.requestBody as Content).type).toBe('string');
+    expect((plainPlain.successResponse as Content).mediaType).toBe('text/plain');
+    expect((plainPlain.successResponse as Content).type).toBe('string');
 
-    expect(vars[4].methodName).toBe('path4Put$Any$Plain');
-    expect((vars[4].requestBody as Content).mediaType).toBe('*/*');
-    expect((vars[4].requestBody as Content).type).toBe('Blob');
-    expect((vars[4].successResponse as Content).mediaType).toBe('text/plain');
-    expect((vars[4].successResponse as Content).type).toBe('string');
+    const plainBinary = vars[4];
+    expect(plainBinary.methodName).toBe('path4Put$Plain$Binary');
+    expect((plainBinary.requestBody as Content).mediaType).toBe('text/plain');
+    expect((plainBinary.requestBody as Content).type).toBe('string');
+    expect((plainBinary.successResponse as Content).mediaType).toBe('text/binary');
+    expect((plainBinary.successResponse as Content).type).toBe('Blob');
 
-    expect(vars[5].methodName).toBe('path4Put$Any$Image');
-    expect((vars[5].requestBody as Content).mediaType).toBe('*/*');
-    expect((vars[5].requestBody as Content).type).toBe('Blob');
-    expect((vars[5].successResponse as Content).mediaType).toBe('image/*');
-    expect((vars[5].successResponse as Content).type).toBe('Blob');
+    const plainImage = vars[5];
+    expect(plainImage.methodName).toBe('path4Put$Plain$Image');
+    expect((plainImage.requestBody as Content).mediaType).toBe('text/plain');
+    expect((plainImage.requestBody as Content).type).toBe('string');
+    expect((plainImage.successResponse as Content).mediaType).toBe('image/*');
+    expect((plainImage.successResponse as Content).type).toBe('Blob');
 
+    const anyPlain = vars[6];
+    expect(anyPlain.methodName).toBe('path4Put$Any$Plain');
+    expect((anyPlain.requestBody as Content).mediaType).toBe('*/*');
+    expect((anyPlain.requestBody as Content).type).toBe('Blob');
+    expect((anyPlain.successResponse as Content).mediaType).toBe('text/plain');
+    expect((anyPlain.successResponse as Content).type).toBe('string');
+
+    const anyBinary = vars[7];
+    expect(anyBinary.methodName).toBe('path4Put$Any$Binary');
+    expect((anyBinary.requestBody as Content).mediaType).toBe('*/*');
+    expect((anyBinary.requestBody as Content).type).toBe('Blob');
+    expect((anyBinary.successResponse as Content).mediaType).toBe('text/binary');
+    expect((anyBinary.successResponse as Content).type).toBe('Blob');
+
+    const anyImage = vars[8];
+    expect(anyImage.methodName).toBe('path4Put$Any$Image');
+    expect((anyImage.requestBody as Content).mediaType).toBe('*/*');
+    expect((anyImage.requestBody as Content).type).toBe('Blob');
+    expect((anyImage.successResponse as Content).mediaType).toBe('image/*');
+    expect((anyImage.successResponse as Content).type).toBe('Blob');
   });
 
   it('GET /path5', () => {

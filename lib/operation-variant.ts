@@ -1,7 +1,8 @@
 import { Content } from './content';
 import { Operation } from './operation';
 import { Options } from './options';
-import { tsComments } from './gen-utils';
+import { resolveRef, tsComments } from './gen-utils';
+import { SchemaObject } from 'openapi3-ts';
 
 /**
  * An operation has a variant per distinct possible body content
@@ -27,7 +28,7 @@ export class OperationVariant {
     this.responseMethodName = `${methodName}$Response`;
     if (successResponse) {
       this.resultType = successResponse.type;
-      this.responseType = this.inferResponseType(successResponse.mediaType, operation, options);
+      this.responseType = this.inferResponseType(successResponse, operation, options);
       this.accept = successResponse.mediaType;
     } else {
       this.resultType = 'void';
@@ -42,13 +43,23 @@ export class OperationVariant {
     this.bodyMethodTsComments = tsComments(this.bodyMethodDescription(), 1, operation.deprecated);
   }
 
-  private inferResponseType(mediaType: string, operation: Operation, { customizedResponseType = {} }: Pick<Options, 'customizedResponseType'>): string {
+  private inferResponseType(successResponse: Content, operation: Operation, { customizedResponseType = {} }: Pick<Options, 'customizedResponseType'>): string {
     const customizedResponseTypeByPath = customizedResponseType[operation.path];
     if (customizedResponseTypeByPath) {
       return customizedResponseTypeByPath.toUse;
     }
 
-    mediaType = mediaType.toLowerCase();
+    // When the schema is in binary format, return 'blob'
+    let schemaOrRef = successResponse.spec?.schema || { type: 'string' };
+    if (schemaOrRef.$ref) {
+      schemaOrRef = resolveRef(operation.openApi, schemaOrRef.$ref);
+    }
+    const schema = schemaOrRef as SchemaObject;
+    if (schema.format === 'binary') {
+      return 'blob';
+    }
+
+    const mediaType = successResponse.mediaType.toLowerCase();
     if (mediaType.includes('/json') || mediaType.includes('+json')) {
       return 'json';
     } else if (mediaType.startsWith('text/')) {
