@@ -215,7 +215,7 @@ export function tsType(schemaOrRef: SchemaOrRef | undefined, options: Options, o
         continue;
       }
       if ((property as SchemaObject).description) {
-        result += tsComments((property as SchemaObject).description, 0);
+        result += tsComments((property as SchemaObject).description, 0, (property as SchemaObject).deprecated);
       }
       result += `'${propName}'`;
       const propRequired = required && required.includes(propName);
