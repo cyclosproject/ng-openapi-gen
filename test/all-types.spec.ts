@@ -467,4 +467,44 @@ describe('Generation tests using all-types.json', () => {
       done();
     });
   });
+
+  it('AuditLog model', done => {
+    const audit = gen.models.get('AuditLog');
+    const ts = gen.templates.apply('model', audit);
+    const parser = new TypescriptParser();
+    parser.parseSource(ts).then(ast => {
+      expect(ast.imports.length).toBe(0);
+      expect(ast.declarations.length).toBe(1);
+      expect(ast.declarations[0]).toEqual(jasmine.any(InterfaceDeclaration));
+      const decl = ast.declarations[0] as InterfaceDeclaration;
+      expect(decl.name).toBe('AuditLog');
+      expect(decl.properties.length).toBe(4);
+      expect(decl.properties[0].name).toBe('date');
+      expect(decl.properties[1].name).toBe('id');
+      expect(decl.properties[2].name).toBe('text');
+      expect(decl.properties[3].name).toBe('type');
+      expect(decl.properties[3].isOptional).toBeFalse();
+      done();
+    });
+  });
+
+  it('AuditCdr model', done => {
+    const audit = gen.models.get('AuditCdr');
+    const ts = gen.templates.apply('model', audit);
+    const parser = new TypescriptParser();
+    parser.parseSource(ts).then(ast => {
+      expect(ast.imports.length).toBe(1);
+      expect(ast.imports.find(i => i.libraryName === './audit-log')).withContext('audit-log import').toBeDefined();
+      expect(ast.declarations.length).toBe(1);
+      expect(ast.declarations[0]).toEqual(jasmine.any(InterfaceDeclaration));
+      const decl = ast.declarations[0] as InterfaceDeclaration;
+      expect(decl.name).toBe('AuditCdr');
+      expect(decl.properties.length).toBe(4);
+      expect(decl.properties[0].name).toBe('callEndDate');
+      expect(decl.properties[1].name).toBe('callFrom');
+      expect(decl.properties[2].name).toBe('callStartDate');
+      expect(decl.properties[3].name).toBe('callTo');
+      done();
+    });
+  });
 });

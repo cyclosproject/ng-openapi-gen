@@ -46,6 +46,9 @@
               },
               {
                 "$ref": "#/components/schemas/InlineObject"
+              },
+              {
+                "$ref": "#/components/schemas/AuditCdr"
               }
             ]
           }
@@ -540,6 +543,62 @@
                     }
                   }
                 }
+              }
+            }
+          }
+        ]
+      },
+      "AuditLog": {
+        "required": [
+          "type"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "type": {
+            "type": "string"
+          },
+          "text": {
+            "type": "string"
+          }
+        },
+        "discriminator": {
+          "propertyName": "type"
+        }
+      },
+      "AuditCdr": {
+        "required": [
+          "operationType",
+          "severity"
+        ],
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/AuditLog"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "callFrom": {
+                "type": "string"
+              },
+              "callTo": {
+                "type": "string"
+              },
+              "callStartDate": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "callEndDate": {
+                "type": "string",
+                "format": "date-time"
               }
             }
           }

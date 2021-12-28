@@ -115,5 +115,8 @@ export class Model extends GenType {
         this.additionalPropertiesType = [...propTypes].sort().join(' | ');
       }
     }
+    if (schema.allOf) {
+      schema.allOf.forEach(s => this.collectObject(s, propertiesByName));
+    }
   }
 }
