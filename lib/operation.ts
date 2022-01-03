@@ -1,4 +1,4 @@
-import { upperFirst, last } from 'lodash';
+import { upperFirst, lowerFirst, last } from 'lodash';
 import { ContentObject, MediaTypeObject, OpenAPIObject, OperationObject, ParameterObject, PathItemObject, ReferenceObject, RequestBodyObject, ResponseObject, SecurityRequirementObject, SecuritySchemeObject } from 'openapi3-ts';
 import { Content } from './content';
 import { resolveRef, typeName } from './gen-utils';
@@ -37,7 +37,7 @@ export class Operation {
     public spec: OperationObject,
     public options: Options) {
     this.path = this.path.replace(/\'/g, '\\\'');
-    this.tags = spec.tags || [];
+    this.tags = this.getTags();
     this.pathVar = `${upperFirst(id)}Path`;
     this.methodName = spec['x-operation-name'] || this.id;
 
@@ -215,4 +215,12 @@ export class Operation {
     }
   }
 
+  /**
+   * Make tags safe to fix missing operations in generated files
+   * Fix issue: https://github.com/cyclosproject/ng-openapi-gen/issues/190
+   */
+  private getTags(): string[] {
+    const tags = this.spec.tags || [];
+    return tags.map((tag) => lowerFirst(tag));
+  }
 }

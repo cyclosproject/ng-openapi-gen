@@ -64,7 +64,7 @@
       "get": {
         "operationId": "path1Get",
         "tags": [
-          "tag1"
+          "Tag1"
         ],
         "description": "Path 1 GET description",
         "parameters": [
