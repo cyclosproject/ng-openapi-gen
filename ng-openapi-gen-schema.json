@@ -3,9 +3,7 @@
   "id": "https://github.com/cyclosproject/ng-openapi-gen/blob/master/ng-openapi-gen-schema.json",
   "title": "Options for ng-openapi-gen",
   "type": "object",
-  "required": [
-    "input"
-  ],
+  "required": ["input"],
   "properties": {
     "$schema": {
       "type": "string"
@@ -131,11 +129,7 @@
     "enumStyle": {
       "description": "Determines how root enums will be generated. Possible values are:\n\n- `alias`: just generate a type alias with the possible values;\n- `upper` for an enum with UPPER_CASE names, and;\n- `pascal` for enum PascalCase names. Defaults to 'pascal'.",
       "default": "pascal",
-      "enum": [
-        "alias",
-        "upper",
-        "pascal"
-      ]
+      "enum": ["alias", "upper", "pascal"]
     },
     "templates": {
       "description": "Custom templates directory. Any `.handlebars` files here will be used instead of the corresponding default.",
@@ -158,25 +152,23 @@
       "default": false,
       "type": "boolean"
     },
+    "experimental": {
+      "description": "When specified, activates experimental features like readOnly ",
+      "default": false,
+      "type": "boolean"
+    },
     "customizedResponseType": {
       "type": "object",
       "description": "Defines which paths to use which responseType, commonly used when build-in deduction can't fullfill your needs",
       "minProperties": 1,
       "patternProperties": {
         ".*": {
-          "required": [
-            "toUse"
-          ],
+          "required": ["toUse"],
           "type": "object",
           "properties": {
             "toUse": {
               "type": "string",
-              "enum": [
-                "arraybuffer",
-                "blob",
-                "json",
-                "document"
-              ]
+              "enum": ["arraybuffer", "blob", "json", "document"]
             }
           }
         }

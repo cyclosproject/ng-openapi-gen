@@ -90,4 +90,7 @@ export interface Options {
       toUse: 'arraybuffer' | 'blob' | 'json' | 'document'
     }
   };
+
+  /** Activates experimental features like readOnly */
+  experimental?: boolean;
 }

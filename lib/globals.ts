@@ -5,7 +5,6 @@ import { Options } from './options';
  * Stores the global variables used on generation
  */
 export class Globals {
-
   configurationClass: string;
   configurationFile: string;
   configurationParams: string;
@@ -15,11 +14,13 @@ export class Globals {
   requestBuilderFile: string;
   responseClass: string;
   responseFile: string;
+  utilsFile?: string;
   moduleClass?: string;
   moduleFile?: string;
   modelIndexFile?: string;
   serviceIndexFile?: string;
   rootUrl?: string;
+  experimental?: boolean;
 
   constructor(options: Options) {
     this.configurationClass = options.configuration || 'ApiConfiguration';
@@ -31,17 +32,34 @@ export class Globals {
     this.requestBuilderFile = fileName(this.requestBuilderClass);
     this.responseClass = options.response || 'StrictHttpResponse';
     this.responseFile = fileName(this.responseClass);
+    this.experimental = options.experimental || false;
+
     if (options.module !== false && options.module !== '') {
-      this.moduleClass = options.module === true || options.module == undefined ? 'ApiModule' : options.module;
+      this.moduleClass =
+        options.module === true || options.module == undefined
+          ? 'ApiModule'
+          : options.module;
       // Angular's best practices demands xxx.module.ts, not xxx-module.ts
-      this.moduleFile = fileName(this.moduleClass as string).replace(/\-module$/, '.module');
+      this.moduleFile = fileName(this.moduleClass as string).replace(
+        /\-module$/,
+        '.module'
+      );
     }
     if (options.serviceIndex !== false && options.serviceIndex !== '') {
-      this.serviceIndexFile = options.serviceIndex === true || options.serviceIndex == undefined ? 'services' : options.serviceIndex;
+      this.serviceIndexFile =
+        options.serviceIndex === true || options.serviceIndex == undefined
+          ? 'services'
+          : options.serviceIndex;
     }
     if (options.modelIndex !== false && options.modelIndex !== '') {
-      this.modelIndexFile = options.modelIndex === true || options.modelIndex == undefined ? 'models' : options.modelIndex;
+      this.modelIndexFile =
+        options.modelIndex === true || options.modelIndex == undefined
+          ? 'models'
+          : options.modelIndex;
+    }
+
+    if (this.experimental) {
+      this.utilsFile = 'utils';
     }
   }
-
 }
