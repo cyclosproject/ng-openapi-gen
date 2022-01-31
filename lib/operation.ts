@@ -1,13 +1,13 @@
-import { upperFirst, last } from 'lodash';
+import { last, upperFirst } from 'lodash';
 import { ContentObject, MediaTypeObject, OpenAPIObject, OperationObject, ParameterObject, PathItemObject, ReferenceObject, RequestBodyObject, ResponseObject, SecurityRequirementObject, SecuritySchemeObject } from 'openapi3-ts';
 import { Content } from './content';
 import { resolveRef, typeName } from './gen-utils';
 import { OperationVariant } from './operation-variant';
 import { Options } from './options';
 import { Parameter } from './parameter';
-import { Security } from './security';
 import { RequestBody } from './request-body';
 import { Response } from './response';
+import { Security } from './security';
 
 /**
  * An operation descriptor
@@ -125,27 +125,37 @@ export class Operation {
 
   private collectResponses(): { success: Response | undefined, all: Response[] } {
     let successResponse: Response | undefined = undefined;
-    let responseDesc = undefined;
     const allResponses: Response[] = [];
     const responses = this.spec.responses || {};
     for (const statusCode of Object.keys(responses)) {
-      if (responses[statusCode].$ref) {
-        responseDesc = resolveRef(this.openApi, responses[statusCode].$ref);
-      } else {
-        responseDesc = responses[statusCode] as ResponseObject;
-      }
-      const response = new Response(
-        statusCode,
-        responseDesc.description || '',
-        this.collectContent(responseDesc.content),
-        this.options);
+      const response = this.getResponse(responses[statusCode], statusCode);
       allResponses.push(response);
       const statusInt = Number.parseInt(statusCode.trim(), 10);
-      if (!successResponse && statusInt >= 200 && statusInt < 300) {
+      const successResponseIsReplacable = !successResponse || successResponse.statusCode === 'default';
+      const isSuccessStatusCode = statusInt >= 200 && statusInt < 300;
+      if (successResponseIsReplacable && (isSuccessStatusCode || statusCode === 'default')) {
         successResponse = response;
       }
     }
+
     return { success: successResponse, all: allResponses };
+  }
+
+  private getResponse(responseObject: ResponseObject, statusCode: string): Response {
+    let responseDesc = undefined;
+    if (responseObject.$ref) {
+      responseDesc = resolveRef(this.openApi, responseObject.$ref);
+    } else {
+      responseDesc = responseObject as ResponseObject;
+    }
+    const response = new Response(
+      statusCode,
+      responseDesc.description || '',
+      this.collectContent(responseDesc.content),
+      this.options
+    );
+
+    return response;
   }
 
   /**
