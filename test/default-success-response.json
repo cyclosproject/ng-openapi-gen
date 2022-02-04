@@ -29,12 +29,7 @@
               }
             }
           }
-        },
-        "security": [
-          {
-            "bearerToken": []
-          }
-        ]
+        }
       }
     },
     "/path2": {
@@ -62,24 +57,11 @@
               }
             }
           }
-        },
-        "security": [
-          {
-            "bearerToken": []
-          }
-        ]
+        }
       }
     }
   },
   "components": {
-    "schemas": {},
-    "securitySchemes": {
-      "bearerToken": {
-        "type": "http",
-        "description": "Passes the Access-Token to the service call. Use a value with the format ```xxxxxx.yyyyyyy.zzzzzz```.",
-        "scheme": "bearer",
-        "bearerFormat": "JWT"
-      }
-    }
+    "schemas": {}
   }
 }
