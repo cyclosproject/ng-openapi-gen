@@ -1,0 +1,85 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Test App",
+    "description": "Test Description",
+    "contact": {
+      "name": "Marcell Kiss"
+    },
+    "version": "1.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000"
+    }
+  ],
+  "paths": {
+    "/path1": {
+      "get": {
+        "summary": "Get a default string response",
+        "operationId": "getPath1",
+        "responses": {
+          "default": {
+            "description": "default response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerToken": []
+          }
+        ]
+      }
+    },
+    "/path2": {
+      "get": {
+        "summary": "Get a default number response",
+        "operationId": "getPath2",
+        "responses": {
+          "200": {
+            "description": "default response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "number"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "default response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerToken": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {},
+    "securitySchemes": {
+      "bearerToken": {
+        "type": "http",
+        "description": "Passes the Access-Token to the service call. Use a value with the format ```xxxxxx.yyyyyyy.zzzzzz```.",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}

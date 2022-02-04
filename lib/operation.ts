@@ -127,16 +127,18 @@ export class Operation {
     let successResponse: Response | undefined = undefined;
     const allResponses: Response[] = [];
     const responses = this.spec.responses || {};
+    const responseByType = new Map<string, Response>();
     for (const statusCode of Object.keys(responses)) {
       const response = this.getResponse(responses[statusCode], statusCode);
       allResponses.push(response);
       const statusInt = Number.parseInt(statusCode.trim(), 10);
-      const successResponseIsReplacable = !successResponse || successResponse.statusCode === 'default';
-      const isSuccessStatusCode = statusInt >= 200 && statusInt < 300;
-      if (successResponseIsReplacable && (isSuccessStatusCode || statusCode === 'default')) {
-        successResponse = response;
+      if (statusInt >= 200 && statusInt < 300) {
+        responseByType.set('successResponse', response);
+      } else if (statusCode === 'default') {
+        responseByType.set('defaultResponse', response);
       }
     }
+    successResponse = responseByType.get('successResponse') ?? responseByType.get('defaultResponse');
 
     return { success: successResponse, all: allResponses };
   }
