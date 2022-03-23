@@ -1,7 +1,5 @@
-
 /** Options used by ng-openapi-gen */
 export interface Options {
-
   /** The input file or URL to the OpenAPI 3 specification, JSON or YAML, local file or URL */
   input: string;
 
@@ -87,7 +85,10 @@ export interface Options {
 
   customizedResponseType?: {
     [key: string]: {
-      toUse: 'arraybuffer' | 'blob' | 'json' | 'document'
-    }
+      toUse: 'arraybuffer' | 'blob' | 'json' | 'document';
+    };
   };
+
+  /** Whether to use interface subtyping instead of type composition. Defaults to false */
+  useInheritanceSubtyping?: boolean;
 }

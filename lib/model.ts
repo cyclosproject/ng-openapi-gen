@@ -1,16 +1,20 @@
-import { SchemaObject, OpenAPIObject } from 'openapi3-ts';
-import { EnumValue } from './enum-value';
-import { GenType } from './gen-type';
-import { tsComments, tsType, unqualifiedName } from './gen-utils';
-import { Options } from './options';
-import { Property } from './property';
-
+import { SchemaObject, OpenAPIObject } from "openapi3-ts";
+import { EnumValue } from "./enum-value";
+import { GenType } from "./gen-type";
+import {
+  qualifiedName,
+  simpleName,
+  tsComments,
+  tsType,
+  unqualifiedName,
+} from "./gen-utils";
+import { Options } from "./options";
+import { Property } from "./property";
 
 /**
  * Context to generate a model
  */
 export class Model extends GenType {
-
   // General type
   isSimple: boolean;
   isEnum: boolean;
@@ -24,20 +28,31 @@ export class Model extends GenType {
   elementType: string;
 
   // Object properties
+  hasSuperClasses: boolean;
+  superClasses: string[];
   properties: Property[];
   additionalPropertiesType: string;
 
-  constructor(public openApi: OpenAPIObject, name: string, public schema: SchemaObject, options: Options) {
+  constructor(
+    public openApi: OpenAPIObject,
+    name: string,
+    public schema: SchemaObject,
+    options: Options
+  ) {
     super(name, unqualifiedName, options);
 
-    const description = schema.description || '';
+    const description = schema.description || "";
     this.tsComments = tsComments(description, 0, schema.deprecated);
 
-    const type = schema.type || 'any';
+    const type = schema.type || "any";
 
     // When enumStyle is 'alias' it is handled as a simple type.
-    if (options.enumStyle !== 'alias' && (schema.enum || []).length > 0 && ['string', 'number', 'integer'].includes(type)) {
-      const names = schema['x-enumNames'] as string[] || [];
+    if (
+      options.enumStyle !== "alias" &&
+      (schema.enum || []).length > 0 &&
+      ["string", "number", "integer"].includes(type)
+    ) {
+      const names = (schema["x-enumNames"] as string[]) || [];
       const values = schema.enum || [];
       this.enumValues = [];
       for (let i = 0; i < values.length; i++) {
@@ -46,17 +61,23 @@ export class Model extends GenType {
       }
     }
 
-    this.isObject = (type === 'object' || !!schema.properties) && !schema.nullable;
+    this.isObject =
+      (type === "object" || !!schema.properties) && !schema.nullable;
     this.isEnum = (this.enumValues || []).length > 0;
     this.isSimple = !this.isObject && !this.isEnum;
 
     if (this.isObject) {
       // Object
+      this.superClasses = [];
       const propertiesByName = new Map<string, Property>();
       this.collectObject(schema, propertiesByName);
+      this.hasSuperClasses = this.superClasses.length > 0;
+      console.log(this.superClasses);
       const sortedNames = [...propertiesByName.keys()];
       sortedNames.sort();
-      this.properties = sortedNames.map(propName => propertiesByName.get(propName) as Property);
+      this.properties = sortedNames.map(
+        (propName) => propertiesByName.get(propName) as Property
+      );
     } else {
       // Simple / array / enum / union / intersection
       this.simpleType = tsType(schema, options, openApi);
@@ -67,14 +88,14 @@ export class Model extends GenType {
 
   protected pathToModels(): string {
     if (this.namespace) {
-      const depth = this.namespace.split('/').length;
-      let path = '';
+      const depth = this.namespace.split("/").length;
+      let path = "";
       for (let i = 0; i < depth; i++) {
-        path += '../';
+        path += "../";
       }
       return path;
     }
-    return './';
+    return "./";
   }
 
   protected skipImport(name: string): boolean {
@@ -82,8 +103,15 @@ export class Model extends GenType {
     return this.name === name;
   }
 
-  private collectObject(schema: SchemaObject, propertiesByName: Map<string, Property>) {
-    if (schema.type === 'object' || !!schema.properties) {
+  private collectObject(
+    schema: SchemaObject,
+    propertiesByName: Map<string, Property>
+  ) {
+    if (this.options.useInheritanceSubtyping) {
+      this.collectObjectSuperclasses(schema, propertiesByName);
+    }
+
+    if (schema.type === "object" || !!schema.properties) {
       // An object definition
       const properties = schema.properties || {};
       const required = schema.required || [];
@@ -92,31 +120,60 @@ export class Model extends GenType {
       // See https://github.com/cyclosproject/ng-openapi-gen/issues/68
       const propTypes = new Set<string>();
       const appendType = (type: string) => {
-        if (type.startsWith('null | ')) {
-          propTypes.add('null');
-          propTypes.add(type.substr('null | '.length));
+        if (type.startsWith("null | ")) {
+          propTypes.add("null");
+          propTypes.add(type.substr("null | ".length));
         } else {
           propTypes.add(type);
         }
       };
       for (const propName of propNames) {
-        const prop = new Property(this, propName, properties[propName], required.includes(propName), this.options, this.openApi);
+        const prop = new Property(
+          this,
+          propName,
+          properties[propName],
+          required.includes(propName),
+          this.options,
+          this.openApi
+        );
         propertiesByName.set(propName, prop);
         appendType(prop.type);
         if (!prop.required) {
-          propTypes.add('undefined');
+          propTypes.add("undefined");
         }
       }
       if (schema.additionalProperties === true) {
-        this.additionalPropertiesType = 'any';
+        this.additionalPropertiesType = "any";
       } else if (schema.additionalProperties) {
-        const propType = tsType(schema.additionalProperties, this.options, this.openApi);
+        const propType = tsType(
+          schema.additionalProperties,
+          this.options,
+          this.openApi
+        );
         appendType(propType);
-        this.additionalPropertiesType = [...propTypes].sort().join(' | ');
+        this.additionalPropertiesType = [...propTypes].sort().join(" | ");
       }
     }
     if (schema.allOf) {
-      schema.allOf.forEach(s => this.collectObject(s, propertiesByName));
+      schema.allOf.forEach((s) => this.collectObject(s, propertiesByName));
+    }
+  }
+
+  private collectObjectSuperclasses(
+    schema: SchemaObject,
+    propertiesByName: Map<string, Property>
+  ) {
+    const allOf = schema.allOf || [];
+    if (allOf.length > 0) {
+      for (const part of allOf) {
+        if (part.$ref) {
+          // A superclass
+          const ref = simpleName(part.$ref);
+          this.superClasses.push(qualifiedName(ref, this.options));
+        } else {
+          this.collectObject(part, propertiesByName);
+        }
+      }
     }
   }
 }
