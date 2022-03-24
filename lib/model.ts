@@ -1,15 +1,15 @@
-import { SchemaObject, OpenAPIObject } from "openapi3-ts";
-import { EnumValue } from "./enum-value";
-import { GenType } from "./gen-type";
+import { SchemaObject, OpenAPIObject } from 'openapi3-ts';
+import { EnumValue } from './enum-value';
+import { GenType } from './gen-type';
 import {
   qualifiedName,
   simpleName,
   tsComments,
   tsType,
   unqualifiedName,
-} from "./gen-utils";
-import { Options } from "./options";
-import { Property } from "./property";
+} from './gen-utils';
+import { Options } from './options';
+import { Property } from './property';
 
 /**
  * Context to generate a model
@@ -41,18 +41,18 @@ export class Model extends GenType {
   ) {
     super(name, unqualifiedName, options);
 
-    const description = schema.description || "";
+    const description = schema.description || '';
     this.tsComments = tsComments(description, 0, schema.deprecated);
 
-    const type = schema.type || "any";
+    const type = schema.type || 'any';
 
     // When enumStyle is 'alias' it is handled as a simple type.
     if (
-      options.enumStyle !== "alias" &&
+      options.enumStyle !== 'alias' &&
       (schema.enum || []).length > 0 &&
-      ["string", "number", "integer"].includes(type)
+      ['string', 'number', 'integer'].includes(type)
     ) {
-      const names = (schema["x-enumNames"] as string[]) || [];
+      const names = (schema['x-enumNames'] as string[]) || [];
       const values = schema.enum || [];
       this.enumValues = [];
       for (let i = 0; i < values.length; i++) {
@@ -62,7 +62,7 @@ export class Model extends GenType {
     }
 
     this.isObject =
-      (type === "object" || !!schema.properties) && !schema.nullable;
+      (type === 'object' || !!schema.properties) && !schema.nullable;
     this.isEnum = (this.enumValues || []).length > 0;
     this.isSimple = !this.isObject && !this.isEnum;
 
@@ -88,14 +88,14 @@ export class Model extends GenType {
 
   protected pathToModels(): string {
     if (this.namespace) {
-      const depth = this.namespace.split("/").length;
-      let path = "";
+      const depth = this.namespace.split('/').length;
+      let path = '';
       for (let i = 0; i < depth; i++) {
-        path += "../";
+        path += '../';
       }
       return path;
     }
-    return "./";
+    return './';
   }
 
   protected skipImport(name: string): boolean {
@@ -111,7 +111,7 @@ export class Model extends GenType {
       this.collectObjectSuperclasses(schema, propertiesByName);
     }
 
-    if (schema.type === "object" || !!schema.properties) {
+    if (schema.type === 'object' || !!schema.properties) {
       // An object definition
       const properties = schema.properties || {};
       const required = schema.required || [];
@@ -120,9 +120,9 @@ export class Model extends GenType {
       // See https://github.com/cyclosproject/ng-openapi-gen/issues/68
       const propTypes = new Set<string>();
       const appendType = (type: string) => {
-        if (type.startsWith("null | ")) {
-          propTypes.add("null");
-          propTypes.add(type.substr("null | ".length));
+        if (type.startsWith('null | ')) {
+          propTypes.add('null');
+          propTypes.add(type.substr('null | '.length));
         } else {
           propTypes.add(type);
         }
@@ -139,11 +139,11 @@ export class Model extends GenType {
         propertiesByName.set(propName, prop);
         appendType(prop.type);
         if (!prop.required) {
-          propTypes.add("undefined");
+          propTypes.add('undefined');
         }
       }
       if (schema.additionalProperties === true) {
-        this.additionalPropertiesType = "any";
+        this.additionalPropertiesType = 'any';
       } else if (schema.additionalProperties) {
         const propType = tsType(
           schema.additionalProperties,
@@ -151,7 +151,7 @@ export class Model extends GenType {
           this.openApi
         );
         appendType(propType);
-        this.additionalPropertiesType = [...propTypes].sort().join(" | ");
+        this.additionalPropertiesType = [...propTypes].sort().join(' | ');
       }
     }
     if (schema.allOf) {
