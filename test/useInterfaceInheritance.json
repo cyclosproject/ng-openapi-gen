@@ -1,0 +1,56 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Blah",
+    "version": "1"
+  },
+  "paths": {},
+  "components": {
+    "schemas": {
+      "Foo.Bar.Tazk": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Foo.Bar.TazkBase"
+          }
+        ],
+        "properties": {
+          "taskNumber": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Foo.Bar.TazkBase": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Foo.Bar.Dooz": {
+        "type": "object",
+        "properties": {
+          "doozObject": {
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Foo.Bar.Tazk"
+              }
+            ],
+            "properties": {
+              "doozNumber": {
+                "type": "integer",
+                "format": "int32"
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      }
+    }
+  }
+}

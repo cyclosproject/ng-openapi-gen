@@ -61,8 +61,15 @@ export class Model extends GenType {
       }
     }
 
-    this.isObject =
-      (type === 'object' || !!schema.properties) && !schema.nullable;
+    if (this.options.useInheritanceSubtyping) {
+      this.isObject =
+        type === 'object' ||
+        !!schema.properties ||
+        (schema.allOf || []).length > 0;
+    } else {
+      this.isObject =
+        (type === 'object' || !!schema.properties) && !schema.nullable;
+    }
     this.isEnum = (this.enumValues || []).length > 0;
     this.isSimple = !this.isObject && !this.isEnum;
 

@@ -1,0 +1,7 @@
+{
+  "$schema": "../ng-openapi-gen-schema.json",
+  "input": "useInterfaceInheritance.json",
+  "output": "out/useInterfaceInheritance",
+  "ignoreUnusedModels": false,
+  "useInheritanceSubtyping": true
+}
