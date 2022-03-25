@@ -206,7 +206,7 @@
       "get": {
         "operationId": "path2Get",
         "tags": [
-          "tag1"
+          "Tag1"
         ],
         "summary": "GET on path2",
         "parameters": [

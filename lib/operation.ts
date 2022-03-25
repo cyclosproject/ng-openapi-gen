@@ -1,4 +1,4 @@
-import { last, upperFirst } from 'lodash';
+import { last, lowerFirst, upperFirst } from 'lodash';
 import { ContentObject, MediaTypeObject, OpenAPIObject, OperationObject, ParameterObject, PathItemObject, ReferenceObject, RequestBodyObject, ResponseObject, SecurityRequirementObject, SecuritySchemeObject } from 'openapi3-ts';
 import { Content } from './content';
 import { resolveRef, typeName } from './gen-utils';
@@ -37,7 +37,7 @@ export class Operation {
     public spec: OperationObject,
     public options: Options) {
     this.path = this.path.replace(/\'/g, '\\\'');
-    this.tags = spec.tags || [];
+    this.tags = (spec.tags || []).map(lowerFirst);
     this.pathVar = `${upperFirst(id)}Path`;
     this.methodName = spec['x-operation-name'] || this.id;
 
