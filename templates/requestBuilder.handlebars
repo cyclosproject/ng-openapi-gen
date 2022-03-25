@@ -321,6 +321,9 @@ export class RequestBuilder {
 
     /** Whether to report progress on uploads / downloads */
     reportProgress?: boolean;
+
+    /** Allow passing HttpContext for HttpClient */
+    context?: HttpContext;
   }): HttpRequest<T> {
 
     options = options || {};
@@ -359,7 +362,8 @@ export class RequestBuilder {
       params: httpParams,
       headers: httpHeaders,
       responseType: options.responseType,
-      reportProgress: options.reportProgress
+      reportProgress: options.reportProgress,
+      context: options.context
     });
   }
 }
