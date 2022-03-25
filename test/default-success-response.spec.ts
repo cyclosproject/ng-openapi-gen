@@ -1,17 +1,11 @@
-import { OpenAPIObject } from 'openapi3-ts';
 import { NgOpenApiGen } from '../lib/ng-openapi-gen';
+import options from './default-success-response.config.json';
 import defaultSuccessResponseSpec from './default-success-response.json';
 
-
+const gen = new NgOpenApiGen(defaultSuccessResponseSpec, options);
+gen.generate();
 
 describe('Generation tests using default-success-response.json', () => {
-  let gen: NgOpenApiGen;
-
-  beforeEach(() => {
-    gen = new NgOpenApiGen(defaultSuccessResponseSpec as OpenAPIObject, { input: 'default-success-response.json' });
-    gen.generate();
-  });
-
   it('GET /path1 - default response can be a successResponse', () => {
     const operation = gen.operations.get('getPath1');
     expect(operation).toBeDefined();
