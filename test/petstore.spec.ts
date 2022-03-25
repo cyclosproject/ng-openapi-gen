@@ -39,8 +39,7 @@ describe('Generation tests using petstore.json', () => {
         const type = createPets.parameters[0].type;
         // single optional parameters
         expect(type).toBeDefined();
-        expect(type).toContain('context?: HttpContext');
-        expect(type!.length).toBe(33);
+        expect(type!.replace(/(\r\n|\n|\r| )/gm, "")).toBe('{context?:HttpContext}');
       }
 
       const showPetById = cls.methods.find(m => m.name === 'showPetById');
