@@ -47,7 +47,8 @@ export class Model extends GenType {
       }
     }
 
-    this.isObject = (type === 'object' || !!schema.properties) && !schema.nullable;
+    const hasAllOf = schema.allOf && schema.allOf.length > 0;
+    this.isObject = (type === 'object' || !!schema.properties) && !schema.nullable && !hasAllOf;
     this.isEnum = (this.enumValues || []).length > 0;
     this.isSimple = !this.isObject && !this.isEnum;
 
