@@ -132,7 +132,7 @@ export class Operation {
       const response = this.getResponse(responses[statusCode], statusCode);
       allResponses.push(response);
       const statusInt = Number.parseInt(statusCode.trim(), 10);
-      if (statusInt >= 200 && statusInt < 300) {
+      if (statusInt >= 200 && statusInt < 300 && !responseByType.has('successResponse')) {
         responseByType.set('successResponse', response);
       } else if (statusCode === 'default') {
         responseByType.set('defaultResponse', response);
