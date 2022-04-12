@@ -1,0 +1,25 @@
+{
+  "openapi": "3.0",
+  "info": {
+    "title": "Test with useTempDir",
+    "version": "1.0"
+  },
+  "paths": {
+    "/foo": {
+      "get": {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/plain": {}
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -3,6 +3,7 @@ import fs from 'fs-extra';
 import $RefParser, { HTTPResolverOptions } from '@apidevtools/json-schema-ref-parser';
 import mkdirp from 'mkdirp';
 import path from 'path';
+import os from 'os';
 import { parseOptions } from './cmd-args';
 import { HTTP_METHODS, methodName, simpleName, syncDirs, deleteDirRecursive } from './gen-utils';
 import { Globals } from './globals';
@@ -38,6 +39,7 @@ export class NgOpenApiGen {
     }
     this.tempDir = this.outDir + '$';
 
+    this.initTempDir();
     this.initHandlebars();
     this.readTemplates();
     this.readModels();
@@ -46,6 +48,16 @@ export class NgOpenApiGen {
     // Ignore the unused models if not set to false in options
     if (this.options.ignoreUnusedModels !== false) {
       this.ignoreUnusedModels();
+    }
+  }
+
+  /**
+   * Set the temp dir to a system temporary directory if option useTempDir is set
+   */
+  initTempDir(): void {
+    if (this.options.useTempDir === true) {
+      const systemTempDir = path.join(os.tmpdir(), `ng-openapi-gen-${path.basename(this.outDir)}$`);
+      this.tempDir = systemTempDir;
     }
   }
 
