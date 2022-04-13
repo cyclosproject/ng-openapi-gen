@@ -18,4 +18,17 @@ describe('Generation tests using system temporary directory', () => {
 
   });
 
+  it('Do not use system temp folder when useTempDir is false', () => {
+
+    const optionsWithoutTempDir = { ...options };
+    optionsWithoutTempDir.useTempDir = false;
+
+    const gen = new NgOpenApiGen(templatesSpec as OpenAPIObject, optionsWithoutTempDir);
+    gen.generate();
+
+    const tempDirectory = os.tmpdir();
+    expect(gen.tempDir.startsWith(tempDirectory)).toBeFalse();
+
+  });
+
 });
