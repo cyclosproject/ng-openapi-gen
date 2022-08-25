@@ -27,7 +27,7 @@ For a generator for [Swagger 2.0](https://github.com/OAI/OpenAPI-Specification/b
 
 ## Limitations
 
-- Only standard OpenAPI 3 descriptions will be generated. `ng-swagger-gen` allows several extensions, specially types from JSON schema, but they are out of scope for `ng-openapi-gen`. There is, however, support for a few [vendor extensions](#Supported_vendor_extensions);
+- Only standard OpenAPI 3 descriptions will be generated. `ng-swagger-gen` allows several extensions, specially types from JSON schema, but they are out of scope for `ng-openapi-gen`. There is, however, support for a few [vendor extensions](#supported-vendor-extensions);
 - Servers per operation are not supported;
 - Only the first server is used as a default root URL in the configuration;
 - No data transformation is ever performed before sending / after returning data.
