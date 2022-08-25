@@ -137,6 +137,16 @@
         "pascal"
       ]
     },
+    "endOfLineStyle": {
+      "description": "Determines how to normalize line endings. Possible values are: `crlf`: normalize line endings to CRLF (Windows, DOS) => \\r\\n. `lf` normalize line endings to LF (Unix, OS X) => \\n. `cr` normalize line endings to CR (Mac OS) => \\r. `auto` normalize line endings for the current operating system. Defaults to 'auto'.",
+      "default": "auto",
+      "enum": [
+        "crlf",
+        "lf",
+        "cr",
+        "auto"
+      ]
+    },
     "templates": {
       "description": "Custom templates directory. Any `.handlebars` files here will be used instead of the corresponding default.",
       "type": "string"
