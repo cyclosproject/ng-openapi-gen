@@ -191,6 +191,11 @@
           }
         }
       }
+    },
+    "useTempDir": {
+      "description": "When specified, will create temporary files in system temporary folder instead of output folder",
+      "default": false,
+      "type": "boolean"
     }
   }
 }
