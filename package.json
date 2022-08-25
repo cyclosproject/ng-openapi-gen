@@ -17,6 +17,7 @@
   "bin": {
     "ng-openapi-gen": "lib/index.js"
   },
+  "main": "lib/ng-openapi-gen.js",
   "scripts": {
     "test": "jasmine-ts --project=tsconfig.json --config=jasmine.json",
     "tslint": "tslint -c tslint.json -p tsconfig.json",

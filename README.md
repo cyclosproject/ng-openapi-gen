@@ -59,7 +59,28 @@ $ npm install -g ng-openapi-gen
 $ ng-openapi-gen --input my-api.yaml --output my-app/src/app/api
 ```
 
-This will expect the file `my-api.yaml` to be in the current directory, and will generate the files on `my-app/src/app/api`.
+Alternativly you can use the generator directly from within your build-script:
+
+```typescript
+import $RefParser from 'json-schema-ref-parser';
+import { NgOpenApiGen } from 'ng-openapi-gen';
+
+const options = {
+  input: "my-api.json",
+  output: "my-app/src/app/api",
+}
+
+// load the openapi-spec and resolve all $refs
+const RefParser = new $RefParser();
+const openApi = await RefParser.bundle(options.input, {
+  dereference: { circular: false }
+});
+
+const ngOpenGen = new NgOpenApiGen(openApi, options);
+ngOpenGen.generate();
+```
+
+This will expect the file `my-api.yaml` (or `my-api.json`) to be in the current directory, and will generate the files on `my-app/src/app/api`.
 
 ## Configuration file and CLI arguments
 
