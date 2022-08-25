@@ -117,9 +117,9 @@ class PathParameter extends Parameter {
   // @ts-ignore
   serializeValue(value: any, separator = ','): string {
     var result = typeof value === 'string' ? encodeURIComponent(value) : super.serializeValue(value, separator);
-    result = result.replace('%3D', '=');
-    result = result.replace('%3B', ';');
-    result = result.replace('%2C', ',');
+    result = result.replace(/%3D/g, '=');
+    result = result.replace(/%3B/g, ';');
+    result = result.replace(/%2C/g, ',');
     return result;
   }
 }

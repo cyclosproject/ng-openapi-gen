@@ -70,9 +70,9 @@ describe('Request builder', () => {
     const rb = new RequestBuilder('http://localhost/api', '/operation/{p1}/{p2}/{p3}', 'post');
     rb.path('p1', 'a');
     rb.path('p2', 'b');
-    rb.path('p3', '%123/');
+    rb.path('p3', '%123==;;,,/');
     const request = rb.build();
-    expect(request.url).toBe('http://localhost/api/operation/a/b/' + encodeURIComponent('%123/'));
+    expect(request.url).toBe('http://localhost/api/operation/a/b/%25123==;;,,%2F');
   });
 
   it('Path parameter, string array value', () => {
