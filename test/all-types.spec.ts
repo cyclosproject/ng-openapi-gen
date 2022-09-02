@@ -508,4 +508,22 @@ describe('Generation tests using all-types.json', () => {
       done();
     });
   });
+
+  it('Circle model', done => {
+    const audit = gen.models.get('Circle');
+    const ts = gen.templates.apply('model', audit);
+    const parser = new TypescriptParser();
+    parser.parseSource(ts).then(ast => {
+      expect(ast.imports.length).toBe(1);
+      expect(ast.imports.find(i => i.libraryName === './shape')).withContext('shape import').toBeDefined();
+      expect(ast.declarations.length).toBe(1);
+      expect(ast.declarations[0]).toEqual(jasmine.any(TypeAliasDeclaration));
+      const decl = ast.declarations[0] as TypeAliasDeclaration;
+      expect(decl.name).toBe('Circle');
+      const text = ts.substring(decl.start || 0, decl.end || ts.length);
+      expect(text).toContain('Circle = Shape & {');
+      expect(text).toContain('\'radius\'?: number');
+      done();
+    });
+  });
 });

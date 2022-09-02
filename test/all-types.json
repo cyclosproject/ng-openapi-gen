@@ -48,6 +48,9 @@
                 "$ref": "#/components/schemas/InlineObject"
               },
               {
+                "$ref": "#/components/schemas/Circle"
+              },
+              {
                 "$ref": "#/components/schemas/AuditCdr"
               }
             ]
@@ -603,6 +606,28 @@
             }
           }
         ]
+      },
+      "Shape": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "Circle": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Shape"
+          }
+        ],
+        "properties": {
+          "radius": {
+            "type": "integer"
+          }
+        },
+        "additionalProperties": false
       }
     }
   }
