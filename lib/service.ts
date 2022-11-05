@@ -13,6 +13,7 @@ export class Service extends GenType {
 
   constructor(tag: TagObject, public operations: Operation[], options: Options) {
     super(tag.name, serviceClass, options);
+    this.tag = tag;
 
     // Angular standards demand that services have a period separating them
     if (this.fileName.endsWith('-service')) {
