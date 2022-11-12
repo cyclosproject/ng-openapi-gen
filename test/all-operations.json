@@ -389,6 +389,22 @@
           }
         }
       }
+    },
+    "/path7": {
+      "get": {
+        "x-operation-name": "InPascalCase",
+        "responses": {
+          "200": {
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {

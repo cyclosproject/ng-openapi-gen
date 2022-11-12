@@ -1,7 +1,7 @@
 import { last, upperFirst } from 'lodash';
 import { ContentObject, MediaTypeObject, OpenAPIObject, OperationObject, ParameterObject, PathItemObject, ReferenceObject, RequestBodyObject, ResponseObject, SecurityRequirementObject, SecuritySchemeObject } from 'openapi3-ts';
 import { Content } from './content';
-import { resolveRef, typeName } from './gen-utils';
+import { methodName as genUtilsMethodName, resolveRef, typeName } from './gen-utils';
 import { OperationVariant } from './operation-variant';
 import { Options } from './options';
 import { Parameter } from './parameter';
@@ -39,7 +39,9 @@ export class Operation {
     this.path = this.path.replace(/\'/g, '\\\'');
     this.tags = spec.tags || [];
     this.pathVar = `${upperFirst(id)}Path`;
-    this.methodName = spec['x-operation-name'] || this.id;
+    this.methodName = spec['x-operation-name']
+      ? genUtilsMethodName(spec['x-operation-name'])
+      : this.id;
 
     // Add both the common and specific parameters
     this.parameters = [

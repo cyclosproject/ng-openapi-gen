@@ -116,7 +116,7 @@ describe('Generation tests using all-operations.json', () => {
     const noTag = gen.services.get('noTag');
     expect(noTag).toBeDefined();
     if (!noTag) return;
-    expect(noTag.operations.length).toBe(4);
+    expect(noTag.operations.length).toBe(5);
 
     const ts = gen.templates.apply('service', noTag);
     const parser = new TypescriptParser();
@@ -161,6 +161,9 @@ describe('Generation tests using all-operations.json', () => {
 
       const withQuotes = cls.methods.find(m => m.name === 'withQuotes');
       expect(withQuotes).withContext(`method withQuotes`).toBeDefined();
+
+      const inPascalCase = cls.methods.find(m => m.name === 'inPascalCase');
+      expect(inPascalCase).withContext(`method in pascal case`).toBeDefined();
 
       done();
     });
