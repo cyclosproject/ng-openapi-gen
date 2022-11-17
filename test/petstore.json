@@ -98,7 +98,7 @@
             "name": "petId",
             "in": "path",
             "required": true,
-            "description": "The id of the pet to retrieve",
+            "description": "Pet's id to retrieve",
             "schema": {
               "type": "string"
             }

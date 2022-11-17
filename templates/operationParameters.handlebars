@@ -1,6 +1,6 @@
 params{{^operation.parametersRequired}}?{{/operation.parametersRequired}}: {
 {{#operation.parameters}}
-{{tsComments}}{{{var}}}{{^required}}?{{/required}}: {{{type}}};{{#tsComments}}{{/tsComments}}
+{{{tsComments}}}{{{var}}}{{^required}}?{{/required}}: {{{type}}};{{#tsComments}}{{/tsComments}}
 {{/operation.parameters}}
     context?: HttpContext
 {{#requestBody}}
