@@ -1,17 +1,19 @@
 /* tslint:disable */
+/* eslint-disable */
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpResponse, HttpContext } from '@angular/common/http';
 import { {{baseServiceClass}} } from '../{{baseServiceFile}}';
 import { {{configurationClass}} } from '../{{configurationFile}}';
 import { {{responseClass}} } from '../{{responseFile}}';
 import { {{requestBuilderClass}} } from '../{{requestBuilderFile}}';
 import { Observable } from 'rxjs';
-import { map, filter } from 'rxjs/operators';
+import { map } from 'rxjs/operators/map';
+import { filter } from 'rxjs/operators/filter';
 
 {{#imports}}import { {{{typeName}}}{{#useAlias}} as {{{qualifiedName}}}{{/useAlias}} } from '{{{file}}}';
 {{/imports}}
 
-{{{loud tsComments}}}@Injectable({
+{{{tsComments}}}@Injectable({
   providedIn: 'root',
 })
 export class {{typeName}} extends {{baseServiceClass}} {
