@@ -6,7 +6,7 @@ ng-openapi-gen: An OpenAPI 3 code generator for Angular
 
 This project is a NPM module that generates model interfaces and web service clients from an [OpenApi 3](https://www.openapis.org/) [specification](https://github.com/OAI/OpenAPI-Specification).
 The generated classes follow the principles of [Angular](https://angular.io/).
-The generated code is compatible with Angular 7+.
+The generated code is compatible with Angular 12+.
 
 For a generator for [Swagger 2.0](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/2.0.md), use [ng-swagger-gen](https://github.com/cyclosproject/ng-swagger-gen) instead.
 
@@ -27,7 +27,7 @@ For a generator for [Swagger 2.0](https://github.com/OAI/OpenAPI-Specification/b
 
 ## Limitations
 
-- Only standard OpenAPI 3 descriptions will be generated. `ng-swagger-gen` allows several extensions, specially types from JSON schema, but they are out of scope for `ng-openapi-gen`. There is, however, support for a few [vendor extensions](#Supported_vendor_extensions);
+- Only standard OpenAPI 3 descriptions will be generated. `ng-swagger-gen` allows several extensions, specially types from JSON schema, but they are out of scope for `ng-openapi-gen`. There is, however, support for a few [vendor extensions](#supported-vendor-extensions);
 - Servers per operation are not supported;
 - Only the first server is used as a default root URL in the configuration;
 - No data transformation is ever performed before sending / after returning data.
@@ -59,7 +59,28 @@ $ npm install -g ng-openapi-gen
 $ ng-openapi-gen --input my-api.yaml --output my-app/src/app/api
 ```
 
-This will expect the file `my-api.yaml` to be in the current directory, and will generate the files on `my-app/src/app/api`.
+Alternativly you can use the generator directly from within your build-script:
+
+```typescript
+import $RefParser from 'json-schema-ref-parser';
+import { NgOpenApiGen } from 'ng-openapi-gen';
+
+const options = {
+  input: "my-api.json",
+  output: "my-app/src/app/api",
+}
+
+// load the openapi-spec and resolve all $refs
+const RefParser = new $RefParser();
+const openApi = await RefParser.bundle(options.input, {
+  dereference: { circular: false }
+});
+
+const ngOpenGen = new NgOpenApiGen(openApi, options);
+ngOpenGen.generate();
+```
+
+This will expect the file `my-api.yaml` (or `my-api.json`) to be in the current directory, and will generate the files on `my-app/src/app/api`.
 
 ## Configuration file and CLI arguments
 

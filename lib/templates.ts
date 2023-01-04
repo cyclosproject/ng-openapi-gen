@@ -1,7 +1,6 @@
 import fs from 'fs';
 import path from 'path';
 import { Globals } from './globals';
-import eol from 'eol';
 
 /**
  * Holds all templates, and know how to apply them
@@ -28,7 +27,7 @@ export class Templates {
   private parseTemplate(dir: string, file: string, handlebars: typeof Handlebars) {
     const baseName = this.baseName(file);
     if (baseName) {
-      const text = eol.auto(fs.readFileSync(path.join(dir, file), 'utf-8'));
+      const text = fs.readFileSync(path.join(dir, file), 'utf-8');
       const compiled = handlebars.compile(text);
       this.templates[baseName] = compiled;
       handlebars.registerPartial(baseName, compiled);

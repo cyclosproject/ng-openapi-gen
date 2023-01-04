@@ -1,7 +1,5 @@
 {
-  "editor.rulers": [
-    140
-  ],
+  "editor.rulers": [140],
   "editor.insertSpaces": true,
   "editor.detectIndentation": false,
   "editor.tabSize": 2,
@@ -19,5 +17,6 @@
     "editor.formatOnPaste": false,
     "editor.suggest.insertMode": "replace"
   },
-  "files.insertFinalNewline": true
+  "files.insertFinalNewline": true,
+  "prettier.requireConfig": true
 }

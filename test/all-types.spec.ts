@@ -496,14 +496,33 @@ describe('Generation tests using all-types.json', () => {
       expect(ast.imports.length).toBe(1);
       expect(ast.imports.find(i => i.libraryName === './audit-log')).withContext('audit-log import').toBeDefined();
       expect(ast.declarations.length).toBe(1);
-      expect(ast.declarations[0]).toEqual(jasmine.any(InterfaceDeclaration));
-      const decl = ast.declarations[0] as InterfaceDeclaration;
+      expect(ast.declarations[0]).toEqual(jasmine.any(TypeAliasDeclaration));
+      const decl = ast.declarations[0] as TypeAliasDeclaration;
       expect(decl.name).toBe('AuditCdr');
-      expect(decl.properties.length).toBe(4);
-      expect(decl.properties[0].name).toBe('callEndDate');
-      expect(decl.properties[1].name).toBe('callFrom');
-      expect(decl.properties[2].name).toBe('callStartDate');
-      expect(decl.properties[3].name).toBe('callTo');
+      const text = ts.substring(decl.start || 0, decl.end || ts.length);
+      expect(text).toContain('AuditCdr = AuditLog & {');
+      expect(text).toContain('\'callEndDate\'?: string');
+      expect(text).toContain('\'callFrom\'?: string');
+      expect(text).toContain('\'callStartDate\'?: string');
+      expect(text).toContain('\'callTo\'?: string');
+      done();
+    });
+  });
+
+  it('Circle model', done => {
+    const audit = gen.models.get('Circle');
+    const ts = gen.templates.apply('model', audit);
+    const parser = new TypescriptParser();
+    parser.parseSource(ts).then(ast => {
+      expect(ast.imports.length).toBe(1);
+      expect(ast.imports.find(i => i.libraryName === './shape')).withContext('shape import').toBeDefined();
+      expect(ast.declarations.length).toBe(1);
+      expect(ast.declarations[0]).toEqual(jasmine.any(TypeAliasDeclaration));
+      const decl = ast.declarations[0] as TypeAliasDeclaration;
+      expect(decl.name).toBe('Circle');
+      const text = ts.substring(decl.start || 0, decl.end || ts.length);
+      expect(text).toContain('Circle = Shape & {');
+      expect(text).toContain('\'radius\'?: number');
       done();
     });
   });

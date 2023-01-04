@@ -11,6 +11,7 @@ import $RefParser, {
 } from '@apidevtools/json-schema-ref-parser';
 import mkdirp from 'mkdirp';
 import path from 'path';
+import os from 'os';
 import { parseOptions } from './cmd-args';
 import {
   HTTP_METHODS,
@@ -27,6 +28,7 @@ import { Operation } from './operation';
 import { Options } from './options';
 import { Service } from './service';
 import { Templates } from './templates';
+import eol from 'eol';
 
 /**
  * Main generator class
@@ -49,6 +51,7 @@ export class NgOpenApiGen {
     }
     this.tempDir = this.outDir + '$';
 
+    this.initTempDir();
     this.initHandlebars();
     this.readTemplates();
     this.readModels();
@@ -57,6 +60,16 @@ export class NgOpenApiGen {
     // Ignore the unused models if not set to false in options
     if (this.options.ignoreUnusedModels !== false) {
       this.ignoreUnusedModels();
+    }
+  }
+
+  /**
+   * Set the temp dir to a system temporary directory if option useTempDir is set
+   */
+  initTempDir(): void {
+    if (this.options.useTempDir === true) {
+      const systemTempDir = path.join(os.tmpdir(), `ng-openapi-gen-${path.basename(this.outDir)}$`);
+      this.tempDir = systemTempDir;
     }
   }
 
@@ -134,13 +147,8 @@ export class NgOpenApiGen {
     }
   }
 
-  private write(
-    template: string,
-    model: any,
-    baseName: string,
-    subDir?: string
-  ) {
-    const ts = this.templates.apply(template, model);
+  private write(template: string, model: any, baseName: string, subDir?: string) {
+    const ts = this.setEndOfLine(this.templates.apply(template, model));
     const file = path.join(this.tempDir, subDir || '.', `${baseName}.ts`);
     const dir = path.dirname(file);
     mkdirp.sync(dir);
@@ -366,6 +374,19 @@ export class NgOpenApiGen {
       Array.prototype.push.apply(result, this.allReferencedNames(schema.items));
     }
     return result;
+  }
+
+  private setEndOfLine(text: string): string {
+    switch (this.options.endOfLineStyle) {
+      case 'cr':
+        return eol.cr(text);
+      case 'lf':
+        return eol.lf(text);
+      case 'crlf':
+        return eol.crlf(text);
+      default:
+        return eol.auto(text);
+    }
   }
 }
 

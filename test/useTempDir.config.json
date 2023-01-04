@@ -1,0 +1,6 @@
+{
+  "$schema": "../ng-openapi-gen-schema.json",
+  "input": "test/useTempDir.json",
+  "output": "out/useTempDir",
+  "useTempDir": true
+}

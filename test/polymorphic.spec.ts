@@ -1,4 +1,4 @@
-import { InterfaceDeclaration, TypescriptParser } from 'typescript-parser';
+import { InterfaceDeclaration, TypeAliasDeclaration, TypescriptParser } from 'typescript-parser';
 import { NgOpenApiGen } from '../lib/ng-openapi-gen';
 import options from './polymorphic.config.json';
 import selfRef from './polymorphic.json';
@@ -13,13 +13,13 @@ describe('Generation of derived classes using polymorphic.json (as is generated 
     const parser = new TypescriptParser();
     parser.parseSource(ts).then((ast) => {
       expect(ast.declarations.length).toBe(1);
-      expect(ast.declarations[0]).toEqual(jasmine.any(InterfaceDeclaration));
-      const decl = ast.declarations[0] as InterfaceDeclaration;
+      expect(ast.declarations[0]).toEqual(jasmine.any(TypeAliasDeclaration));
+      const decl = ast.declarations[0] as TypeAliasDeclaration;
       expect(decl.name).toBe('Tazk');
-      expect(decl.properties).toHaveSize(1);
-      expect(decl.properties[0].name).toBe('taskNumber');
+      const text = ts.substring(decl.start || 0, decl.end || ts.length);
+      expect(text.replace(/\n/g, ' ')).toContain('Tazk = FooBarTazkBase & { \'taskNumber\'?: number; }');
+      done();
     });
-    done();
   });
 
   it('Dooz model', (done) => {
@@ -34,7 +34,7 @@ describe('Generation of derived classes using polymorphic.json (as is generated 
       expect(decl.properties).toHaveSize(1);
       expect(decl.properties[0].name).toBe('doozObject');
       expect(decl.properties[0].type).toBe('FooBarTazk & {\n\'doozNumber\'?: number;\n}');
+      done();
     });
-    done();
   });
 });

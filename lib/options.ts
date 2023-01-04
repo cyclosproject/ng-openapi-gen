@@ -76,6 +76,18 @@ export interface Options {
    */
   enumStyle?: 'alias' | 'upper' | 'pascal';
 
+  /**
+   * Determines how to normalize line endings. Possible values are:
+   *
+   * - `crlf`: normalize line endings to CRLF (Windows, DOS) => \r\n
+   * - `lf` normalize line endings to LF (Unix, OS X) => \n
+   * - `cr` normalize line endings to CR (Mac OS) => \r
+   * - `auto` normalize line endings for the current operating system
+   *
+   * Defaults to 'auto'.
+   */
+  endOfLineStyle?: 'crlf' | 'lf' | 'cr' | 'auto';
+
   /** Custom templates directory. Any `.handlebars` files here will be used instead of the corresponding default. */
   templates?: string;
 
@@ -93,4 +105,6 @@ export interface Options {
 
   /** Activates experimental features like readOnly */
   experimental?: boolean;
+  /** When specified, will create temporary files in system temporary folder instead of next to output folder. */
+  useTempDir?: boolean;
 }
