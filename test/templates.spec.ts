@@ -6,9 +6,9 @@ import * as fs from 'fs';
 import { Options } from '../lib/options';
 
 const gen = new NgOpenApiGen(templatesSpec as OpenAPIObject, options as Options);
-const genCr = new NgOpenApiGen(templatesSpec as OpenAPIObject, {...options, endOfLineStyle: 'cr'} as Options);
-const genLf = new NgOpenApiGen(templatesSpec as OpenAPIObject, {...options, endOfLineStyle: 'lf'} as Options);
-const genCrlf = new NgOpenApiGen(templatesSpec as OpenAPIObject, {...options, endOfLineStyle: 'crlf'} as Options);
+const genCr = new NgOpenApiGen(templatesSpec as OpenAPIObject, { ...options, endOfLineStyle: 'cr' } as Options);
+const genLf = new NgOpenApiGen(templatesSpec as OpenAPIObject, { ...options, endOfLineStyle: 'lf' } as Options);
+const genCrlf = new NgOpenApiGen(templatesSpec as OpenAPIObject, { ...options, endOfLineStyle: 'crlf' } as Options);
 
 gen.generate();
 
@@ -17,7 +17,7 @@ describe('Generation tests using templates.json', () => {
   it('Service template applied with custom Handlebars helper', () => {
     genCr.generate();
     const fileContents = fs.readFileSync(fs.realpathSync(`${gen.outDir}/services/tag-1.service.ts`));
-    expect(/(DESCRIPTION OF TAG1)/.test(fileContents.toString())).toBeTrue();
+    expect(/(Description of tag1)/ug.test(fileContents.toString())).toBeTrue();
   });
 
   it('Normalize end of line to cr', () => {
