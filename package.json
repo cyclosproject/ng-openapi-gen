@@ -26,6 +26,7 @@
     "test:watch": "nodemon --watch './**/*' --exec 'npm run test'"
   },
   "dependencies": {
+    "@angular/common": "^13.1.3",
     "@apidevtools/json-schema-ref-parser": "^9.0.9",
     "argparse": "^2.0.1",
     "eol": "^0.9.1",

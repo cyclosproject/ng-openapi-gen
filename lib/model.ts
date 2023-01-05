@@ -5,12 +5,10 @@ import { tsComments, tsType, unqualifiedName } from './gen-utils';
 import { Options } from './options';
 import { Property } from './property';
 
-
 /**
  * Context to generate a model
  */
 export class Model extends GenType {
-
   // General type
   isSimple: boolean;
   isEnum: boolean;
@@ -27,7 +25,15 @@ export class Model extends GenType {
   properties: Property[];
   additionalPropertiesType: string;
 
-  constructor(public openApi: OpenAPIObject, name: string, public schema: SchemaObject, options: Options) {
+  // Additional properties
+  readOnly: boolean;
+
+  constructor(
+    public openApi: OpenAPIObject,
+    name: string,
+    public schema: SchemaObject,
+    options: Options
+  ) {
     super(name, unqualifiedName, options);
 
     const description = schema.description || '';
@@ -52,13 +58,17 @@ export class Model extends GenType {
     this.isEnum = (this.enumValues || []).length > 0;
     this.isSimple = !this.isObject && !this.isEnum;
 
+    this.readOnly = schema.readOnly || false;
+
     if (this.isObject) {
       // Object
       const propertiesByName = new Map<string, Property>();
       this.collectObject(schema, propertiesByName);
       const sortedNames = [...propertiesByName.keys()];
       sortedNames.sort();
-      this.properties = sortedNames.map(propName => propertiesByName.get(propName) as Property);
+      this.properties = sortedNames.map(
+        (propName) => propertiesByName.get(propName) as Property
+      );
     } else {
       // Simple / array / enum / union / intersection
       this.simpleType = tsType(schema, options, openApi);
@@ -84,11 +94,15 @@ export class Model extends GenType {
     return this.name === name;
   }
 
-  private collectObject(schema: SchemaObject, propertiesByName: Map<string, Property>) {
+  private collectObject(
+    schema: SchemaObject,
+    propertiesByName: Map<string, Property>
+  ) {
     if (schema.type === 'object' || !!schema.properties) {
       // An object definition
       const properties = schema.properties || {};
       const required = schema.required || [];
+      const readOnly = schema.readOnly || false;
       const propNames = Object.keys(properties);
       // When there are additional properties, we need an union of all types for it.
       // See https://github.com/cyclosproject/ng-openapi-gen/issues/68
@@ -102,7 +116,14 @@ export class Model extends GenType {
         }
       };
       for (const propName of propNames) {
-        const prop = new Property(this, propName, properties[propName], required.includes(propName), this.options, this.openApi);
+        const prop = new Property(
+          this,
+          propName,
+          properties[propName],
+          required.includes(propName),
+          this.options,
+          this.openApi
+        );
         propertiesByName.set(propName, prop);
         appendType(prop.type);
         if (!prop.required) {
@@ -112,13 +133,20 @@ export class Model extends GenType {
       if (schema.additionalProperties === true) {
         this.additionalPropertiesType = 'any';
       } else if (schema.additionalProperties) {
-        const propType = tsType(schema.additionalProperties, this.options, this.openApi);
+        const propType = tsType(
+          schema.additionalProperties,
+          this.options,
+          this.openApi
+        );
         appendType(propType);
         this.additionalPropertiesType = [...propTypes].sort().join(' | ');
       }
+
+      // Aditional properties
+      this.readOnly = readOnly;
     }
     if (schema.allOf) {
-      schema.allOf.forEach(s => this.collectObject(s, propertiesByName));
+      schema.allOf.forEach((s) => this.collectObject(s, propertiesByName));
     }
   }
 }

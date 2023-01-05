@@ -103,6 +103,8 @@ export interface Options {
     }
   };
 
+  /** Activates experimental features like readOnly */
+  experimental?: boolean;
   /** When specified, will create temporary files in system temporary folder instead of next to output folder. */
   useTempDir?: boolean;
 }

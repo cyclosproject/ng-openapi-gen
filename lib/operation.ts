@@ -35,7 +35,8 @@ export class Operation {
     public method: string,
     public id: string,
     public spec: OperationObject,
-    public options: Options) {
+    public options: Options
+  ) {
     this.path = this.path.replace(/\'/g, '\\\'');
     this.tags = spec.tags || [];
     this.pathVar = `${upperFirst(id)}Path`;
@@ -46,12 +47,14 @@ export class Operation {
       ...this.collectParameters(pathSpec.parameters),
       ...this.collectParameters(spec.parameters),
     ];
-    if (this.parameters.find(p => p.required)) {
+    if (this.parameters.find((p) => p.required)) {
       this.parametersRequired = true;
     }
     this.hasParameters = this.parameters.length > 0;
 
-    this.security = spec.security ? this.collectSecurity(spec.security) : this.collectSecurity(openApi.security);
+    this.security = spec.security
+      ? this.collectSecurity(spec.security)
+      : this.collectSecurity(openApi.security);
 
     let body = spec.requestBody;
     if (body) {
@@ -59,7 +62,11 @@ export class Operation {
         body = resolveRef(this.openApi, body.$ref);
       }
       body = body as RequestBodyObject;
-      this.requestBody = new RequestBody(body, this.collectContent(body.content), this.options);
+      this.requestBody = new RequestBody(
+        body,
+        this.collectContent(body.content),
+        this.options
+      );
       if (body.required) {
         this.parametersRequired = true;
       }
@@ -75,34 +82,45 @@ export class Operation {
     this.calculateVariants();
   }
 
-  private collectParameters(params: (ParameterObject | ReferenceObject)[] | undefined): Parameter[] {
+  private collectParameters(
+    params: (ParameterObject | ReferenceObject)[] | undefined
+  ): Parameter[] {
     const result: Parameter[] = [];
     if (params) {
       for (let param of params) {
-
         if (param.$ref) {
           param = resolveRef(this.openApi, param.$ref);
         }
         param = param as ParameterObject;
 
         if (param.in === 'cookie') {
-          console.warn(`Ignoring cookie parameter ${this.id}.${param.name} as cookie parameters cannot be sent in XmlHttpRequests.`);
+          console.warn(
+            `Ignoring cookie parameter ${this.id}.${param.name} as cookie parameters cannot be sent in XmlHttpRequests.`
+          );
         } else if (this.paramIsNotExcluded(param)) {
-          result.push(new Parameter(param as ParameterObject, this.options, this.openApi));
+          result.push(
+            new Parameter(param as ParameterObject, this.options, this.openApi)
+          );
         }
       }
-
     }
     return result;
   }
 
-  private collectSecurity(params: (SecurityRequirementObject)[] | undefined): Security[][] {
-    if (!params) { return []; }
+  private collectSecurity(
+    params: SecurityRequirementObject[] | undefined
+  ): Security[][] {
+    if (!params) {
+      return [];
+    }
 
     return params.map((param) => {
-      return Object.keys(param).map(key => {
+      return Object.keys(param).map((key) => {
         const scope = param[key];
-        const security: SecuritySchemeObject = resolveRef(this.openApi, `#/components/securitySchemes/${key}`);
+        const security: SecuritySchemeObject = resolveRef(
+          this.openApi,
+          `#/components/securitySchemes/${key}`
+        );
         return new Security(key, security, scope, this.options, this.openApi);
       });
     });
@@ -117,13 +135,24 @@ export class Operation {
     const result: Content[] = [];
     if (desc) {
       for (const type of Object.keys(desc)) {
-        result.push(new Content(type, desc[type] as MediaTypeObject, this.options, this.openApi));
+        result.push(
+          new Content(
+            type,
+            desc[type] as MediaTypeObject,
+            this.options,
+            this.openApi,
+            this.method
+          )
+        );
       }
     }
     return result;
   }
 
-  private collectResponses(): { success: Response | undefined, all: Response[] } {
+  private collectResponses(): {
+    success: Response | undefined;
+    all: Response[];
+  } {
     let successResponse: Response | undefined = undefined;
     const allResponses: Response[] = [];
     const responses = this.spec.responses || {};
@@ -166,13 +195,15 @@ export class Operation {
    */
   private toPathExpression() {
     return (this.path || '').replace(/\{([^}]+)}/g, (_, pName) => {
-      const param = this.parameters.find(p => p.name === pName);
+      const param = this.parameters.find((p) => p.name === pName);
       const paramName = param ? param.var : pName;
       return '${params.' + paramName + '}';
     });
   }
 
-  private contentsByMethodPart(hasContent?: { content?: Content[] }): Map<string, Content | null> {
+  private contentsByMethodPart(hasContent?: {
+    content?: Content[];
+  }): Map<string, Content | null> {
     const map = new Map<string, Content | null>();
     if (hasContent) {
       const content = hasContent.content;
@@ -202,7 +233,15 @@ export class Operation {
     requestVariants.forEach((requestContent, requestPart) => {
       responseVariants.forEach((responseContent, responsePart) => {
         const methodName = this.methodName + requestPart + responsePart;
-        this.variants.push(new OperationVariant(this, methodName, requestContent, responseContent, this.options));
+        this.variants.push(
+          new OperationVariant(
+            this,
+            methodName,
+            requestContent,
+            responseContent,
+            this.options
+          )
+        );
       });
     });
   }
@@ -221,10 +260,11 @@ export class Operation {
       if (plus >= 0) {
         type = type.substr(plus + 1);
       }
-      return this.options.skipJsonSuffix && type === 'json' ? '' : `$${typeName(type)}`;
+      return this.options.skipJsonSuffix && type === 'json'
+        ? ''
+        : `$${typeName(type)}`;
     } else {
       return '';
     }
   }
-
 }

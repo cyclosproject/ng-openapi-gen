@@ -1,11 +1,25 @@
-import { OpenAPIObject, OperationObject, PathItemObject, ReferenceObject, SchemaObject } from '@loopback/openapi-v3-types';
+import {
+  OpenAPIObject,
+  OperationObject,
+  PathItemObject,
+  ReferenceObject,
+  SchemaObject,
+} from '@loopback/openapi-v3-types';
 import fs from 'fs-extra';
-import $RefParser, { HTTPResolverOptions } from '@apidevtools/json-schema-ref-parser';
+import $RefParser, {
+  HTTPResolverOptions,
+} from '@apidevtools/json-schema-ref-parser';
 import mkdirp from 'mkdirp';
 import path from 'path';
 import os from 'os';
 import { parseOptions } from './cmd-args';
-import { HTTP_METHODS, methodName, simpleName, syncDirs, deleteDirRecursive } from './gen-utils';
+import {
+  HTTP_METHODS,
+  methodName,
+  simpleName,
+  syncDirs,
+  deleteDirRecursive,
+} from './gen-utils';
 import { Globals } from './globals';
 import { HandlebarsManager } from './handlebars-manager';
 import { Import } from './imports';
@@ -29,10 +43,7 @@ export class NgOpenApiGen {
   outDir: string;
   tempDir: string;
 
-  constructor(
-    public openApi: OpenAPIObject,
-    public options: Options) {
-
+  constructor(public openApi: OpenAPIObject, public options: Options) {
     this.outDir = this.options.output || 'src/app/api';
     // Make sure the output path doesn't end with a slash
     if (this.outDir.endsWith('/') || this.outDir.endsWith('\\')) {
@@ -86,7 +97,7 @@ export class NgOpenApiGen {
       // Context object passed to general templates
       const general = {
         services: services,
-        models: models
+        models: models,
       };
 
       // Generate the general files
@@ -98,10 +109,16 @@ export class NgOpenApiGen {
         this.write('module', general, this.globals.moduleFile);
       }
 
-      const modelImports = this.globals.modelIndexFile || this.options.indexFile
-        ? models.map(m => new Import(m.name, './models', m.options)) : null;
+      const modelImports =
+        this.globals.modelIndexFile || this.options.indexFile
+          ? models.map((m) => new Import(m.name, './models', m.options))
+          : null;
       if (this.globals.modelIndexFile) {
-        this.write('modelIndex', { ...general, modelImports }, this.globals.modelIndexFile);
+        this.write(
+          'modelIndex',
+          { ...general, modelImports },
+          this.globals.modelIndexFile
+        );
       }
       if (this.globals.serviceIndexFile) {
         this.write('serviceIndex', general, this.globals.serviceIndexFile);
@@ -110,10 +127,20 @@ export class NgOpenApiGen {
         this.write('index', { ...general, modelImports }, 'index');
       }
 
-      // Now synchronize the temp to the output folder
-      syncDirs(this.tempDir, this.outDir, this.options.removeStaleFiles !== false);
+      if (this.globals.utilsFile) {
+        this.write('utils', general, this.globals.utilsFile);
+      }
 
-      console.info(`Generation from ${this.options.input} finished with ${models.length} models and ${services.length} services.`);
+      // Now synchronize the temp to the output folder
+      syncDirs(
+        this.tempDir,
+        this.outDir,
+        this.options.removeStaleFiles !== false
+      );
+
+      console.info(
+        `Generation from ${this.options.input} finished with ${models.length} models and ${services.length} services.`
+      );
     } finally {
       // Always remove the temporary directory
       deleteDirRecursive(this.tempDir);
@@ -135,11 +162,18 @@ export class NgOpenApiGen {
 
   private readTemplates() {
     const hasLib = __dirname.endsWith(path.sep + 'lib');
-    const builtInDir = path.join(__dirname, hasLib ? '../templates' : 'templates');
+    const builtInDir = path.join(
+      __dirname,
+      hasLib ? '../templates' : 'templates'
+    );
     const customDir = this.options.templates || '';
     this.globals = new Globals(this.options);
     this.globals.rootUrl = this.readRootUrl();
-    this.templates = new Templates(builtInDir, customDir, this.handlebarsManager.instance);
+    this.templates = new Templates(
+      builtInDir,
+      customDir,
+      this.handlebarsManager.instance
+    );
     this.templates.setGlobals(this.globals);
   }
 
@@ -186,7 +220,9 @@ export class NgOpenApiGen {
           } else {
             // Generate an id
             id = methodName(`${opPath}.${method}`);
-            console.warn(`Operation '${opPath}.${method}' didn't specify an 'operationId'. Assuming '${id}'.`);
+            console.warn(
+              `Operation '${opPath}.${method}' didn't specify an 'operationId'. Assuming '${id}'.`
+            );
           }
           if (this.operations.has(id)) {
             // Duplicated id. Add a suffix
@@ -195,14 +231,26 @@ export class NgOpenApiGen {
             while (this.operations.has(newId)) {
               newId = `${id}_${++suffix}`;
             }
-            console.warn(`Duplicate operation id '${id}'. Assuming id ${newId} for operation '${opPath}.${method}'.`);
+            console.warn(
+              `Duplicate operation id '${id}'. Assuming id ${newId} for operation '${opPath}.${method}'.`
+            );
             id = newId;
           }
 
-          const operation = new Operation(this.openApi, opPath, pathSpec, method, id, methodSpec, this.options);
+          const operation = new Operation(
+            this.openApi,
+            opPath,
+            pathSpec,
+            method,
+            id,
+            methodSpec,
+            this.options
+          );
           // Set a default tag if no tags are found
           if (operation.tags.length === 0) {
-            console.warn(`No tags set on operation '${opPath}.${method}'. Assuming '${defaultTag}'.`);
+            console.warn(
+              `No tags set on operation '${opPath}.${method}'. Assuming '${defaultTag}'.`
+            );
             operation.tags.push(defaultTag);
           }
           for (const tag of operation.tags) {
@@ -226,15 +274,19 @@ export class NgOpenApiGen {
     const tags = this.openApi.tags || [];
     for (const tagName of operationsByTag.keys()) {
       if (includeTags.length > 0 && !includeTags.includes(tagName)) {
-        console.debug(`Ignoring tag ${tagName} because it is not listed in the 'includeTags' option`);
+        console.debug(
+          `Ignoring tag ${tagName} because it is not listed in the 'includeTags' option`
+        );
         continue;
       }
       if (excludeTags.length > 0 && excludeTags.includes(tagName)) {
-        console.debug(`Ignoring tag ${tagName} because it is listed in the 'excludeTags' option`);
+        console.debug(
+          `Ignoring tag ${tagName} because it is listed in the 'excludeTags' option`
+        );
         continue;
       }
       const operations = operationsByTag.get(tagName) || [];
-      const tag = tags.find(t => t.name === tagName) || { name: tagName };
+      const tag = tags.find((t) => t.name === tagName) || { name: tagName };
       const service = new Service(tag, operations, this.options);
       this.services.set(tag.name, service);
     }
@@ -255,12 +307,16 @@ export class NgOpenApiGen {
     // Collect dependencies on models themselves
     const referencedModels = Array.from(usedNames);
     usedNames.clear();
-    referencedModels.forEach(name => this.collectDependencies(name, usedNames));
+    referencedModels.forEach((name) =>
+      this.collectDependencies(name, usedNames)
+    );
 
     // Then delete all unused models
     for (const model of this.models.values()) {
       if (!usedNames.has(model.name)) {
-        console.debug(`Ignoring model ${model.name} because it is not used anywhere`);
+        console.debug(
+          `Ignoring model ${model.name} because it is not used anywhere`
+        );
         this.models.delete(model.name);
       }
     }
@@ -275,10 +331,14 @@ export class NgOpenApiGen {
     // Add the model name itself
     usedNames.add(model.name);
     // Then find all referenced names and recurse
-    this.allReferencedNames(model.schema).forEach(n => this.collectDependencies(n, usedNames));
+    this.allReferencedNames(model.schema).forEach((n) =>
+      this.collectDependencies(n, usedNames)
+    );
   }
 
-  private allReferencedNames(schema: SchemaObject | ReferenceObject | undefined): string[] {
+  private allReferencedNames(
+    schema: SchemaObject | ReferenceObject | undefined
+  ): string[] {
     if (!schema) {
       return [];
     }
@@ -287,16 +347,28 @@ export class NgOpenApiGen {
     }
     schema = schema as SchemaObject;
     const result: string[] = [];
-    (schema.allOf || []).forEach(s => Array.prototype.push.apply(result, this.allReferencedNames(s)));
-    (schema.anyOf || []).forEach(s => Array.prototype.push.apply(result, this.allReferencedNames(s)));
-    (schema.oneOf || []).forEach(s => Array.prototype.push.apply(result, this.allReferencedNames(s)));
+    (schema.allOf || []).forEach((s) =>
+      Array.prototype.push.apply(result, this.allReferencedNames(s))
+    );
+    (schema.anyOf || []).forEach((s) =>
+      Array.prototype.push.apply(result, this.allReferencedNames(s))
+    );
+    (schema.oneOf || []).forEach((s) =>
+      Array.prototype.push.apply(result, this.allReferencedNames(s))
+    );
     if (schema.properties) {
       for (const prop of Object.keys(schema.properties)) {
-        Array.prototype.push.apply(result, this.allReferencedNames(schema.properties[prop]));
+        Array.prototype.push.apply(
+          result,
+          this.allReferencedNames(schema.properties[prop])
+        );
       }
     }
     if (typeof schema.additionalProperties === 'object') {
-      Array.prototype.push.apply(result, this.allReferencedNames(schema.additionalProperties));
+      Array.prototype.push.apply(
+        result,
+        this.allReferencedNames(schema.additionalProperties)
+      );
     }
     if (schema.items) {
       Array.prototype.push.apply(result, this.allReferencedNames(schema.items));
@@ -328,16 +400,16 @@ export async function runNgOpenApiGen() {
   const refParser = new $RefParser();
   const input = options.input;
   try {
-    const openApi = await refParser.bundle(input, {
+    const openApi = (await refParser.bundle(input, {
       dereference: {
-        circular: false
+        circular: false,
       },
       resolve: {
         http: {
-          timeout: options.fetchTimeout == null ? 20000 : options.fetchTimeout
-        } as HTTPResolverOptions
-      }
-    }) as OpenAPIObject;
+          timeout: options.fetchTimeout == null ? 20000 : options.fetchTimeout,
+        } as HTTPResolverOptions,
+      },
+    })) as OpenAPIObject;
     const gen = new NgOpenApiGen(openApi, options);
     gen.generate();
   } catch (err) {

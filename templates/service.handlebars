@@ -9,6 +9,7 @@ import { {{requestBuilderClass}} } from '../{{requestBuilderFile}}';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators/map';
 import { filter } from 'rxjs/operators/filter';
+{{#if utilsFile}}import * as Utils from '../{{{utilsFile}}}'; {{/if}}
 
 {{#imports}}import { {{{typeName}}}{{#useAlias}} as {{{qualifiedName}}}{{/useAlias}} } from '{{{file}}}';
 {{/imports}}
