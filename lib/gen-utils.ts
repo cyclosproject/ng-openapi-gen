@@ -5,6 +5,7 @@ import { camelCase, deburr, kebabCase, upperCase, upperFirst } from 'lodash';
 import { OpenAPIObject, ReferenceObject, SchemaObject } from 'openapi3-ts';
 import { Options } from './options';
 import { Model } from './model';
+import { Logger } from './logger';
 
 export const HTTP_METHODS = ['get', 'put', 'post', 'delete', 'options', 'head', 'patch', 'trace'];
 type SchemaOrRef = SchemaObject | ReferenceObject;
@@ -304,7 +305,7 @@ export function deleteDirRecursive(dir: string) {
 /**
  * Synchronizes the files from the source to the target directory. Optionally remove stale files.
  */
-export function syncDirs(srcDir: string, destDir: string, removeStale: boolean): any {
+export function syncDirs(srcDir: string, destDir: string, removeStale: boolean, logger: Logger): any {
   fs.ensureDirSync(destDir);
   const srcFiles = fs.readdirSync(srcDir);
   const destFiles = fs.readdirSync(destDir);
@@ -313,14 +314,14 @@ export function syncDirs(srcDir: string, destDir: string, removeStale: boolean):
     const destFile = path.join(destDir, file);
     if (fs.lstatSync(srcFile).isDirectory()) {
       // A directory: recursively sync
-      syncDirs(srcFile, destFile, removeStale);
+      syncDirs(srcFile, destFile, removeStale, logger);
     } else {
       // Read the content of both files and update if they differ
       const srcContent = fs.readFileSync(srcFile, { encoding: 'utf-8' });
       const destContent = fs.existsSync(destFile) ? fs.readFileSync(destFile, { encoding: 'utf-8' }) : null;
       if (srcContent !== destContent) {
         fs.writeFileSync(destFile, srcContent, { encoding: 'utf-8' });
-        console.debug('Wrote ' + destFile);
+        logger.debug('Wrote ' + destFile);
       }
     }
   }
@@ -330,7 +331,7 @@ export function syncDirs(srcDir: string, destDir: string, removeStale: boolean):
       const destFile = path.join(destDir, file);
       if (!fs.existsSync(srcFile) && fs.lstatSync(destFile).isFile()) {
         fs.unlinkSync(destFile);
-        console.debug('Removed stale file ' + destFile);
+        logger.debug('Removed stale file ' + destFile);
       }
     }
   }

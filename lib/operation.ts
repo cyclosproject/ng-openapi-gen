@@ -8,6 +8,7 @@ import { Parameter } from './parameter';
 import { RequestBody } from './request-body';
 import { Response } from './response';
 import { Security } from './security';
+import { Logger } from './logger';
 
 /**
  * An operation descriptor
@@ -27,6 +28,7 @@ export class Operation {
   allResponses: Response[] = [];
   pathExpression: string;
   variants: OperationVariant[] = [];
+  logger: Logger;
 
   constructor(
     public openApi: OpenAPIObject,
@@ -36,6 +38,8 @@ export class Operation {
     public id: string,
     public spec: OperationObject,
     public options: Options) {
+
+    this.logger = new Logger(options.silent);
     this.path = this.path.replace(/\'/g, '\\\'');
     this.tags = spec.tags || [];
     this.pathVar = `${upperFirst(id)}Path`;
@@ -86,7 +90,7 @@ export class Operation {
         param = param as ParameterObject;
 
         if (param.in === 'cookie') {
-          console.warn(`Ignoring cookie parameter ${this.id}.${param.name} as cookie parameters cannot be sent in XmlHttpRequests.`);
+          this.logger.warn(`Ignoring cookie parameter ${this.id}.${param.name} as cookie parameters cannot be sent in XmlHttpRequests.`);
         } else if (this.paramIsNotExcluded(param)) {
           result.push(new Parameter(param as ParameterObject, this.options, this.openApi));
         }
