@@ -151,7 +151,7 @@ export function serviceClass(baseName: string, options: Options) {
  * Escapes the name of a property / parameter if not valid JS identifier
  */
 export function escapeId(name: string) {
-  if (/^[a-zA-Z]\w+$/.test(name)) {
+  if (/^[a-zA-Z]\w*$/.test(name)) {
     return name;
   } else {
     return `'${name.replace(/\'/g, '\\\'')}'`;
