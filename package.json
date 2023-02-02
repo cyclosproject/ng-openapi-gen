@@ -1,9 +1,9 @@
 {
   "name": "ng-openapi-gen",
-  "version": "0.23.0",
+  "version": "0.24.0",
   "license": "MIT",
   "author": "Cyclos development team",
-  "description": "An OpenAPI 3 codegen for Angular 7+",
+  "description": "An OpenAPI 3 codegen for Angular 12+",
   "keywords": [
     "angular",
     "openapi",
