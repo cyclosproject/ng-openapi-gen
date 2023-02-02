@@ -10,7 +10,7 @@ describe('Test enum generation', () => {
   it('default enum style', () => {
     const genDefault = new NgOpenApiGen(enumsSpec as OpenAPIObject, {
       ...options,
-      output: "out/enumStyle/default/"
+      output: 'out/enumStyle/default/'
     } as Options);
     genDefault.generate();
     const fileContents = fs.readFileSync(fs.realpathSync(`${genDefault.outDir}/models/flavor-enum.ts`));
@@ -25,8 +25,8 @@ describe('Test enum generation', () => {
   it('enum style "alias"', () => {
     const genAlias = new NgOpenApiGen(enumsSpec as OpenAPIObject, {
       ...options,
-      output: "out/enumStyle/alias/",
-      enumStyle: "alias"
+      output: 'out/enumStyle/alias/',
+      enumStyle: 'alias'
     } as Options);
     genAlias.generate();
     const fileContents = fs.readFileSync(fs.realpathSync(`${genAlias.outDir}/models/flavor-enum.ts`));
@@ -36,8 +36,8 @@ describe('Test enum generation', () => {
   it('enum style "upper"', () => {
     const genUpper = new NgOpenApiGen(enumsSpec as OpenAPIObject, {
       ...options,
-      output: "out/enumStyle/upper/",
-      enumStyle: "upper"
+      output: 'out/enumStyle/upper/',
+      enumStyle: 'upper'
     } as Options);
     genUpper.generate();
     const fileContents = fs.readFileSync(fs.realpathSync(`${genUpper.outDir}/models/flavor-enum.ts`));
@@ -52,8 +52,8 @@ describe('Test enum generation', () => {
   it('enum style "pascal"', () => {
     const genPascal = new NgOpenApiGen(enumsSpec as OpenAPIObject, {
       ...options,
-      output: "out/enumStyle/pascal/",
-      enumStyle: "pascal"
+      output: 'out/enumStyle/pascal/',
+      enumStyle: 'pascal'
     } as Options);
     genPascal.generate();
     const fileContents = fs.readFileSync(fs.realpathSync(`${genPascal.outDir}/models/flavor-enum.ts`));
@@ -68,8 +68,8 @@ describe('Test enum generation', () => {
   it('enum style "ignorecase"', () => {
     const genIgnorecase = new NgOpenApiGen(enumsSpec as OpenAPIObject, {
       ...options,
-      output: "out/enumStyle/ignorecase/",
-      enumStyle: "ignorecase"
+      output: 'out/enumStyle/ignorecase/',
+      enumStyle: 'ignorecase'
     } as Options);
     genIgnorecase.generate();
     const fileContents = fs.readFileSync(fs.realpathSync(`${genIgnorecase.outDir}/models/flavor-enum.ts`));
