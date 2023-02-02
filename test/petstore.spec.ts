@@ -48,6 +48,9 @@ describe('Generation tests using petstore.json', () => {
         expect(showPetById.parameters.length).toBe(1);
         const type = showPetById.parameters[0].type;
         expect(type).toContain('petId: string');
+
+        const text = ts.substring(showPetById.parameters[0].start || 0, showPetById.parameters[0].end || ts.length);
+        expect(text).toContain('* Pet\'s id to retrieve');
       }
 
       done();
