@@ -481,6 +481,14 @@
                 "description": "Property of type array of any type",
                 "items": {}
               },
+              "arrayOfNullableStringsProp": {
+                "type": "array",
+                "description": "Nullable strings",
+                "items": {
+                  "type": "string",
+                  "nullable": true
+                }
+              },
               "dynamic": {
                 "type": "object",
                 "additionalProperties": {

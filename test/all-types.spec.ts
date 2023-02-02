@@ -417,6 +417,7 @@ describe('Generation tests using all-types.json', () => {
       assertProperty('unionProp', 'Union');
       assertProperty('containerProp', 'Container');
       assertProperty('arrayOfStringsProp', 'Array<string>');
+      assertProperty('arrayOfNullableStringsProp', 'Array<string | null>');
       assertProperty('arrayOfIntegersProp', 'Array<number>');
       assertProperty('arrayOfNumbersProp', 'Array<number>');
       assertProperty('arrayOfBooleansProp', 'Array<boolean>');

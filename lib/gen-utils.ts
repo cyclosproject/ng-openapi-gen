@@ -197,7 +197,12 @@ export function tsType(schemaOrRef: SchemaOrRef | undefined, options: Options, o
 
   // An array
   if (type === 'array' || schema.items) {
-    return `Array<${tsType(schema.items || {}, options, openApi, container)}>`;
+    const items = schema.items || {};
+    let itemsType = tsType(items, options, openApi, container);
+    if ((items as any)['nullable'] && !itemsType.includes(' | null')) {
+      itemsType += ' | null';
+    }
+    return `Array<${itemsType}>`;
   }
 
   // All the types
