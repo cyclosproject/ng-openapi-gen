@@ -39,7 +39,7 @@ describe('Generation tests using all-operations.json', () => {
         const method = cls.methods.find(m => m.name === name);
         expect(method).withContext(`method ${name}`).toBeDefined();
         if (method) {
-          expect(method.parameters.length).toBe(1);
+          expect(method.parameters.length).toBe(2);
           const type = method.parameters[0].type;
           expect(type).toContain('common1?: RefString');
           expect(type).toContain('common2: RefObject');
@@ -57,7 +57,7 @@ describe('Generation tests using all-operations.json', () => {
         const method = cls.methods.find(m => m.name === name);
         expect(method).withContext(`method ${name}`).toBeDefined();
         if (method) {
-          expect(method.parameters.length).toBe(1);
+          expect(method.parameters.length).toBe(2);
           const type = method.parameters[0].type;
           expect(type).toContain('param1?: RefString');
           expect(type).toContain('param2?: string');
@@ -87,7 +87,7 @@ describe('Generation tests using all-operations.json', () => {
         const method = cls.methods.find(m => m.name === name);
         expect(method).withContext(`method ${name}`).toBeDefined();
         if (method) {
-          expect(method.parameters.length).toBe(1);
+          expect(method.parameters.length).toBe(2);
           const type = method.parameters[0].type;
           expect(type).toContain('common1?: RefString');
           expect(type).toContain('common2: RefObject');
@@ -128,7 +128,7 @@ describe('Generation tests using all-operations.json', () => {
         const method = cls.methods.find(m => m.name === name);
         expect(method).withContext(`method ${name}`).toBeDefined();
         if (method) {
-          expect(method.parameters.length).toBe(1);
+          expect(method.parameters.length).toBe(2);
           const type = method.parameters[0].type;
           expect(type).toContain('id: number');
         }
@@ -140,7 +140,7 @@ describe('Generation tests using all-operations.json', () => {
         const method = cls.methods.find(m => m.name === name);
         expect(method).withContext(`method ${name}`).toBeDefined();
         if (method) {
-          expect(method.parameters.length).toBe(1);
+          expect(method.parameters.length).toBe(2);
           const type = method.parameters[0].type;
           expect(type).toContain('body?: ' + bodyType);
         }

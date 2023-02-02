@@ -27,7 +27,7 @@ describe('Generation tests using petstore.json', () => {
       const listPets = cls.methods.find(m => m.name === 'listPets');
       expect(listPets).withContext(`listPets`).toBeDefined();
       if (listPets) {
-        expect(listPets.parameters.length).toBe(1);
+        expect(listPets.parameters.length).toBe(2);
         const type = listPets.parameters[0].type;
         expect(type).toContain('limit?: number');
       }
@@ -35,17 +35,17 @@ describe('Generation tests using petstore.json', () => {
       const createPets = cls.methods.find(m => m.name === 'createPets');
       expect(createPets).withContext(`createPets`).toBeDefined();
       if (createPets) {
-        expect(createPets.parameters.length).toBe(1);
+        expect(createPets.parameters.length).toBe(2);
         const type = createPets.parameters[0].type;
         // single optional parameters
         expect(type).toBeDefined();
-        expect(type!.replace(/(\r\n|\n|\r| )/gm, '')).toBe('{context?:HttpContext}');
+        expect(type!.replace(/(\r\n|\n|\r| )/gm, '')).toBe('{}');
       }
 
       const showPetById = cls.methods.find(m => m.name === 'showPetById');
       expect(showPetById).withContext(`showPetById`).toBeDefined();
       if (showPetById) {
-        expect(showPetById.parameters.length).toBe(1);
+        expect(showPetById.parameters.length).toBe(2);
         const type = showPetById.parameters[0].type;
         expect(type).toContain('petId: string');
 
