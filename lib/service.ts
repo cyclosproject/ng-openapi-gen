@@ -9,8 +9,6 @@ import { Options } from './options';
  */
 export class Service extends GenType {
 
-  tag: TagObject;
-
   constructor(tag: TagObject, public operations: Operation[], options: Options) {
     super(tag.name, serviceClass, options);
 
