@@ -75,7 +75,7 @@ To access only the response body, use \`${this.methodName}()\` instead.${this.de
   }
 
   private bodyMethodDescription() {
-    return `${this.descriptionPrefix()}This method provides access to only to the response body.
+    return `${this.descriptionPrefix()}This method provides access only to the response body.
 To access the full response (for headers, for example), \`${this.responseMethodName}()\` instead.${this.descriptionSuffix()}`;
   }
 
