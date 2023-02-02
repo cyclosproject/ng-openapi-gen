@@ -1,0 +1,43 @@
+{
+  "openapi": "3.0",
+  "info": {
+    "title": "Test generation styles of enum",
+    "version": "1.0"
+  },
+  "components" : {
+    "schemas" : {
+      "FlavorEnum" : {
+        "description" : "Some ice-cream flavors",
+        "type" : "string",
+        "enum" : [
+          "vanilla",
+          "StrawBerry",
+          "cookie dough",
+          "Chocolate Chip",
+          "butter_pecan",
+          "COKE light"
+        ]
+      }
+    }
+  },
+  "paths": {
+    "/foo": {
+      "get": {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/FlavorEnum"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

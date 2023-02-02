@@ -129,12 +129,13 @@
       ]
     },
     "enumStyle": {
-      "description": "Determines how root enums will be generated. Possible values are:\n\n- `alias`: just generate a type alias with the possible values;\n- `upper` for an enum with UPPER_CASE names, and;\n- `pascal` for enum PascalCase names. Defaults to 'pascal'.",
+      "description": "Determines how root enums will be generated. Possible values are:\n\n- `alias`: just generate a type alias with the possible values;\n- `upper` for an enum with UPPER_CASE names;\n- `pascal` for enum PascalCase names;\n- `ignorecase` for enum names that ignore character casing; Defaults to 'pascal'.",
       "default": "pascal",
       "enum": [
         "alias",
         "upper",
-        "pascal"
+        "pascal",
+        "ignorecase"
       ]
     },
     "endOfLineStyle": {

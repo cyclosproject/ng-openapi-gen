@@ -1,0 +1,4 @@
+{
+  "$schema": "../ng-openapi-gen-schema.json",
+  "input": "enums.json"
+}

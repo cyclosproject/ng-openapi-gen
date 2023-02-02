@@ -69,12 +69,13 @@ export interface Options {
    * Determines how root enums will be generated. Possible values are:
    *
    * - `alias`: just generate a type alias with the possible values;
-   * - `upper` for an enum with UPPER_CASE names, and;
-   * - `pascal` for enum PascalCase names.
+   * - `upper` for an enum with UPPER_CASE names;
+   * - `pascal` for enum PascalCase names;
+   * - `ignorecase` for enum names that ignore character casing;
    *
    * Defaults to 'pascal'.
    */
-  enumStyle?: 'alias' | 'upper' | 'pascal';
+  enumStyle?: 'alias' | 'upper' | 'pascal' | 'ignorecase';
 
   /**
    * Determines how to normalize line endings. Possible values are:
