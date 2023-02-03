@@ -1,11 +1,11 @@
-params{{^operation.parametersRequired}}?{{/operation.parametersRequired}}: {
+
+    params{{^operation.parametersRequired}}?{{/operation.parametersRequired}}: {
 {{#operation.parameters}}
-{{{tsComments}}}{{{var}}}{{^required}}?{{/required}}: {{{type}}};{{#tsComments}}{{/tsComments}}
+{{{tsComments}}}  {{{var}}}{{^required}}?{{/required}}: {{{type}}};{{#tsComments}}{{/tsComments}}
 {{/operation.parameters}}
 {{#requestBody}}
-{{{../operation.requestBody.tsComments}}}body{{^../operation.requestBody.required}}?{{/../operation.requestBody.required
-}}: {{{type}}}
+  {{{../operation.requestBody.tsComments}}}body{{^../operation.requestBody.required}}?{{/../operation.requestBody.required}}: {{{type}}}
 {{/requestBody}}
-  },
-  context?: HttpContext
-
+    },
+    context?: HttpContext
+  
