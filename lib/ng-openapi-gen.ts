@@ -345,7 +345,7 @@ export async function runNgOpenApiGen() {
     const gen = new NgOpenApiGen(openApi, options);
     gen.generate();
   } catch (err) {
-    this.logger.error(`Error on API generation from ${input}: ${err}`);
+    console.log(`Error on API generation from ${input}: ${err}`);
     process.exit(1);
   }
 }
