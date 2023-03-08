@@ -113,7 +113,7 @@ use `forRoot` method of `ApiModule` and set the `rootUrl` property from there.
     AppComponent
   ],
   imports: [
-    HttpClientModule
+    HttpClientModule,
     ApiModule.forRoot({ rootUrl: 'https://www.example.com/api' }),
   ],
   bootstrap: [
