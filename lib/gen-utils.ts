@@ -221,6 +221,14 @@ export function tsType(schemaOrRef: SchemaOrRef | undefined, options: Options, o
     let result = '{\n';
     const properties = schema.properties || {};
     const required = schema.required;
+
+    for (const baseSchema of allOf) {
+      const discriminator = tryGetDiscriminator(baseSchema, schema, openApi);
+      if (discriminator) {
+        result += `'${discriminator.propName}': '${discriminator.value}';\n`;
+      }
+    }
+
     for (const propName of Object.keys(properties)) {
       const property = properties[propName];
       if (!property) {
@@ -346,4 +354,36 @@ export function syncDirs(srcDir: string, destDir: string, removeStale: boolean, 
       }
     }
   }
+}
+
+/**
+ * Tries to get a discriminator info from a base schema and for a derived one.
+ */
+function tryGetDiscriminator(baseSchemaOrRef: SchemaObject | ReferenceObject, derivedSchema: SchemaObject, openApi: OpenAPIObject) {
+  const baseSchema = (baseSchemaOrRef.$ref ? resolveRef(openApi, baseSchemaOrRef.$ref) : baseSchemaOrRef) as SchemaObject;
+  const discriminatorProp = baseSchema.discriminator?.propertyName;
+  if (discriminatorProp) {
+    const discriminatorValue = tryGetDiscriminatorValue(baseSchema, derivedSchema, openApi);
+    if (discriminatorValue) {
+      return {
+        propName: discriminatorProp,
+        value: discriminatorValue
+      };
+    }
+  }
+  return undefined;
+}
+
+/**
+ * Tries to get a discriminator value from a base schema and for a derived one.
+ */
+function tryGetDiscriminatorValue(baseSchema: SchemaObject, derivedSchema: SchemaObject, openApi: OpenAPIObject): string | null {
+  const mapping = baseSchema.discriminator?.mapping;
+
+  if (mapping) {
+    const mappingIndex = Object.values(mapping).findIndex((ref) => resolveRef(openApi, ref) === derivedSchema);
+    return Object.keys(mapping)[mappingIndex] ?? null;
+  }
+
+  return null;
 }
