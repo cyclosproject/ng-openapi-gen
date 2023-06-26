@@ -65,8 +65,12 @@ export function namespace(name: string): string | undefined {
 /**
  * Returns the type (class) name for a given regular name
  */
-export function typeName(name: string): string {
-  return upperFirst(methodName(name));
+export function typeName(name: string, options?: Options): string {
+  if (options?.donotModifyTypeNames) {
+    return upperFirst(toBasicChars(name));
+  } else {
+    return upperFirst(methodName(name));
+  }
 }
 
 /**
@@ -139,14 +143,14 @@ export function tsComments(description: string | undefined, level: number, depre
  * Applies the prefix and suffix to a model class name
  */
 export function modelClass(baseName: string, options: Options) {
-  return `${options.modelPrefix || ''}${typeName(baseName)}${options.modelSuffix || ''}`;
+  return `${options.modelPrefix || ''}${typeName(baseName, options)}${options.modelSuffix || ''}`;
 }
 
 /**
  * Applies the prefix and suffix to a service class name
  */
 export function serviceClass(baseName: string, options: Options) {
-  return `${options.servicePrefix || ''}${typeName(baseName)}${options.serviceSuffix || 'Service'}`;
+  return `${options.servicePrefix || ''}${typeName(baseName, options)}${options.serviceSuffix || 'Service'}`;
 }
 
 /**
