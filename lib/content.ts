@@ -6,7 +6,6 @@ import { tsType } from './gen-utils';
  * Either a request body or response content
  */
 export class Content {
-
   type: string;
 
   constructor(
