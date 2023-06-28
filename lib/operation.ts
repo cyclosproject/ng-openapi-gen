@@ -101,7 +101,9 @@ export class Operation {
   }
 
   private collectSecurity(params: (SecurityRequirementObject)[] | undefined): Security[][] {
-    if (!params) { return []; }
+    if (!params) {
+      return [];
+    }
 
     return params.map((param) => {
       return Object.keys(param).map(key => {
@@ -127,7 +129,7 @@ export class Operation {
     return result;
   }
 
-  private collectResponses(): { success: Response | undefined, all: Response[] } {
+  private collectResponses(): { success: Response | undefined; all: Response[] } {
     let successResponse: Response | undefined = undefined;
     const allResponses: Response[] = [];
     const responses = this.spec.responses || {};

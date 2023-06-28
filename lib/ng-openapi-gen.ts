@@ -1,21 +1,20 @@
+import $RefParser from '@apidevtools/json-schema-ref-parser';
 import { OpenAPIObject, OperationObject, PathItemObject, ReferenceObject, SchemaObject } from '@loopback/openapi-v3-types';
+import eol from 'eol';
 import fs from 'fs-extra';
-import $RefParser, { HTTPResolverOptions } from '@apidevtools/json-schema-ref-parser';
-import mkdirp from 'mkdirp';
-import path from 'path';
 import os from 'os';
+import path from 'path';
 import { parseOptions } from './cmd-args';
-import { HTTP_METHODS, methodName, simpleName, syncDirs, deleteDirRecursive } from './gen-utils';
+import { HTTP_METHODS, deleteDirRecursive, methodName, simpleName, syncDirs } from './gen-utils';
 import { Globals } from './globals';
 import { HandlebarsManager } from './handlebars-manager';
 import { Import } from './imports';
+import { Logger } from './logger';
 import { Model } from './model';
 import { Operation } from './operation';
 import { Options } from './options';
 import { Service } from './service';
 import { Templates } from './templates';
-import eol from 'eol';
-import { Logger } from './logger';
 
 /**
  * Main generator class
@@ -128,7 +127,8 @@ export class NgOpenApiGen {
     const ts = this.setEndOfLine(this.templates.apply(template, model));
     const file = path.join(this.tempDir, subDir || '.', `${baseName}.ts`);
     const dir = path.dirname(file);
-    mkdirp.sync(dir);
+
+    fs.mkdirpSync(dir);
     fs.writeFileSync(file, ts, { encoding: 'utf-8' });
   }
 
@@ -322,8 +322,6 @@ export class NgOpenApiGen {
   }
 }
 
-///////////////////////////////////////////////////////////////////////////
-
 /**
  * Parses the command-line arguments, reads the configuration file and run the generation
  */
@@ -339,7 +337,7 @@ export async function runNgOpenApiGen() {
       resolve: {
         http: {
           timeout: options.fetchTimeout == null ? 20000 : options.fetchTimeout
-        } as HTTPResolverOptions
+        }
       }
     }) as OpenAPIObject;
     const gen = new NgOpenApiGen(openApi, options);

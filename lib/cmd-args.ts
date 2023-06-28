@@ -5,18 +5,19 @@ import { Options } from './options.js';
 import fs from 'fs';
 import { kebabCase } from 'lodash';
 
-const Mnemonics: { [key: string]: string } = { 'input': 'i', 'output': 'o' };
-const DefaultConfig = 'ng-openapi-gen.json';
+const MNEMONICS: { [key: string]: string } = { 'input': 'i', 'output': 'o' };
+const DEFAULT = 'ng-openapi-gen.json';
 
 function createParser() {
   const argParser = new ArgumentParser({
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     add_help: true,
     description: `
 Generator for API clients described with OpenAPI 3.0 specification for
 Angular 6+ projects. Requires a configuration file, which defaults to
-${DefaultConfig} in the current directory. The file can also be
+${DEFAULT} in the current directory. The file can also be
 specified using '--config <file>' or '-c <file>'.
-All settings in the configuration file can be overridding by setting the
+All settings in the configuration file can be overriding by setting the
 corresponding argument in the command-line. For example, to specify a
 custom suffix for service classes via command-line, pass the command-line
 argument '--serviceSuffix Suffix'. Kebab-case is also accepted, so, the same
@@ -38,9 +39,9 @@ a configuration file is only required if no --input argument is set.`.trim()
     {
       help: `
 The configuration file to be used. If not specified, assumes that
-${DefaultConfig} in the current directory`.trim(),
+${DEFAULT} in the current directory`.trim(),
       dest: 'config',
-      default: `./${DefaultConfig}`
+      default: `./${DEFAULT}`
     }
   );
   const props = schema.properties;
@@ -51,7 +52,7 @@ ${DefaultConfig} in the current directory`.trim(),
     const kebab = kebabCase(key);
     const desc = (props as any)[key];
     const names = [];
-    const mnemonic = Mnemonics[key];
+    const mnemonic = MNEMONICS[key];
     if (mnemonic) {
       names.push('-' + mnemonic);
     }
@@ -77,9 +78,9 @@ export function parseOptions(sysArgs?: string[]): Options {
   if (args.config) {
     if (fs.existsSync(args.config)) {
       options = JSON.parse(fs.readFileSync(args.config, { encoding: 'utf-8' }));
-    } else if (args.config === `./${DefaultConfig}`) {
+    } else if (args.config === `./${DEFAULT}`) {
       if ((args.input || '').length === 0) {
-        throw new Error(`No input is given, and the file ${DefaultConfig} doesn't exist.
+        throw new Error(`No input is given, and the file ${DEFAULT} doesn't exist.
 For help, run ng-openapi-gen --help`);
       }
     } else {
@@ -111,7 +112,7 @@ For help, run ng-openapi-gen --help`);
       options[key] = value;
     }
   }
-  if (options.input == undefined || options.input === '') {
+  if (options.input === undefined || options.input === '') {
     throw new Error('No input (OpenAPI specification) defined');
   }
   return options;

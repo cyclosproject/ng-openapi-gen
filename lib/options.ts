@@ -100,8 +100,8 @@ export interface Options {
 
   customizedResponseType?: {
     [key: string]: {
-      toUse: 'arraybuffer' | 'blob' | 'json' | 'document'
-    }
+      toUse: 'arraybuffer' | 'blob' | 'json' | 'document';
+    };
   };
 
   /** When specified, will create temporary files in system temporary folder instead of next to output folder. */

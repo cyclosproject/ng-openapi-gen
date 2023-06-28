@@ -120,7 +120,7 @@ export function toBasicChars(text: string, firstNonDigit = false): string {
  */
 export function tsComments(description: string | undefined, level: number, deprecated?: boolean) {
   const indent = '  '.repeat(level);
-  if (description == undefined || description.length === 0) {
+  if (description === undefined || description.length === 0) {
     return indent + (deprecated ? '/** @deprecated */' : '');
   }
   const lines = description.trim().split('\n');
