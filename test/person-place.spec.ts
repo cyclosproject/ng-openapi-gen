@@ -26,7 +26,7 @@ describe('Generation tests using person-place.json', () => {
     const ts = gen.templates.apply('model', entity);
     const parser = new TypescriptParser();
     parser.parseSource(ts).then(ast => {
-      expect(ast.imports.find(i => i.libraryName === './pp-id-model')).withContext('id import').toBeDefined();
+      expect(ast.imports.find(i => i.libraryName.endsWith('/pp-id-model'))).withContext('id import').toBeDefined();
       expect(ast.declarations.length).toBe(1);
       expect(ast.declarations[0]).toEqual(jasmine.any(InterfaceDeclaration));
       const decl = ast.declarations[0] as InterfaceDeclaration;
@@ -44,8 +44,8 @@ describe('Generation tests using person-place.json', () => {
     const ts = gen.templates.apply('model', person);
     const parser = new TypescriptParser();
     parser.parseSource(ts).then(ast => {
-      expect(ast.imports.find(i => i.libraryName === './pp-entity-model')).withContext('entity import').toBeDefined();
-      expect(ast.imports.find(i => i.libraryName === './pp-person-place-model')).withContext('person-place import').toBeDefined();
+      expect(ast.imports.find(i => i.libraryName.endsWith('/pp-entity-model'))).withContext('entity import').toBeDefined();
+      expect(ast.imports.find(i => i.libraryName.endsWith('/pp-person-place-model'))).withContext('person-place import').toBeDefined();
       expect(ast.declarations.length).toBe(1);
       expect(ast.declarations[0]).toEqual(jasmine.any(TypeAliasDeclaration));
       const decl = ast.declarations[0] as TypeAliasDeclaration;
@@ -62,7 +62,7 @@ describe('Generation tests using person-place.json', () => {
     const ts = gen.templates.apply('model', place);
     const parser = new TypescriptParser();
     parser.parseSource(ts).then(ast => {
-      expect(ast.imports.find(i => i.libraryName === './pp-entity-model')).withContext('entity import').toBeDefined();
+      expect(ast.imports.find(i => i.libraryName.endsWith('/pp-entity-model'))).withContext('entity import').toBeDefined();
       expect(ast.declarations.length).toBe(1);
       expect(ast.declarations[0]).toEqual(jasmine.any(TypeAliasDeclaration));
       const decl = ast.declarations[0] as TypeAliasDeclaration;
@@ -79,7 +79,7 @@ describe('Generation tests using person-place.json', () => {
     const ts = gen.templates.apply('model', person);
     const parser = new TypescriptParser();
     parser.parseSource(ts).then(ast => {
-      expect(ast.imports.find(i => i.libraryName === './pp-place-model')).withContext('place import').toBeDefined();
+      expect(ast.imports.find(i => i.libraryName.endsWith('/pp-place-model'))).withContext('place import').toBeDefined();
       expect(ast.declarations.length).toBe(1);
       expect(ast.declarations[0]).toEqual(jasmine.any(InterfaceDeclaration));
       const decl = ast.declarations[0] as InterfaceDeclaration;

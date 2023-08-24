@@ -11,6 +11,8 @@ export class Globals {
   configurationParams: string;
   baseServiceClass: string;
   baseServiceFile: string;
+  apiServiceClass?: string;
+  apiServiceFile?: string;
   requestBuilderClass: string;
   requestBuilderFile: string;
   responseClass: string;
@@ -27,6 +29,13 @@ export class Globals {
     this.configurationParams = `${this.configurationClass}Params`;
     this.baseServiceClass = options.baseService || 'BaseService';
     this.baseServiceFile = fileName(this.baseServiceClass);
+    this.apiServiceClass = options.apiService || '';
+    if (this.apiServiceClass === '') {
+      this.apiServiceClass = undefined;
+    } else {
+      // Angular's best practices demands xxx.service.ts, not xxx-service.ts
+      this.apiServiceFile = fileName(this.apiServiceClass).replace(/\-service$/, '.service');
+    }
     this.requestBuilderClass = options.requestBuilder || 'RequestBuilder';
     this.requestBuilderFile = fileName(this.requestBuilderClass);
     this.responseClass = options.response || 'StrictHttpResponse';

@@ -35,6 +35,9 @@ export interface Options {
   /** When true, an 'index.ts' file will be generated, exporting all generated files */
   indexFile?: boolean;
 
+  /** When false, no services will be generated (clients will use functions directly) */
+  services?: boolean;
+
   /** Prefix for generated service classes. Defaults to empty. */
   servicePrefix?: string;
 
@@ -55,6 +58,9 @@ export interface Options {
 
   /** Name for the base service class to generate. Defaults to 'BaseService'. */
   baseService?: string;
+
+  /** Name for the service to call functions directly. Defaults to 'ApiService'. */
+  apiService?: string;
 
   /** Name for the request builder class to generate. Defaults to 'RequestBuilder'. */
   requestBuilder?: string;

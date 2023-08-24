@@ -1,0 +1,42 @@
+/* tslint:disable */
+/* eslint-disable */
+import { HttpClient, HttpContext, HttpResponse } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
+import { {{@root.responseClass}} } from '{{pathToRoot}}{{@root.responseFile}}';
+import { {{@root.requestBuilderClass}} } from '{{pathToRoot}}{{@root.requestBuilderFile}}';
+
+{{#imports}}import { {{{typeName}}}{{#useAlias}} as {{{qualifiedName}}}{{/useAlias}} } from '{{{@root.pathToRoot}}}{{{fullPath}}}';
+{{/imports}}
+
+export interface {{paramsType}} {
+{{#operation.parameters}}
+{{{tsComments}}}  {{{var}}}{{^required}}?{{/required}}: {{{type}}};{{#tsComments}}{{/tsComments}}
+{{/operation.parameters}}
+{{#requestBody}}
+  {{{../operation.requestBody.tsComments}}}body{{^../operation.requestBody.required}}?{{/../operation.requestBody.required}}: {{{type}}}
+{{/requestBody}}
+}
+
+export function {{methodName}}(http: HttpClient, rootUrl: string, params{{^operation.parametersRequired}}?{{/operation.parametersRequired}}: {{paramsType}}, context?: HttpContext): Observable<{{@root.responseClass}}<{{{resultType}}}>> {
+  const rb = new {{@root.requestBuilderClass}}(rootUrl, {{methodName}}.PATH, '{{operation.method}}');
+  if (params) {
+{{#operation.parameters}}
+    rb.{{in}}('{{{name}}}', params{{{varAccess}}}, {{{parameterOptions}}});
+{{/operation.parameters}}
+{{#requestBody}}
+    rb.body(params.body, '{{{mediaType}}}');
+{{/requestBody}}
+  }
+
+  return http.request(
+    rb.build({ responseType: '{{responseType}}', accept: '{{accept}}', context })
+  ).pipe(
+    filter((r: any): r is HttpResponse<any> => r instanceof HttpResponse),
+    map((r: HttpResponse<any>) => {
+      {{> handleResponse}}
+    })
+  );
+}
+
+{{methodName}}.PATH = '{{{operation.operationPath}}}';

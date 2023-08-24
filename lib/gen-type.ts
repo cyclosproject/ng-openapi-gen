@@ -1,5 +1,6 @@
 import { ReferenceObject, SchemaObject } from 'openapi3-ts';
 import { fileName, namespace, simpleName, typeName } from './gen-utils';
+import { Importable } from './importable';
 import { Import, Imports } from './imports';
 import { Options } from './options';
 
@@ -23,6 +24,8 @@ export abstract class GenType {
   /** TypeScript comments for this type */
   tsComments: string;
 
+  pathToRoot: string;
+
   imports: Import[];
   private _imports: Imports;
 
@@ -32,7 +35,6 @@ export abstract class GenType {
   constructor(
     public name: string,
     typeNameTransform: (typeName: string, options: Options) => string,
-    /** Generation options */
     public options: Options) {
 
     this.typeName = typeNameTransform(name, options);
@@ -46,17 +48,22 @@ export abstract class GenType {
     this._imports = new Imports(options);
   }
 
-  protected addImport(name: string) {
-    if (!this.skipImport(name)) {
-      // Don't have to import to this own file
-      this._imports.add(name, this.pathToModels());
+  protected addImport(param: string | Importable | null | undefined) {
+    if (param && !this.skipImport(param)) {
+      this._imports.add(param);
     }
   }
 
-  protected abstract skipImport(name: string): boolean;
+  protected abstract skipImport(name: string | Importable): boolean;
+
+  protected abstract initPathToRoot(): string;
 
   protected updateImports() {
+    this.pathToRoot = this.initPathToRoot();
     this.imports = this._imports.toArray();
+    for (const imp of this.imports) {
+      imp.path = this.pathToRoot + imp.path;
+    }
     this.additionalDependencies = [...this._additionalDependencies];
   }
 
@@ -93,9 +100,4 @@ export abstract class GenType {
       }
     }
   }
-
-  /**
-   * Must be implemented to return the relative path to the models, ending with `/`
-   */
-  protected abstract pathToModels(): string;
 }

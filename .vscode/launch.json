@@ -19,9 +19,9 @@
       "args": [
         "${workspaceFolder}/lib/index.ts",
         "-i",
-        "${workspaceFolder}/test/cyclos.json",
+        "${workspaceFolder}/test/all-types.json",
         "-o",
-        "${workspaceFolder}/out/cyclos",
+        "${workspaceFolder}/out/all-types",
         "--fetch-timeout",
         "2000"
       ]
