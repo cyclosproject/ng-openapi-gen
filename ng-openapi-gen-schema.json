@@ -64,6 +64,11 @@
         }
       ]
     },
+    "services": {
+      "description": "When set to false, no services will be generated, only operation functions. Disabling services also disables the module and service index.",
+      "default": true,
+      "type": "boolean"
+    },
     "serviceIndex": {
       "description": "Typescript file, without '.ts' extension that exports all services. Set to false to skip. Defaults to `services`.",
       "default": "services",
@@ -105,6 +110,11 @@
       "description": "Name for the base service class to generate. Defaults to 'BaseService'.",
       "type": "string",
       "default": "BaseService"
+    },
+    "apiService": {
+      "description": "Name for the service to call functions directly. By default is not generated.",
+      "type": "string",
+      "default": ""
     },
     "requestBuilder": {
       "description": "Name for the request builder class to generate. Defaults to 'RequestBuilder'.",

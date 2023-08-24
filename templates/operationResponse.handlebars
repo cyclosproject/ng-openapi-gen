@@ -1,20 +1,3 @@
 {{{responseMethodTsComments}}}{{responseMethodName}}({{>operationParameters}}): Observable<{{@root.responseClass}}<{{{resultType}}}>> {
-    const rb = new {{@root.requestBuilderClass}}(this.rootUrl, {{@root.typeName}}.{{operation.pathVar}}, '{{operation.method}}');
-    if (params) {
-{{#operation.parameters}}
-      rb.{{in}}('{{{name}}}', params{{{varAccess}}}, {{{parameterOptions}}});
-{{/operation.parameters}}
-{{#requestBody}}
-      rb.body(params.body, '{{{mediaType}}}');
-{{/requestBody}}
-    }
-
-    return this.http.request(
-      rb.build({ responseType: '{{responseType}}', accept: '{{accept}}', context })
-    ).pipe(
-      filter((r: any): r is HttpResponse<any> => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        {{> handleResponse}}
-      })
-    );
+    return {{importName}}(this.http, this.rootUrl, params, context);
   }

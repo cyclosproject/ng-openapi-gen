@@ -3,7 +3,7 @@ export { {{baseServiceClass}} } from './{{{baseServiceFile}}}';
 export { {{requestBuilderClass}} } from './{{{requestBuilderFile}}}';
 export { {{responseClass}} } from './{{{responseFile}}}';
 export { {{moduleClass}} } from './{{{moduleFile}}}';
-{{#modelImports}}export { {{{typeName}}}{{#useAlias}} as {{{qualifiedName}}}{{/useAlias}} } from '{{{file}}}';
-{{/modelImports}}
+{{#modelIndex.imports}}export { {{{typeName}}}{{#useAlias}} as {{{qualifiedName}}}{{/useAlias}} } from '{{{file}}}';
+{{/modelIndex.imports}}
 {{#services}}export { {{typeName}} } from './services/{{{fileName}}}';
 {{/services}}

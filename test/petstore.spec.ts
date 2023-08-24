@@ -25,32 +25,27 @@ describe('Generation tests using petstore.json', () => {
       const cls = ast.declarations[0] as ClassDeclaration;
 
       const listPets = cls.methods.find(m => m.name === 'listPets');
-      expect(listPets).withContext(`listPets`).toBeDefined();
+      expect(listPets).withContext('listPets').toBeDefined();
       if (listPets) {
         expect(listPets.parameters.length).toBe(2);
         const type = listPets.parameters[0].type;
-        expect(type).toContain('limit?: number');
+        expect(type).toEqual('ListPets$Params');
       }
 
       const createPets = cls.methods.find(m => m.name === 'createPets');
-      expect(createPets).withContext(`createPets`).toBeDefined();
+      expect(createPets).withContext('createPets').toBeDefined();
       if (createPets) {
         expect(createPets.parameters.length).toBe(2);
         const type = createPets.parameters[0].type;
-        // single optional parameters
-        expect(type).toBeDefined();
-        expect(type!.replace(/(\r\n|\n|\r| )/gm, '')).toBe('{}');
+        expect(type).toEqual('CreatePets$Params');
       }
 
       const showPetById = cls.methods.find(m => m.name === 'showPetById');
-      expect(showPetById).withContext(`showPetById`).toBeDefined();
+      expect(showPetById).withContext('showPetById').toBeDefined();
       if (showPetById) {
         expect(showPetById.parameters.length).toBe(2);
         const type = showPetById.parameters[0].type;
-        expect(type).toContain('petId: string');
-
-        const text = ts.substring(showPetById.parameters[0].start || 0, showPetById.parameters[0].end || ts.length);
-        expect(text).toContain('* Pet\'s id to retrieve');
+        expect(type).toEqual('ShowPetById$Params');
       }
 
       done();
@@ -88,7 +83,7 @@ describe('Generation tests using petstore.json', () => {
     const ts = gen.templates.apply('model', pets);
     const parser = new TypescriptParser();
     parser.parseSource(ts).then(ast => {
-      expect(ast.imports.find(i => i.libraryName === './petstore-pet-model')).withContext('pet import').toBeDefined();
+      expect(ast.imports.find(i => i.libraryName.endsWith('/petstore-pet-model'))).withContext('pet import').toBeDefined();
       expect(ast.declarations.length).toBe(1);
       expect(ast.declarations[0]).toEqual(jasmine.any(TypeAliasDeclaration));
       const decl = ast.declarations[0] as TypeAliasDeclaration;

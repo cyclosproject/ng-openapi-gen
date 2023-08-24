@@ -36,19 +36,16 @@ export function qualifiedName(name: string, options: Options): string {
 }
 
 /**
- * Returns the file to import for a given model
+ * Returns the filename where to write a model with the given name
  */
-export function modelFile(pathToModels: string, name: string, options: Options): string {
-  let dir = pathToModels || '';
-  if (dir.endsWith('/')) {
-    dir = dir.substr(0, dir.length - 1);
-  }
+export function modelFile(name: string, options: Options): string {
+  let result = '';
   const ns = namespace(name);
   if (ns) {
-    dir += `/${ns}`;
+    result += `/${ns}`;
   }
   const file = unqualifiedName(name, options);
-  return dir += '/' + fileName(file);
+  return result += '/' + fileName(file);
 }
 
 /**
@@ -108,7 +105,7 @@ export function fileName(text: string): string {
  */
 export function toBasicChars(text: string, firstNonDigit = false): string {
   text = deburr((text || '').trim());
-  text = text.replace(/[^\w]+/g, '_');
+  text = text.replace(/[^\w$]+/g, '_');
   if (firstNonDigit && /[0-9]/.test(text.charAt(0))) {
     text = '_' + text;
   }

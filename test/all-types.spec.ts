@@ -20,11 +20,10 @@ it('Api', done => {
       const cls = ast.declarations[0] as ClassDeclaration;
       expect(cls.methods.length).toEqual(3 * 2); // foo, bar, baz, in 2 variants each
       // Should have imported referenced-in-service-one-of-1/2
-      expect(ast.imports.find(i => i.libraryName === '../models/referenced-in-service-one-of-1')).withContext('ref1 import').toBeDefined();
-      expect(ast.imports.find(i => i.libraryName === '../models/referenced-in-service-one-of-2')).withContext('ref2 import').toBeDefined();
-      expect(ast.imports.find(i => i.libraryName === '../models/a/b/ref-object')).withContext('a.b.RefObject import').toBeDefined();
+      expect(ast.imports.find(i => i.libraryName.endsWith('/models/referenced-in-service-one-of-1'))).withContext('ref1 import').toBeDefined();
+      expect(ast.imports.find(i => i.libraryName.endsWith('/models/referenced-in-service-one-of-2'))).withContext('ref2 import').toBeDefined();
       // But not referenced-in-one-of, as it is nested within an object schema
-      expect(ast.imports.find(i => i.libraryName === '../models/referenced-in-one-of')).withContext('ref import').toBeUndefined();
+      expect(ast.imports.find(i => i.libraryName.endsWith('/models/referenced-in-one-of'))).withContext('ref import').toBeUndefined();
       done();
     });
   }
@@ -125,7 +124,7 @@ describe('Generation tests using all-types.json', () => {
     const parser = new TypescriptParser();
     parser.parseSource(ts).then(ast => {
       expect(ast.imports.length).toBe(1);
-      expect(ast.imports.find(i => i.libraryName === '../../a/b/ref-object')).withContext('a/b/ref-object import').toBeDefined();
+      expect(ast.imports.find(i => i.libraryName.endsWith('/a/b/ref-object'))).withContext('a/b/ref-object import').toBeDefined();
       expect(ast.declarations.length).toBe(1);
       expect(ast.declarations[0]).toEqual(jasmine.any(TypeAliasDeclaration));
       const decl = ast.declarations[0] as TypeAliasDeclaration;
@@ -142,8 +141,8 @@ describe('Generation tests using all-types.json', () => {
     const ts = gen.templates.apply('model', union);
     const parser = new TypescriptParser();
     parser.parseSource(ts).then(ast => {
-      expect(ast.imports.find(i => i.libraryName === './ref-enum')).withContext('ref-enum import').toBeDefined();
-      expect(ast.imports.find(i => i.libraryName === './container')).withContext('container import').toBeDefined();
+      expect(ast.imports.find(i => i.libraryName.endsWith('/ref-enum'))).withContext('ref-enum import').toBeDefined();
+      expect(ast.imports.find(i => i.libraryName.endsWith('/container'))).withContext('container import').toBeDefined();
       expect(ast.declarations.length).toBe(1);
       expect(ast.declarations[0]).toEqual(jasmine.any(TypeAliasDeclaration));
       const decl = ast.declarations[0] as TypeAliasDeclaration;
@@ -160,7 +159,7 @@ describe('Generation tests using all-types.json', () => {
     const parser = new TypescriptParser();
     parser.parseSource(ts).then(ast => {
       expect(ast.imports.length).toBe(5);
-      expect(ast.imports.find(i => i.libraryName === './referenced-in-nullable-one-of')).withContext('referenced-in-nullable-one-of import').toBeDefined();
+      expect(ast.imports.find(i => i.libraryName.endsWith('/referenced-in-nullable-one-of'))).withContext('referenced-in-nullable-one-of import').toBeDefined();
       expect(ast.declarations.length).toBe(1);
       expect(ast.declarations[0]).toEqual(jasmine.any(TypeAliasDeclaration));
       const decl = ast.declarations[0] as TypeAliasDeclaration;
@@ -279,7 +278,7 @@ describe('Generation tests using all-types.json', () => {
     const parser = new TypescriptParser();
     parser.parseSource(ts).then(ast => {
       expect(ast.imports.length).toBe(1);
-      expect(ast.imports.find(i => i.libraryName === './a/b/ref-object')).withContext('a/b/ref-object import').toBeDefined();
+      expect(ast.imports.find(i => i.libraryName.endsWith('/a/b/ref-object'))).withContext('a/b/ref-object import').toBeDefined();
       expect(ast.declarations.length).toBe(1);
       expect(ast.declarations[0]).toEqual(jasmine.any(InterfaceDeclaration));
       const decl = ast.declarations[0] as InterfaceDeclaration;
@@ -304,7 +303,7 @@ describe('Generation tests using all-types.json', () => {
     const parser = new TypescriptParser();
     parser.parseSource(ts).then(ast => {
       expect(ast.imports.length).toBe(1);
-      expect(ast.imports.find(i => i.libraryName === './nullable-object')).withContext('nullable-object import').toBeDefined();
+      expect(ast.imports.find(i => i.libraryName.endsWith('/nullable-object'))).withContext('nullable-object import').toBeDefined();
       expect(ast.declarations.length).toBe(1);
       expect(ast.declarations[0]).toEqual(jasmine.any(InterfaceDeclaration));
       const decl = ast.declarations[0] as InterfaceDeclaration;
@@ -330,7 +329,7 @@ describe('Generation tests using all-types.json', () => {
     const parser = new TypescriptParser();
     parser.parseSource(ts).then(ast => {
       expect(ast.imports.length).toBe(1);
-      expect(ast.imports.find(i => i.libraryName === './ref-enum')).withContext('ref-enum import').toBeDefined();
+      expect(ast.imports.find(i => i.libraryName.endsWith('/ref-enum'))).withContext('ref-enum import').toBeDefined();
       expect(ast.declarations.length).toBe(1);
       expect(ast.declarations[0]).toEqual(jasmine.any(InterfaceDeclaration));
       const decl = ast.declarations[0] as InterfaceDeclaration;
@@ -350,12 +349,12 @@ describe('Generation tests using all-types.json', () => {
     const parser = new TypescriptParser();
     parser.parseSource(ts).then(ast => {
       expect(ast.imports.length).toBe(6);
-      expect(ast.imports.find(i => i.libraryName === './ref-enum')).withContext('ref-enum import').toBeDefined();
-      expect(ast.imports.find(i => i.libraryName === './a/b/ref-object')).withContext('a/b/ref-object import').toBeDefined();
-      expect(ast.imports.find(i => i.libraryName === './x/y/ref-object')).withContext('x/y/ref-object import').toBeDefined();
-      expect(ast.imports.find(i => i.libraryName === './union')).withContext('union import').toBeDefined();
-      expect(ast.imports.find(i => i.libraryName === './disjunct')).withContext('disjunct import').toBeDefined();
-      expect(ast.imports.find(i => i.libraryName === './nullable-object')).withContext('nullable-object import').toBeDefined();
+      expect(ast.imports.find(i => i.libraryName.endsWith('/ref-enum'))).withContext('ref-enum import').toBeDefined();
+      expect(ast.imports.find(i => i.libraryName.endsWith('/a/b/ref-object'))).withContext('a/b/ref-object import').toBeDefined();
+      expect(ast.imports.find(i => i.libraryName.endsWith('/x/y/ref-object'))).withContext('x/y/ref-object import').toBeDefined();
+      expect(ast.imports.find(i => i.libraryName.endsWith('/union'))).withContext('union import').toBeDefined();
+      expect(ast.imports.find(i => i.libraryName.endsWith('/disjunct'))).withContext('disjunct import').toBeDefined();
+      expect(ast.imports.find(i => i.libraryName.endsWith('/nullable-object'))).withContext('nullable-object import').toBeDefined();
 
       expect(ast.declarations.length).toBe(1);
       expect(ast.declarations[0]).toEqual(jasmine.any(TypeAliasDeclaration));
@@ -440,7 +439,7 @@ describe('Generation tests using all-types.json', () => {
     const ts = gen.templates.apply('model', containers);
     const parser = new TypescriptParser();
     parser.parseSource(ts).then(ast => {
-      expect(ast.imports.find(i => i.libraryName === './container')).withContext('container import').toBeDefined();
+      expect(ast.imports.find(i => i.libraryName.endsWith('/container'))).withContext('container import').toBeDefined();
       expect(ast.declarations.length).toBe(1);
       expect(ast.declarations[0]).toEqual(jasmine.any(TypeAliasDeclaration));
       const decl = ast.declarations[0] as TypeAliasDeclaration;
@@ -495,7 +494,7 @@ describe('Generation tests using all-types.json', () => {
     const parser = new TypescriptParser();
     parser.parseSource(ts).then(ast => {
       expect(ast.imports.length).toBe(1);
-      expect(ast.imports.find(i => i.libraryName === './audit-log')).withContext('audit-log import').toBeDefined();
+      expect(ast.imports.find(i => i.libraryName.endsWith('/audit-log'))).withContext('audit-log import').toBeDefined();
       expect(ast.declarations.length).toBe(1);
       expect(ast.declarations[0]).toEqual(jasmine.any(TypeAliasDeclaration));
       const decl = ast.declarations[0] as TypeAliasDeclaration;
@@ -516,7 +515,7 @@ describe('Generation tests using all-types.json', () => {
     const parser = new TypescriptParser();
     parser.parseSource(ts).then(ast => {
       expect(ast.imports.length).toBe(1);
-      expect(ast.imports.find(i => i.libraryName === './shape')).withContext('shape import').toBeDefined();
+      expect(ast.imports.find(i => i.libraryName.endsWith('/shape'))).withContext('shape import').toBeDefined();
       expect(ast.declarations.length).toBe(1);
       expect(ast.declarations[0]).toEqual(jasmine.any(TypeAliasDeclaration));
       const decl = ast.declarations[0] as TypeAliasDeclaration;

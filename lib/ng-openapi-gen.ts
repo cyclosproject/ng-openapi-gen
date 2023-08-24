@@ -8,13 +8,13 @@ import { parseOptions } from './cmd-args';
 import { HTTP_METHODS, deleteDirRecursive, methodName, simpleName, syncDirs } from './gen-utils';
 import { Globals } from './globals';
 import { HandlebarsManager } from './handlebars-manager';
-import { Import } from './imports';
 import { Logger } from './logger';
 import { Model } from './model';
 import { Operation } from './operation';
 import { Options } from './options';
 import { Service } from './service';
 import { Templates } from './templates';
+import { ModelIndex } from './model-index';
 
 /**
  * Main generator class
@@ -39,7 +39,7 @@ export class NgOpenApiGen {
     this.outDir = this.options.output || 'src/app/api';
     // Make sure the output path doesn't end with a slash
     if (this.outDir.endsWith('/') || this.outDir.endsWith('\\')) {
-      this.outDir = this.outDir.substr(0, this.outDir.length - 1);
+      this.outDir = this.outDir.substring(0, this.outDir.length - 1);
     }
     this.tempDir = this.outDir + '$';
 
@@ -80,10 +80,18 @@ export class NgOpenApiGen {
         this.write('model', model, model.fileName, 'models');
       }
 
-      // Generate each service
+      // Generate each service and function
+      const generateServices = this.options.services ?? true;
       const services = [...this.services.values()];
       for (const service of services) {
-        this.write('service', service, service.fileName, 'services');
+        if (generateServices) {
+          this.write('service', service, service.fileName, 'services');
+        }
+        for (const op of service.operations) {
+          for (const variant of op.variants) {
+            this.write('fn', variant, variant.importFile, variant.importPath);
+          }
+        }
       }
 
       // Context object passed to general templates
@@ -96,21 +104,26 @@ export class NgOpenApiGen {
       this.write('configuration', general, this.globals.configurationFile);
       this.write('response', general, this.globals.responseFile);
       this.write('requestBuilder', general, this.globals.requestBuilderFile);
-      this.write('baseService', general, this.globals.baseServiceFile);
-      if (this.globals.moduleClass && this.globals.moduleFile) {
+      if (generateServices) {
+        this.write('baseService', general, this.globals.baseServiceFile);
+      }
+      if (this.globals.apiServiceFile) {
+        this.write('apiService', general, this.globals.apiServiceFile);
+      }
+      if (generateServices && this.globals.moduleClass && this.globals.moduleFile) {
         this.write('module', general, this.globals.moduleFile);
       }
 
-      const modelImports = this.globals.modelIndexFile || this.options.indexFile
-        ? models.map(m => new Import(m.name, './models', m.options)) : null;
+
+      const modelIndex = this.globals.modelIndexFile || this.options.indexFile ? new ModelIndex(models, this.options) : null;
       if (this.globals.modelIndexFile) {
-        this.write('modelIndex', { ...general, modelImports }, this.globals.modelIndexFile);
+        this.write('modelIndex', { ...general, modelIndex }, this.globals.modelIndexFile);
       }
-      if (this.globals.serviceIndexFile) {
+      if (generateServices && this.globals.serviceIndexFile) {
         this.write('serviceIndex', general, this.globals.serviceIndexFile);
       }
       if (this.options.indexFile) {
-        this.write('index', { ...general, modelImports }, 'index');
+        this.write('index', { ...general, modelIndex }, 'index');
       }
 
       // Now synchronize the temp to the output folder
@@ -249,7 +262,18 @@ export class NgOpenApiGen {
     const usedNames = new Set<string>();
     for (const service of this.services.values()) {
       for (const imp of service.imports) {
-        usedNames.add(imp.name);
+        if (imp.path.includes('/models/')) {
+          usedNames.add(imp.typeName);
+        }
+      }
+      for (const op of service.operations) {
+        for (const variant of op.variants) {
+          for (const imp of variant.imports) {
+            if (imp.path.includes('/models/')) {
+              usedNames.add(imp.typeName);
+            }
+          }
+        }
       }
       for (const imp of service.additionalDependencies) {
         usedNames.add(imp);

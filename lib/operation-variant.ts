@@ -1,13 +1,16 @@
+import { upperFirst } from 'lodash';
+import { SchemaObject } from 'openapi3-ts';
 import { Content } from './content';
+import { GenType } from './gen-type';
+import { fileName, resolveRef, tsComments } from './gen-utils';
+import { Importable } from './importable';
 import { Operation } from './operation';
 import { Options } from './options';
-import { resolveRef, tsComments } from './gen-utils';
-import { SchemaObject } from 'openapi3-ts';
 
 /**
  * An operation has a variant per distinct possible body content
  */
-export class OperationVariant {
+export class OperationVariant extends GenType implements Importable {
   responseMethodName: string;
   resultType: string;
   responseType: string;
@@ -19,12 +22,22 @@ export class OperationVariant {
   responseMethodTsComments: string;
   bodyMethodTsComments: string;
 
+  paramsType: string;
+  paramsImport: Importable;
+
+  importName: string;
+  importPath: string;
+  importFile: string;
+
   constructor(
     public operation: Operation,
     public methodName: string,
     public requestBody: Content | null,
     public successResponse: Content | null,
     public options: Options) {
+
+    super(methodName, n => n, options);
+
     this.responseMethodName = `${methodName}$Response`;
     if (successResponse) {
       this.resultType = successResponse.type;
@@ -41,6 +54,29 @@ export class OperationVariant {
     this.isOther = !this.isVoid && !this.isNumber && !this.isBoolean;
     this.responseMethodTsComments = tsComments(this.responseMethodDescription(), 1, operation.deprecated);
     this.bodyMethodTsComments = tsComments(this.bodyMethodDescription(), 1, operation.deprecated);
+
+    this.importPath = 'fn/' + fileName(this.operation.tags[0] || options.defaultTag || 'operations');
+    this.importName = methodName;
+    this.importFile = fileName(methodName);
+
+    this.paramsType = `${upperFirst(methodName)}$Params`;
+    this.paramsImport = {
+      importName: this.paramsType,
+      importFile: this.importFile,
+      importPath: this.importPath
+    };
+
+    // Collect parameter imports
+    for (const parameter of this.operation.parameters) {
+      this.collectImports(parameter.spec.schema, false, true);
+    }
+    // Collect the request body imports
+    this.collectImports(this.requestBody?.spec?.schema);
+    // Collect the response imports
+    this.collectImports(this.successResponse?.spec?.schema);
+
+    // Finally, update the imports
+    this.updateImports();
   }
 
   private inferResponseType(successResponse: Content, operation: Operation, { customizedResponseType = {} }: Pick<Options, 'customizedResponseType'>): string {
@@ -100,5 +136,13 @@ To access the full response (for headers, for example), \`${this.responseMethodN
       ? `handles request body of type \`${this.requestBody.mediaType}\``
       : 'doesn\'t expect any request body';
     return `\n\nThis method ${sends}${handles}.`;
+  }
+
+  protected skipImport(): boolean {
+    return false;
+  }
+
+  protected initPathToRoot(): string {
+    return this.importPath.split(/\//g).map(() => '..').join('/') + '/';
   }
 }

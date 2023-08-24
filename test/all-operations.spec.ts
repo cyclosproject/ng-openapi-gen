@@ -1,12 +1,20 @@
+import { upperFirst } from 'lodash';
 import { OpenAPIObject } from 'openapi3-ts';
-import { ClassDeclaration, TypescriptParser } from 'typescript-parser';
+import { ClassDeclaration, FunctionDeclaration, TypescriptParser } from 'typescript-parser';
 import { Content } from '../lib/content';
 import { NgOpenApiGen } from '../lib/ng-openapi-gen';
 import { Options } from '../lib/options';
 import options from './all-operations.config.json';
 import allOperationsSpec from './all-operations.json';
 
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 1000;
 
+function paramsName(name: string) {
+  if (name.endsWith('$Response')) {
+    name = name.substring(0, name.length - '$Response'.length);
+  }
+  return `${upperFirst(name)}$Params`;
+}
 
 describe('Generation tests using all-operations.json', () => {
   let gen: NgOpenApiGen;
@@ -41,11 +49,7 @@ describe('Generation tests using all-operations.json', () => {
         if (method) {
           expect(method.parameters.length).toBe(2);
           const type = method.parameters[0].type;
-          expect(type).toContain('common1?: RefString');
-          expect(type).toContain('common2: RefObject');
-          expect(type).toContain('get1?: RefString');
-          expect(type).toContain('get2?: number');
-          expect(type).toContain('get3?: boolean');
+          expect(type).toEqual(paramsName(name));
         }
       }
       assertPath1Get('path1Get$Json$Response');
@@ -59,9 +63,7 @@ describe('Generation tests using all-operations.json', () => {
         if (method) {
           expect(method.parameters.length).toBe(2);
           const type = method.parameters[0].type;
-          expect(type).toContain('param1?: RefString');
-          expect(type).toContain('param2?: string');
-          expect(type).not.toContain('param3'); // Cookie parameter ignored
+          expect(type).toEqual(paramsName(name));
         }
       }
       assertPath2Get('path2Get$Response');
@@ -83,22 +85,19 @@ describe('Generation tests using all-operations.json', () => {
       expect(ast.declarations.length).toBe(1);
       expect(ast.declarations[0]).toEqual(jasmine.any(ClassDeclaration));
       const cls = ast.declarations[0] as ClassDeclaration;
-      function assertPath1Post(name: string, bodyType: string) {
+      function assertPath1Post(name: string) {
         const method = cls.methods.find(m => m.name === name);
         expect(method).withContext(`method ${name}`).toBeDefined();
         if (method) {
           expect(method.parameters.length).toBe(2);
           const type = method.parameters[0].type;
-          expect(type).toContain('common1?: RefString');
-          expect(type).toContain('common2: RefObject');
-          expect(type).toContain('post1?: number');
-          expect(type).toContain('body: ' + bodyType);
+          expect(type).toEqual(paramsName(name));
         }
       }
-      assertPath1Post('path1Post$Json$Response', 'RefObject');
-      assertPath1Post('path1Post$Json', 'RefObject');
-      assertPath1Post('path1Post$Plain$Response', 'string');
-      assertPath1Post('path1Post$Plain', 'string');
+      assertPath1Post('path1Post$Json$Response');
+      assertPath1Post('path1Post$Json');
+      assertPath1Post('path1Post$Plain$Response');
+      assertPath1Post('path1Post$Plain');
 
       done();
     });
@@ -130,37 +129,64 @@ describe('Generation tests using all-operations.json', () => {
         if (method) {
           expect(method.parameters.length).toBe(2);
           const type = method.parameters[0].type;
-          expect(type).toContain('id: number');
+          expect(type).toEqual(paramsName(name));
         }
       }
       assertPath3Del('path3Del$Response');
       assertPath3Del('path3Del');
 
-      function assertPath4Put(name: string, bodyType: string) {
+      function assertPath4Put(name: string) {
         const method = cls.methods.find(m => m.name === name);
         expect(method).withContext(`method ${name}`).toBeDefined();
         if (method) {
           expect(method.parameters.length).toBe(2);
           const type = method.parameters[0].type;
-          expect(type).toContain('body?: ' + bodyType);
+          expect(type).toEqual(paramsName(name));
         }
       }
-      assertPath4Put('path4Put$Json$Plain$Response', 'RefObject');
-      assertPath4Put('path4Put$Json$Plain', 'RefObject');
-      assertPath4Put('path4Put$Plain$Plain$Response', 'string');
-      assertPath4Put('path4Put$Plain$Plain', 'string');
-      assertPath4Put('path4Put$Any$Plain$Response', 'Blob');
-      assertPath4Put('path4Put$Any$Plain', 'Blob');
+      assertPath4Put('path4Put$Json$Plain$Response');
+      assertPath4Put('path4Put$Json$Plain');
+      assertPath4Put('path4Put$Plain$Plain$Response');
+      assertPath4Put('path4Put$Plain$Plain');
+      assertPath4Put('path4Put$Any$Plain$Response');
+      assertPath4Put('path4Put$Any$Plain');
 
-      assertPath4Put('path4Put$Json$Image$Response', 'RefObject');
-      assertPath4Put('path4Put$Json$Image', 'RefObject');
-      assertPath4Put('path4Put$Plain$Image$Response', 'string');
-      assertPath4Put('path4Put$Plain$Image', 'string');
-      assertPath4Put('path4Put$Any$Image$Response', 'Blob');
-      assertPath4Put('path4Put$Any$Image', 'Blob');
+      assertPath4Put('path4Put$Json$Image$Response');
+      assertPath4Put('path4Put$Json$Image');
+      assertPath4Put('path4Put$Plain$Image$Response');
+      assertPath4Put('path4Put$Plain$Image');
+      assertPath4Put('path4Put$Any$Image$Response');
+      assertPath4Put('path4Put$Any$Image');
 
       const withQuotes = cls.methods.find(m => m.name === 'withQuotes');
-      expect(withQuotes).withContext(`method withQuotes`).toBeDefined();
+      expect(withQuotes).withContext('method withQuotes').toBeDefined();
+
+      done();
+    });
+  });
+
+  it('NoTag-path-3-del', done => {
+    const noTag = gen.services.get('noTag');
+    const path3Del = noTag?.operations?.find(op => op.id === 'path3Del');
+    expect(path3Del).toBeDefined();
+    if (!path3Del) return;
+    const ts = gen.templates.apply('fn', path3Del);
+    const parser = new TypescriptParser();
+    parser.parseSource(ts).then(ast => {
+      expect(ast.declarations.length).toBe(1);
+      expect(ast.declarations[0]).toEqual(jasmine.any(FunctionDeclaration));
+      const fn = ast.declarations[0] as FunctionDeclaration;
+      expect(fn?.name).toEqual('path3Del');
+      expect(fn?.parameters?.length).toEqual(4);
+      expect(fn?.parameters?.[0]?.name).toEqual('http');
+      expect(fn?.parameters?.[0]?.type).toEqual('HttpClient');
+      expect(fn?.parameters?.[1]?.name).toEqual('rootUrl');
+      expect(fn?.parameters?.[1]?.type).toEqual('string');
+      expect(fn?.parameters?.[2]?.name).toEqual('params');
+      // This is a limitation of the typescript-parser library: the params type is returned as empty!!!
+      expect(fn?.parameters?.[2]?.type).toEqual('');
+      expect(fn?.parameters?.[3]?.name).toEqual('context');
+      expect(fn?.parameters?.[3]?.type).toEqual('HttpContext');
 
       done();
     });
@@ -481,6 +507,7 @@ describe('Generation tests using all-operations.json', () => {
   it('GET /path6', () => {
     const optionsWithCustomizedResponseType = { ...options } as Options;
     optionsWithCustomizedResponseType.customizedResponseType = {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       '/path6': {
         toUse: 'arraybuffer'
       }

@@ -1,4 +1,4 @@
-import { SchemaObject, OpenAPIObject } from 'openapi3-ts';
+import { OpenAPIObject, SchemaObject } from 'openapi3-ts';
 import { EnumValue } from './enum-value';
 import { GenType } from './gen-type';
 import { tsComments, tsType, unqualifiedName } from './gen-utils';
@@ -68,16 +68,11 @@ export class Model extends GenType {
     this.updateImports();
   }
 
-  protected pathToModels(): string {
+  protected initPathToRoot(): string {
     if (this.namespace) {
-      const depth = this.namespace.split('/').length;
-      let path = '';
-      for (let i = 0; i < depth; i++) {
-        path += '../';
-      }
-      return path;
+      return this.namespace.split('/').map(() => '../').join('/');
     }
-    return './';
+    return '../';
   }
 
   protected skipImport(name: string): boolean {
@@ -97,7 +92,7 @@ export class Model extends GenType {
       const appendType = (type: string) => {
         if (type.startsWith('null | ')) {
           propTypes.add('null');
-          propTypes.add(type.substr('null | '.length));
+          propTypes.add(type.substring('null | '.length));
         } else {
           propTypes.add(type);
         }

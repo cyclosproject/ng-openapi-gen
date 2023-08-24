@@ -15,7 +15,8 @@
   "[handlebars]": {
     "editor.formatOnSave": false,
     "editor.formatOnPaste": false,
-    "editor.suggest.insertMode": "replace"
+    "editor.suggest.insertMode": "replace",
+    "files.insertFinalNewline": false,
   },
   "files.insertFinalNewline": true,
   "prettier.requireConfig": true

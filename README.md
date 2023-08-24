@@ -23,7 +23,8 @@ For a generator for [Swagger 2.0](https://github.com/OAI/OpenAPI-Specification/b
 - It should be possible to specify a subset of services to generate.
   Only the models actually used by that subset should be generated;
 - It should be easy to specify a root URL for the web service endpoints;
-- Generated files should compile using strict `TypeScript` compiler flags, such as `noUnusedLocals` and `noUnusedParameters`.
+- Generated files should compile using strict `TypeScript` compiler flags, such as `noUnusedLocals` and `noUnusedParameters`;
+- For large APIs it is possible to generate only functions for each API operation, and not entire services. This allows for tree-shakable code to be generated, resulting in lower bundle sizes.
 
 ## Limitations
 
@@ -59,7 +60,7 @@ $ npm install -g ng-openapi-gen
 $ ng-openapi-gen --input my-api.yaml --output my-app/src/app/api
 ```
 
-Alternativly you can use the generator directly from within your build-script:
+Alternatively you can use the generator directly from within your build-script:
 
 ```typescript
 import $RefParser from 'json-schema-ref-parser';
@@ -125,6 +126,55 @@ export class AppModule { }
 
 Alternatively, you can inject the `ApiConfiguration` instance in some service
 or component, such as the `AppComponent` and set the `rootUrl` property there.
+
+## Using functional API calls
+
+Starting with version 0.50.0, `ng-openapi-gen` generates a function with the implementation of each actual API call.
+The generated services delegate to such functions.
+
+However, it is possible to disable the entire services generation, which will avoid the need to include all such services in the application.
+As a result, the application will be more tree-shakable, resulting in smaller bundle sizes.
+This is specially true for large 3rd party APIs, in which, for example, a single service (OpenAPI tag) has many methods, but only a few are actually used.
+Combined with the option `"enumStyle": "alias"`, the footprint of the API generation will be minimal.
+
+Each generated function receives the following arguments:
+
+- Angular's `HttpClient` instance;
+- The API `rootUrl` (the operation knowns the relative URL, and will use this root URL to build the full endpoint path);
+- The actual operation parameters. If it has no parameters or all parameters are optional, the params option will be optional as well;
+- The optional http context.
+
+Clients can directly call the function providing the given parameters.
+However, to make the process smoother, it is also possible to generate a general service specifically to invoke such functions.
+Its generation is disabled by default, but can be enabled by setting the option `"apiService": "ApiService"` (or another name your prefer).
+With this, a single `@Injectable` service is generated. It will provide the functions with the `HttpClient` and `rootUrl` (from `ApiConfiguration`).
+
+It then provides 2 methods for invoking the functions:
+
+- `invoke`: Calls the function and returns the response body;
+- `invoke$Response`: Calls the function and returns the entire response, so additional metadata can be read, such as status code or headers.
+
+Here is an example class using the `ApiService`:
+
+```typescript
+import { Directive, OnInit, inject } from '@angular/core';
+import { ApiService } from 'src/api/api.service';
+import { getResults } from 'src/api/fn/api/get-results';
+import { Result } from 'src/api/models';
+import { Observable } from 'rxjs';
+
+@Directive()
+export class ApiFnComponent implements OnInit {
+  results$!: Observable<Result[]>;
+
+  apiService = inject(ApiService);
+
+  ngOnInit() {
+    // getResults is the operation function. The second argument is the actual parameters passed to the function
+    this.results$ = this.apiService.invoke(getResults, { limit: 10 });
+  }
+}
+```
 
 ## Passing request headers / customizing the request
 

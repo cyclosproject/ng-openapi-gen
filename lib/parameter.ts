@@ -22,7 +22,7 @@ export class Parameter {
     this.name = spec.name;
     this.var = escapeId(this.name);
     this.varAccess = this.var.includes('\'') ? `[${this.var}]` : `.${this.var}`;
-    this.tsComments = tsComments(spec.description || '', 2, spec.deprecated);
+    this.tsComments = tsComments(spec.description || '', 0, spec.deprecated);
     this.in = spec.in || 'query';
     this.required = this.in === 'path' || spec.required || false;
     this.type = tsType(spec.schema, options, openApi);

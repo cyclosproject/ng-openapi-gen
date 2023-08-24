@@ -20,33 +20,42 @@ export class Service extends GenType {
 
     // Collect the imports
     for (const operation of operations) {
+      operation.variants.forEach(variant => {
+        // Import the variant fn
+        this.addImport(variant);
+        // Import the variant parameters
+        this.addImport(variant.paramsImport);
+        // Import the variant result type
+        this.collectImports(variant.successResponse?.spec?.schema);
+        // Add the request body additional dependencies
+        this.collectImports(variant.requestBody?.spec?.schema, true);
+      });
+
+      // Add the parameters as additional dependencies
       for (const parameter of operation.parameters) {
-        this.collectImports(parameter.spec.schema, false, true);
+        this.collectImports(parameter.spec.schema, true);
       }
+
+      // Add the responses imports as additional dependencies
+      for (const resp of operation.allResponses) {
+        for (const content of resp.content ?? []) {
+          this.collectImports(content.spec?.schema, true);
+        }
+      }
+
+      // Add the security group imports
       for (const securityGroup of operation.security) {
         securityGroup.forEach(security => this.collectImports(security.spec.schema));
-      }
-      if (operation.requestBody) {
-        for (const content of operation.requestBody.content) {
-          this.collectImports(content.spec.schema);
-        }
-      }
-      for (const response of operation.allResponses) {
-        const additional = response !== operation.successResponse;
-        for (const content of response.content) {
-          this.collectImports(content.spec.schema, additional, true);
-        }
       }
     }
     this.updateImports();
   }
 
-  protected pathToModels(): string {
-    return '../models/';
+  protected skipImport(): boolean {
+    return false;
   }
 
-  protected skipImport(): boolean {
-    // All models are imported
-    return false;
+  protected initPathToRoot(): string {
+    return '../';
   }
 }

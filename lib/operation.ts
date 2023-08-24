@@ -2,13 +2,13 @@ import { last, upperFirst } from 'lodash';
 import { ContentObject, MediaTypeObject, OpenAPIObject, OperationObject, ParameterObject, PathItemObject, ReferenceObject, RequestBodyObject, ResponseObject, SecurityRequirementObject, SecuritySchemeObject } from 'openapi3-ts';
 import { Content } from './content';
 import { resolveRef, typeName } from './gen-utils';
+import { Logger } from './logger';
 import { OperationVariant } from './operation-variant';
 import { Options } from './options';
 import { Parameter } from './parameter';
 import { RequestBody } from './request-body';
 import { Response } from './response';
 import { Security } from './security';
-import { Logger } from './logger';
 
 /**
  * An operation descriptor
@@ -77,6 +77,11 @@ export class Operation {
 
     // Now calculate the variants: request body content x success response content
     this.calculateVariants();
+  }
+
+  protected skipImport(): boolean {
+    // All models are imported
+    return false;
   }
 
   private collectParameters(params: (ParameterObject | ReferenceObject)[] | undefined): Parameter[] {
@@ -225,7 +230,7 @@ export class Operation {
       type = last(type.split('/')) as string;
       const plus = type.lastIndexOf('+');
       if (plus >= 0) {
-        type = type.substr(plus + 1);
+        type = type.substring(plus + 1);
       }
       return this.options.skipJsonSuffix && type === 'json' ? '' : `$${typeName(type)}`;
     } else {
