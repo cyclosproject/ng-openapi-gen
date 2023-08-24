@@ -26,7 +26,7 @@
     "test:watch": "nodemon --watch './**/*' --exec 'npm run test'"
   },
   "dependencies": {
-    "@apidevtools/json-schema-ref-parser": "~9.1.2",
+    "@apidevtools/json-schema-ref-parser": "~9.0.9",
     "argparse": "^2.0.1",
     "eol": "^0.9.1",
     "fs-extra": "^10.0.1",
@@ -60,7 +60,7 @@
     "jasmine-ts": "^0.4.0",
     "mem": "^9.0.2",
     "ncp": "^2.0.0",
-    "nodemon": "^1.14.9",
+    "nodemon": "^3.0.1",
     "replace-in-file": "^7.0.1",
     "rimraf": "^5.0.1",
     "ts-node": "^10.9.1",
