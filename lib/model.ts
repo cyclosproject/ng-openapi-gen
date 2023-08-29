@@ -70,7 +70,7 @@ export class Model extends GenType {
 
   protected initPathToRoot(): string {
     if (this.namespace) {
-      // for each namespace level go one directory up 
+      // for each namespace level go one directory up
       // plus the "models" directory
       return this.namespace.split('/').map(() => '../').join('').concat('../');
     }
