@@ -451,7 +451,7 @@
       "RefResp": {
         "description": "I am a response",
         "content": {
-          "application/json": {
+          "application/vnd.my-custom-type+json;version=2": {
             "schema": {
               "type": "object"
             }

@@ -500,7 +500,7 @@ describe('Generation tests using all-operations.json', () => {
     expect(operation.allResponses.length).toBe(1);
     const success = operation.successResponse;
     if (success) {
-      const json = success.content.find(c => c.mediaType === 'application/json');
+      const json = success.content.find(c => c.mediaType === 'application/vnd.my-custom-type+json;version=2');
       expect(json).toBeDefined();
       const resp200 = operation.allResponses.find(r => r.statusCode === '200');
       expect(resp200).toBe(success);

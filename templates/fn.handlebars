@@ -30,7 +30,7 @@ export function {{importName}}(http: HttpClient, rootUrl: string, params{{^opera
   }
 
   return http.request(
-    rb.build({ responseType: '{{responseType}}', accept: '{{accept}}', context })
+    rb.build({ responseType: '{{{responseType}}}', accept: '{{{accept}}}', context })
   ).pipe(
     filter((r: any): r is HttpResponse<any> => r instanceof HttpResponse),
     map((r: HttpResponse<any>) => {
