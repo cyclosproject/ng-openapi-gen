@@ -115,7 +115,7 @@ describe('Generation tests using all-operations.json', () => {
     const noTag = gen.services.get('noTag');
     expect(noTag).toBeDefined();
     if (!noTag) return;
-    expect(noTag.operations.length).toBe(5);
+    expect(noTag.operations.length).toBe(7);
 
     const ts = gen.templates.apply('service', noTag);
     const parser = new TypescriptParser();

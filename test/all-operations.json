@@ -398,6 +398,24 @@
           "204": {}
         }
       }
+    },
+    "/duplicated1": {
+      "get": {
+        "operationId": "duplicated",
+        "summary": "Test a duplicated operationId",
+        "responses": {
+          "200": {}
+        }
+      }
+    },
+    "/duplicated2": {
+      "get": {
+        "operationId": "duplicated",
+        "summary": "Test a duplicated operationId",
+        "responses": {
+          "200": {}
+        }
+      }
     }
   },
   "components": {
