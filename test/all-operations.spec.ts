@@ -1,6 +1,6 @@
 import { upperFirst } from 'lodash';
 import { OpenAPIObject } from 'openapi3-ts';
-import { ClassDeclaration, FunctionDeclaration, TypescriptParser } from 'typescript-parser';
+import { ClassDeclaration, FunctionDeclaration, InterfaceDeclaration, TypescriptParser } from 'typescript-parser';
 import { Content } from '../lib/content';
 import { NgOpenApiGen } from '../lib/ng-openapi-gen';
 import { Options } from '../lib/options';
@@ -115,7 +115,7 @@ describe('Generation tests using all-operations.json', () => {
     const noTag = gen.services.get('noTag');
     expect(noTag).toBeDefined();
     if (!noTag) return;
-    expect(noTag.operations.length).toBe(4);
+    expect(noTag.operations.length).toBe(5);
 
     const ts = gen.templates.apply('service', noTag);
     const parser = new TypescriptParser();
@@ -165,17 +165,21 @@ describe('Generation tests using all-operations.json', () => {
     });
   });
 
-  it('NoTag-path-3-del', done => {
+  it('NoTag-path-3-del-fn', done => {
     const noTag = gen.services.get('noTag');
     const path3Del = noTag?.operations?.find(op => op.id === 'path3Del');
     expect(path3Del).toBeDefined();
     if (!path3Del) return;
-    const ts = gen.templates.apply('fn', path3Del);
+    const ts = gen.templates.apply('fn', path3Del.variants[0]);
     const parser = new TypescriptParser();
     parser.parseSource(ts).then(ast => {
-      expect(ast.declarations.length).toBe(1);
-      expect(ast.declarations[0]).toEqual(jasmine.any(FunctionDeclaration));
-      const fn = ast.declarations[0] as FunctionDeclaration;
+      expect(ast.declarations.length).toBe(2);
+      expect(ast.declarations[0]).toEqual(jasmine.any(InterfaceDeclaration));
+      const params = ast.declarations[0] as InterfaceDeclaration;
+      expect(params?.name).toEqual('Path3Del$Params');
+
+      expect(ast.declarations[1]).toEqual(jasmine.any(FunctionDeclaration));
+      const fn = ast.declarations[1] as FunctionDeclaration;
       expect(fn?.name).toEqual('path3Del');
       expect(fn?.parameters?.length).toEqual(4);
       expect(fn?.parameters?.[0]?.name).toEqual('http');
@@ -183,8 +187,7 @@ describe('Generation tests using all-operations.json', () => {
       expect(fn?.parameters?.[1]?.name).toEqual('rootUrl');
       expect(fn?.parameters?.[1]?.type).toEqual('string');
       expect(fn?.parameters?.[2]?.name).toEqual('params');
-      // This is a limitation of the typescript-parser library: the params type is returned as empty!!!
-      expect(fn?.parameters?.[2]?.type).toEqual('');
+      expect(fn?.parameters?.[2]?.type).toEqual('Path3Del$Params');
       expect(fn?.parameters?.[3]?.name).toEqual('context');
       expect(fn?.parameters?.[3]?.type).toEqual('HttpContext');
 
@@ -517,5 +520,17 @@ describe('Generation tests using all-operations.json', () => {
     const operation = gen.operations.get('path6Get');
     expect(operation).toBeDefined();
     expect(operation?.variants[0].responseType).toBe('arraybuffer');
+  });
+
+
+  it('DELETE /path7', () => {
+    const operation = gen.operations.get('delete');
+    expect(operation).toBeDefined();
+    if (!operation) return;
+    expect(operation.path).toBe('/path7');
+    expect(operation.method).toBe('delete');
+    expect(operation.allResponses.length).toBe(1);
+    const success = operation.successResponse;
+    expect(success?.statusCode).toEqual('204');
   });
 });

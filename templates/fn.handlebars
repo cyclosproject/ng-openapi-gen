@@ -18,8 +18,8 @@ export interface {{paramsType}} {
 {{/requestBody}}
 }
 
-export function {{methodName}}(http: HttpClient, rootUrl: string, params{{^operation.parametersRequired}}?{{/operation.parametersRequired}}: {{paramsType}}, context?: HttpContext): Observable<{{@root.responseClass}}<{{{resultType}}}>> {
-  const rb = new {{@root.requestBuilderClass}}(rootUrl, {{methodName}}.PATH, '{{operation.method}}');
+export function {{importName}}(http: HttpClient, rootUrl: string, params{{^operation.parametersRequired}}?{{/operation.parametersRequired}}: {{paramsType}}, context?: HttpContext): Observable<{{@root.responseClass}}<{{{resultType}}}>> {
+  const rb = new {{@root.requestBuilderClass}}(rootUrl, {{importName}}.PATH, '{{operation.method}}');
   if (params) {
 {{#operation.parameters}}
     rb.{{in}}('{{{name}}}', params{{{varAccess}}}, {{{parameterOptions}}});
@@ -39,4 +39,4 @@ export function {{methodName}}(http: HttpClient, rootUrl: string, params{{^opera
   );
 }
 
-{{methodName}}.PATH = '{{{operation.path}}}';
+{{importName}}.PATH = '{{{operation.path}}}';

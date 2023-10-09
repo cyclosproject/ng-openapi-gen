@@ -1,11 +1,11 @@
-import jsesc from 'jsesc';
 import fs from 'fs-extra';
-import path from 'path';
+import jsesc from 'jsesc';
 import { camelCase, deburr, kebabCase, upperCase, upperFirst } from 'lodash';
 import { OpenAPIObject, ReferenceObject, SchemaObject } from 'openapi3-ts';
-import { Options } from './options';
-import { Model } from './model';
+import path from 'path';
 import { Logger } from './logger';
+import { Model } from './model';
+import { Options } from './options';
 
 export const HTTP_METHODS = ['get', 'put', 'post', 'delete', 'options', 'head', 'patch', 'trace'];
 type SchemaOrRef = SchemaObject | ReferenceObject;
@@ -57,6 +57,15 @@ export function namespace(name: string): string | undefined {
   name = name.replace(/\.+$/g, '');
   const pos = name.lastIndexOf('.');
   return pos < 0 ? undefined : name.substring(0, pos).replace(/\./g, '/');
+}
+
+const RESERVED_KEYWORDS = ['abstract', 'arguments', 'await', 'boolean', 'break', 'byte', 'case', 'catch', 'char', 'class', 'const', 'continue', 'debugger', 'default', 'delete', 'do', 'double', 'else', 'enum', 'eval', 'export', 'extends', 'false', 'final', 'finally', 'float', 'for', 'function', 'goto', 'if', 'implements', 'import', 'in', 'instanceof', 'int', 'interface', 'let', 'long', 'native', 'new', 'null', 'package', 'private', 'protected', 'public', 'return', 'short', 'static', 'super', 'switch', 'synchronized', 'this', 'throw', 'throws', 'transient', 'true', 'try', 'typeof', 'var', 'void', 'volatile', 'while', 'with', 'yield'];
+
+/**
+ * If the given name is a JS reserved keyword, suffix it with a `$` character
+ */
+export function ensureNotReserved(name: string): string {
+  return RESERVED_KEYWORDS.includes(name) ? name + '$' : name;
 }
 
 /**
