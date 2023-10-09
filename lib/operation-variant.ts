@@ -2,7 +2,7 @@ import { upperFirst } from 'lodash';
 import { SchemaObject } from 'openapi3-ts';
 import { Content } from './content';
 import { GenType } from './gen-type';
-import { fileName, resolveRef, tsComments } from './gen-utils';
+import { ensureNotReserved, fileName, resolveRef, tsComments } from './gen-utils';
 import { Importable } from './importable';
 import { Operation } from './operation';
 import { Options } from './options';
@@ -56,7 +56,7 @@ export class OperationVariant extends GenType implements Importable {
     this.bodyMethodTsComments = tsComments(this.bodyMethodDescription(), 1, operation.deprecated);
 
     this.importPath = 'fn/' + fileName(this.operation.tags[0] || options.defaultTag || 'operations');
-    this.importName = methodName;
+    this.importName = ensureNotReserved(methodName);
     this.importFile = fileName(methodName);
 
     this.paramsType = `${upperFirst(methodName)}$Params`;

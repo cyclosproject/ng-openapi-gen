@@ -389,6 +389,15 @@
           }
         }
       }
+    },
+    "/path7": {
+      "delete": {
+        "operationId": "delete",
+        "summary": "Test a reserved keyword",
+        "responses": {
+          "204": {}
+        }
+      }
     }
   },
   "components": {
