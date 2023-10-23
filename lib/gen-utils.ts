@@ -167,28 +167,17 @@ export function escapeId(name: string) {
 }
 
 /**
- * Returns the TypeScript type for the given type and options
+ * Appends | null to the given type
  */
-export function tsType(schemaOrRef: SchemaOrRef | undefined, options: Options, openApi: OpenAPIObject, container?: Model): string {
-  if (!schemaOrRef) {
-    // No schema
-    return 'any';
+function maybeAppendNull(type: string, nullable: boolean) {
+  if (` ${type} `.includes('null') || !nullable) {
+    // The type itself already includes null
+    return type;
   }
-  if (schemaOrRef.$ref) {
-    // A reference
-    const resolved = resolveRef(openApi, schemaOrRef.$ref);
-    const nullable = !!(resolved && (resolved as SchemaObject).nullable);
-    const prefix = nullable ? 'null | ' : '';
-    const name = simpleName(schemaOrRef.$ref);
-    if (container && container.name === name) {
-      // When referencing the same container, use its type name
-      return prefix + container.typeName;
-    } else {
-      return prefix + qualifiedName(name, options);
-    }
-  }
-  const schema = schemaOrRef as SchemaObject;
+  return (type.includes(' ') ? `(${type})` : type) + (nullable ? ' | null' : '');
+}
 
+function rawTsType(schema: SchemaObject, options: Options, openApi: OpenAPIObject, container?: Model): string {
   // An union of types
   const union = schema.oneOf || schema.anyOf || [];
   if (union.length > 0) {
@@ -204,10 +193,7 @@ export function tsType(schemaOrRef: SchemaOrRef | undefined, options: Options, o
   // An array
   if (type === 'array' || schema.items) {
     const items = schema.items || {};
-    let itemsType = tsType(items, options, openApi, container);
-    if ((items as any)['nullable'] && !itemsType.includes(' | null')) {
-      itemsType += ' | null';
-    }
+    const itemsType = tsType(items, options, openApi, container);
     return `Array<${itemsType}>`;
   }
 
@@ -244,10 +230,7 @@ export function tsType(schemaOrRef: SchemaOrRef | undefined, options: Options, o
       if (!propRequired) {
         result += '?';
       }
-      let propertyType = tsType(property, options, openApi, container);
-      if ((property as SchemaObject).nullable) {
-        propertyType = `${propertyType} | null`;
-      }
+      const propertyType = tsType(property, options, openApi, container);
       result += `: ${propertyType};\n`;
     }
     if (schema.additionalProperties) {
@@ -277,8 +260,31 @@ export function tsType(schemaOrRef: SchemaOrRef | undefined, options: Options, o
     return 'Blob';
   }
 
-  // A simple type
+  // A simple type (integer doesn't exist as type in JS, use number instead)
   return type === 'integer' ? 'number' : type;
+}
+
+/**
+ * Returns the TypeScript type for the given type and options
+ */
+export function tsType(schemaOrRef: SchemaOrRef | undefined, options: Options, openApi: OpenAPIObject, container?: Model): string {
+  if (!schemaOrRef) {
+    // No schema
+    return 'any';
+  }
+
+  if (schemaOrRef.$ref) {
+    // A reference
+    const resolved = resolveRef(openApi, schemaOrRef.$ref) as SchemaObject;
+    const name = simpleName(schemaOrRef.$ref);
+    // When referencing the same container, use its type name
+    return maybeAppendNull((container && container.name === name) ? container.typeName : qualifiedName(name, options), !!resolved.nullable);
+  }
+
+  // Resolve the actual type (maybe nullable)
+  const schema = schemaOrRef as SchemaObject;
+  const type = rawTsType(schema, options, openApi, container);
+  return maybeAppendNull(type, !!schema.nullable);
 }
 
 /**
