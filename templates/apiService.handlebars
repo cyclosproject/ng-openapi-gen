@@ -43,7 +43,7 @@ export class {{apiServiceClass}} {
    */
   invoke<P, R>(fn: ApiFnRequired<P, R>, params: P, context?: HttpContext): Observable<R>;
   invoke<P, R>(fn: ApiFnOptional<P, R>, params?: P, context?: HttpContext): Observable<R>;
-  invoke<P, R>(fn: ApiFnRequired<P, R> | ApiFnOptional<P, R>, params?: P, context?: HttpContext): Observable<R></R>   {
+  invoke<P, R>(fn: ApiFnRequired<P, R> | ApiFnOptional<P, R>, params: P, context?: HttpContext): Observable<R> {
     return this.invoke$Response(fn, params, context)
       .pipe(map(r => r.body));
   }
@@ -53,7 +53,7 @@ export class {{apiServiceClass}} {
    */
   invoke$Response<P, R>(fn: ApiFnRequired<P, R>, params: P, context?: HttpContext): Observable<StrictHttpResponse<R>>;
   invoke$Response<P, R>(fn: ApiFnOptional<P, R>, params?: P, context?: HttpContext): Observable<StrictHttpResponse<R>>;
-  invoke$Response<P, R>(fn: ApiFnRequired<P, R> | ApiFnOptional<P, R>, params?: P, context?: HttpContext): Observable<StrictHttpResponse<R>> {
+  invoke$Response<P, R>(fn: ApiFnRequired<P, R> | ApiFnOptional<P, R>, params: P, context?: HttpContext): Observable<StrictHttpResponse<R>> {
     return fn(this.http, this.rootUrl, params, context)
       .pipe(
         filter(r => r instanceof HttpResponse),
