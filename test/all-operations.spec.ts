@@ -214,7 +214,7 @@ describe('Generation tests using all-operations.json', () => {
     expect(params[2].type).toBe('RefString');
     expect(params[2].in).toBe('query');
     expect(params[3].name).toBe('get2');
-    expect(params[3].type).toBe('number');
+    expect(params[3].type).toBe('number | null');
     expect(params[3].in).toBe('query');
     expect(params[4].name).toBe('get3');
     expect(params[4].var).toBe('get3');

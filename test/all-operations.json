@@ -79,8 +79,10 @@
           {
             "name": "get2",
             "description": "GET param 2",
+            "required": true,
             "schema": {
-              "type": "integer"
+              "type": "integer",
+              "nullable": true
             }
           },
           {

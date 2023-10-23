@@ -97,7 +97,7 @@ describe('Generation tests using all-types.json', () => {
       expect(decl.name).toBe('NullableObject');
       // There's no support for additional properties in typescript-parser. Check as text.
       const text = ts.substring(decl.start || 0, decl.end || ts.length);
-      expect(text).toContain('= {\n\'name\'?: string;\n}');
+      expect(text).toContain('= ({\n\'name\'?: string;\n})');
       done();
     });
   });
@@ -285,14 +285,14 @@ describe('Generation tests using all-types.json', () => {
       expect(decl.name).toBe('AdditionalProperties');
       expect(decl.properties.length).toBe(3);
       expect(decl.properties[0].name).toBe('age');
-      expect(decl.properties[0].type).toBe('null | number');
+      expect(decl.properties[0].type).toBe('number | null');
       expect(decl.properties[1].name).toBe('description');
       expect(decl.properties[1].type).toBe('string');
       expect(decl.properties[2].name).toBe('name');
       expect(decl.properties[2].type).toBe('string');
       expect(decl.properties[2].isOptional).toBeFalse();
       const text = ts.substring(decl.start || 0, decl.end || ts.length);
-      expect(text).toContain('[key: string]: ABRefObject | null | number | string | undefined;');
+      expect(text).toContain('[key: string]: ABRefObject | number | null | string | undefined;');
       done();
     });
   });
@@ -310,13 +310,13 @@ describe('Generation tests using all-types.json', () => {
       expect(decl.name).toBe('Nullables');
       expect(decl.properties.length).toBe(3);
       expect(decl.properties[0].name).toBe('inlinedNullableObject');
-      expect(decl.properties[0].type).withContext('inlinedNullableObject property').toBe('null | {\n\'someProperty\': string;\n}');
+      expect(decl.properties[0].type).withContext('inlinedNullableObject property').toBe('({\n\'someProperty\': string;\n}) | null');
       expect(decl.properties[0].isOptional).toBeFalse();
       expect(decl.properties[1].name).toBe('nullableObject');
-      expect(decl.properties[1].type).withContext('nullableObject property').toBe('null | NullableObject');
+      expect(decl.properties[1].type).withContext('nullableObject property').toBe('NullableObject | null');
       expect(decl.properties[1].isOptional).toBeFalse();
       expect(decl.properties[2].name).toBe('withNullableProperty');
-      expect(decl.properties[2].type).withContext('withNullableProperty property').toBe('{\n\'someProperty\': null | NullableObject;\n}');
+      expect(decl.properties[2].type).withContext('withNullableProperty property').toBe('{\n\'someProperty\': NullableObject | null;\n}');
       expect(decl.properties[2].isOptional).toBeFalse();
       done();
     });
@@ -410,7 +410,7 @@ describe('Generation tests using all-types.json', () => {
       assertProperty('booleanProp', 'boolean');
       assertProperty('anyProp', 'any');
 
-      assertProperty('nullableObject', 'null | NullableObject');
+      assertProperty('nullableObject', 'NullableObject | null');
       assertProperty('refEnumProp', 'RefEnum', true);
       assertProperty('refObjectProp', 'ABRefObject', true);
       assertProperty('unionProp', 'Union');
