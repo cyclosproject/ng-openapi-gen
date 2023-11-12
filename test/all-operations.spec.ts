@@ -204,12 +204,12 @@ describe('Generation tests using all-operations.json', () => {
     expect(operation.method).toBe('get');
     expect(operation.parameters.length).toBe(9); // 2 shared, 7 own
     const params = operation.parameters;
-    expect(params[0].name).toBe('common1');
-    expect(params[0].type).toBe('RefString');
-    expect(params[0].in).toBe('query');
-    expect(params[1].name).toBe('common2');
-    expect(params[1].in).toBe('header');
-    expect(params[1].type).toBe('RefObject');
+    expect(params[0].name).toBe('common2');
+    expect(params[0].in).toBe('header');
+    expect(params[0].type).toBe('RefObject');
+    expect(params[1].name).toBe('common1');
+    expect(params[1].type).toBe('RefString');
+    expect(params[1].in).toBe('query');
     expect(params[2].name).toBe('get1');
     expect(params[2].type).toBe('RefString');
     expect(params[2].in).toBe('query');

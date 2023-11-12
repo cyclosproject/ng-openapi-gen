@@ -46,10 +46,21 @@ export class Operation {
     this.methodName = spec['x-operation-name'] || this.id;
 
     // Add both the common and specific parameters
-    this.parameters = [
-      ...this.collectParameters(pathSpec.parameters),
-      ...this.collectParameters(spec.parameters),
+    const allParams = [
+      ...this.collectParameters(false, pathSpec.parameters),
+      ...this.collectParameters(true, spec.parameters),
     ];
+    // Maybe there were duplicated parameters? In this case, let specific parameters replace the general ones
+    this.parameters = [];
+    allParams.forEach(param => {
+      let skip = false;
+      if (!param.specific) {
+        skip = !!allParams.find(p => p !== param && p.name === param.name && p.specific);
+      }
+      if (!skip) {
+        this.parameters.push(param);
+      }
+    });
     if (this.parameters.find(p => p.required)) {
       this.parametersRequired = true;
     }
@@ -84,11 +95,10 @@ export class Operation {
     return false;
   }
 
-  private collectParameters(params: (ParameterObject | ReferenceObject)[] | undefined): Parameter[] {
+  private collectParameters(specific: boolean, params: (ParameterObject | ReferenceObject)[] | undefined): Parameter[] {
     const result: Parameter[] = [];
     if (params) {
       for (let param of params) {
-
         if (param.$ref) {
           param = resolveRef(this.openApi, param.$ref);
         }
@@ -96,11 +106,12 @@ export class Operation {
 
         if (param.in === 'cookie') {
           this.logger.warn(`Ignoring cookie parameter ${this.id}.${param.name} as cookie parameters cannot be sent in XmlHttpRequests.`);
-        } else if (this.paramIsNotExcluded(param)) {
-          result.push(new Parameter(param as ParameterObject, this.options, this.openApi));
+        } else if (!this.paramIsExcluded(param)) {
+          const parameter = new Parameter(param as ParameterObject, this.options, this.openApi);
+          parameter.specific = specific;
+          result.push(parameter);
         }
       }
-
     }
     return result;
   }
@@ -119,9 +130,9 @@ export class Operation {
     });
   }
 
-  private paramIsNotExcluded(param: ParameterObject): boolean {
+  private paramIsExcluded(param: ParameterObject): boolean {
     const excludedParameters = this.options.excludeParameters || [];
-    return !excludedParameters.includes(param.name);
+    return excludedParameters.includes(param.name);
   }
 
   private collectContent(desc: ContentObject | undefined): Content[] {
