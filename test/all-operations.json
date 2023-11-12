@@ -69,6 +69,13 @@
         "description": "Path 1 GET description",
         "parameters": [
           {
+            "name": "common1",
+            "description": "Specific common param 1",
+            "schema": {
+              "$ref": "#/components/schemas/RefString"
+            }
+          },
+          {
             "name": "get1",
             "description": "GET param 1",
             "in": "query",

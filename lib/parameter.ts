@@ -17,6 +17,7 @@ export class Parameter {
   style?: string;
   explode?: boolean;
   parameterOptions: string;
+  specific = false;
 
   constructor(public spec: ParameterObject, options: Options, openApi: OpenAPIObject) {
     this.name = spec.name;
