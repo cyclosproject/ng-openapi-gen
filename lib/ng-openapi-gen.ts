@@ -78,6 +78,9 @@ export class NgOpenApiGen {
       const models = [...this.models.values()];
       for (const model of models) {
         this.write('model', model, model.fileName, 'models');
+        if (this.options.enumArray && model.enumArrayFileName) {
+          this.write('enumArray', model, model.enumArrayFileName, 'models');
+        }
       }
 
       // Generate each service and function
@@ -113,7 +116,6 @@ export class NgOpenApiGen {
       if (generateServices && this.globals.moduleClass && this.globals.moduleFile) {
         this.write('module', general, this.globals.moduleFile);
       }
-
 
       const modelIndex = this.globals.modelIndexFile || this.options.indexFile ? new ModelIndex(models, this.options) : null;
       if (this.globals.modelIndexFile) {

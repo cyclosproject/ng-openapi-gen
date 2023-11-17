@@ -148,6 +148,11 @@
         "ignorecase"
       ]
     },
+    "enumArray": {
+      "description": "Should an array be exported for each model, in a file sibling to the enum definition?",
+      "default": false,
+      "type": "boolean"
+    },
     "endOfLineStyle": {
       "description": "Determines how to normalize line endings. Possible values are: `crlf`: normalize line endings to CRLF (Windows, DOS) => \\r\\n. `lf` normalize line endings to LF (Unix, OS X) => \\n. `cr` normalize line endings to CR (Mac OS) => \\r. `auto` normalize line endings for the current operating system. Defaults to 'auto'.",
       "default": "auto",
