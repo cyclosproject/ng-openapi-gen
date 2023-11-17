@@ -84,6 +84,11 @@ export interface Options {
   enumStyle?: 'alias' | 'upper' | 'pascal' | 'ignorecase';
 
   /**
+   * Should an array with all enum items of models be exported in a sibling file for enums?
+   */
+  enumArray?: boolean;
+
+  /**
    * Determines how to normalize line endings. Possible values are:
    *
    * - `crlf`: normalize line endings to CRLF (Windows, DOS) => \r\n

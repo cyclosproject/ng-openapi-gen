@@ -1,9 +1,10 @@
 import { OpenAPIObject, SchemaObject } from 'openapi3-ts';
 import { EnumValue } from './enum-value';
 import { GenType } from './gen-type';
-import { tsComments, tsType, unqualifiedName } from './gen-utils';
+import { fileName, tsComments, tsType, unqualifiedName } from './gen-utils';
 import { Options } from './options';
 import { Property } from './property';
+import { upperCase } from 'lodash';
 
 
 /**
@@ -19,6 +20,8 @@ export class Model extends GenType {
   // Simple properties
   simpleType: string;
   enumValues: EnumValue[];
+  enumArrayName?: string;
+  enumArrayFileName?: string;
 
   // Array properties
   elementType: string;
@@ -35,8 +38,11 @@ export class Model extends GenType {
 
     const type = schema.type || 'any';
 
-    // When enumStyle is 'alias' it is handled as a simple type.
-    if (options.enumStyle !== 'alias' && (schema.enum || []).length > 0 && ['string', 'number', 'integer'].includes(type)) {
+    // Handle enums
+    if ((schema.enum || []).length > 0 && ['string', 'number', 'integer'].includes(type)) {
+      this.enumArrayName = upperCase(this.typeName).replace(/\s+/g, '_');
+      this.enumArrayFileName = fileName(this.typeName + '-array');
+
       const names = schema['x-enumNames'] as string[] || [];
       const descriptions = schema['x-enumDescriptions'] as string[] || [];
       const values = schema.enum || [];
@@ -45,12 +51,14 @@ export class Model extends GenType {
         const enumValue = new EnumValue(type, names[i], descriptions[i], values[i], options);
         this.enumValues.push(enumValue);
       }
+
+      // When enumStyle is 'alias' it is handled as a simple type.
+      this.isEnum = options.enumStyle !== 'alias';
     }
 
     const hasAllOf = schema.allOf && schema.allOf.length > 0;
     const hasOneOf = schema.oneOf && schema.oneOf.length > 0;
     this.isObject = (type === 'object' || !!schema.properties) && !schema.nullable && !hasAllOf && !hasOneOf;
-    this.isEnum = (this.enumValues || []).length > 0;
     this.isSimple = !this.isObject && !this.isEnum;
 
     if (this.isObject) {

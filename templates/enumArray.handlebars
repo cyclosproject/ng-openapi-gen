@@ -1,0 +1,11 @@
+/* tslint:disable */
+/* eslint-disable */
+import { {{{typeName}}} } from './{{{fileName}}}';
+
+/**
+ * Each possible value of `{{{typeName}}}`
+ */
+export const {{{enumArrayName}}}: {{{typeName}}}[] = [
+{{#enumValues}}  {{{value}}}{{^@last}},
+{{/@last}}{{/enumValues}}
+];
