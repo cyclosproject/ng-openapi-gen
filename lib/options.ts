@@ -120,4 +120,6 @@ export interface Options {
 
   /** When true, no verbose output will be displayed */
   silent?: boolean;
+
+  excludePaths?: string[];
 }

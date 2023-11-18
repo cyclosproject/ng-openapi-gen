@@ -366,10 +366,54 @@ export async function runNgOpenApiGen() {
         }
       }
     }) as OpenAPIObject;
+
+    const {excludeTags = [], excludePaths = [], includeTags = []} = options;
+    openApi.paths = filterPaths(openApi.paths, excludeTags, excludePaths, includeTags);
+
     const gen = new NgOpenApiGen(openApi, options);
+
     gen.generate();
   } catch (err) {
     console.log(`Error on API generation from ${input}: ${err}`);
     process.exit(1);
   }
 }
+
+export function filterPaths(paths: OpenAPIObject['paths'], excludeTags: Options['excludeTags'] = [], excludePaths: Options['excludePaths'] = [], includeTags: Options['includeTags'] = []) {
+  paths = JSON.parse(JSON.stringify(paths));
+  const filteredPaths: OpenAPIObject['paths'] = {};
+  for (const key in paths) {
+    if (!paths.hasOwnProperty(key)) continue ;
+
+    if (excludePaths?.includes(key)) {
+      console.log(`Path ${key} is excluded by excludePaths`);
+      continue;
+    }
+
+    let shouldRemovePath = false;
+    for (const method of Object.keys(paths[key])) {
+      const tags: string[] = paths[key]?.[method]?.tags || [];
+      // if tag on method in includeTags then continue
+      if (tags.some(tag => includeTags.includes(tag))) {
+        continue;
+      }
+      // if tag on method in excludeTags then remove the method
+      if (tags.some(tag => excludeTags.includes(tag)) || !!includeTags?.length) {
+        console.log(`Path ${key} is excluded by excludeTags`);
+        delete paths[key]?.[method];
+
+        // if path has no method left then "should remove"
+        if (Object.keys(paths[key]).length === 0 ) {
+          shouldRemovePath = true;
+          break;
+        }
+      }
+    }
+    if (shouldRemovePath) {
+      continue;
+    }
+    filteredPaths[key] = paths[key];
+  }
+  return filteredPaths;
+}
+
