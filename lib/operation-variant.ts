@@ -45,8 +45,8 @@ export class OperationVariant extends GenType implements Importable {
       this.accept = successResponse.mediaType;
     } else {
       this.resultType = 'void';
-      this.responseType = 'text';
-      this.accept = '*/*';
+      this.responseType = 'json';
+      this.accept = 'application/json';
     }
     this.isVoid = this.resultType === 'void';
     this.isNumber = this.resultType === 'number';
