@@ -43,7 +43,7 @@ export abstract class GenType {
     this.qualifiedName = this.typeName;
     if (this.namespace) {
       this.fileName = this.namespace + '/' + this.fileName;
-      this.qualifiedName = typeName(this.namespace) + this.typeName;
+      this.qualifiedName = typeName(this.namespace, options) + this.typeName;
     }
     this._imports = new Imports(options);
   }

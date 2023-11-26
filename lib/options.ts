@@ -120,4 +120,7 @@ export interface Options {
 
   /** When true, no verbose output will be displayed */
   silent?: boolean;
+
+  /** When true, only upperFirst default camelcase+upperFirst  */
+  donotModifyTypeNames?: boolean;
 }
