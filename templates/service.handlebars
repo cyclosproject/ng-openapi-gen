@@ -14,9 +14,6 @@ import { {{responseClass}} } from '../{{responseFile}}';
 
 {{{tsComments}}}@Injectable({ providedIn: 'root' })
 export class {{typeName}} extends {{baseServiceClass}} {
-  constructor(config: {{configurationClass}}, http: HttpClient) {
-    super(config, http);
-  }
 
 {{#operations}}
 {{>operationPath}}

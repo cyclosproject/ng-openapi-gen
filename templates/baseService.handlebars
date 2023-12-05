@@ -1,6 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { {{configurationClass}} } from './{{configurationFile}}';
 
@@ -9,11 +9,8 @@ import { {{configurationClass}} } from './{{configurationFile}}';
  */
 @Injectable()
 export class {{baseServiceClass}} {
-  constructor(
-    protected config: {{configurationClass}},
-    protected http: HttpClient
-  ) {
-  }
+  protected readonly config = inject({{configurationClass}});
+  protected readonly http = inject(HttpClient);
 
   private _rootUrl?: string;
 
