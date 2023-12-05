@@ -17,12 +17,6 @@ import { filter } from 'rxjs/operators/filter';
   providedIn: 'root',
 })
 export class {{typeName}} extends {{baseServiceClass}} {
-  constructor(
-    config: {{configurationClass}},
-    http: HttpClient
-  ) {
-    super(config, http);
-  }
 
 {{#operations}}
 {{>operationPath}}
