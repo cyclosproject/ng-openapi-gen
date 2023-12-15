@@ -6,7 +6,7 @@ import { filter, map } from 'rxjs/operators';
 import { {{@root.responseClass}} } from '{{pathToRoot}}{{@root.responseFile}}';
 import { {{@root.requestBuilderClass}} } from '{{pathToRoot}}{{@root.requestBuilderFile}}';
 
-{{#imports}}import { {{{typeName}}}{{#useAlias}} as {{{qualifiedName}}}{{/useAlias}} } from '{{{@root.pathToRoot}}}{{{fullPath}}}';
+{{#imports}}import { {{{typeName}}} } from '{{{@root.pathToRoot}}}{{{fullPath}}}';
 {{/imports}}
 
 export interface {{paramsType}} {

@@ -15,9 +15,9 @@ describe('Generation of derived classes using polymorphic.json (as is generated 
       expect(ast.declarations.length).toBe(1);
       expect(ast.declarations[0]).toEqual(jasmine.any(TypeAliasDeclaration));
       const decl = ast.declarations[0] as TypeAliasDeclaration;
-      expect(decl.name).toBe('Tazk');
+      expect(decl.name).toBe('FooBarTazk');
       const text = ts.substring(decl.start || 0, decl.end || ts.length);
-      expect(text.replace(/\n/g, ' ')).toContain('Tazk = FooBarTazkBase & { \'taskNumber\'?: number; }');
+      expect(text.replace(/\n/g, ' ')).toContain('FooBarTazk = FooBarTazkBase & { \'taskNumber\'?: number; }');
       done();
     });
   });
@@ -30,7 +30,7 @@ describe('Generation of derived classes using polymorphic.json (as is generated 
       expect(ast.declarations.length).toBe(1);
       expect(ast.declarations[0]).toEqual(jasmine.any(InterfaceDeclaration));
       const decl = ast.declarations[0] as InterfaceDeclaration;
-      expect(decl.name).toBe('Dooz');
+      expect(decl.name).toBe('FooBarDooz');
       expect(decl.properties).toHaveSize(1);
       expect(decl.properties[0].name).toBe('doozObject');
       expect(decl.properties[0].type).toBe('FooBarTazk & {\n\'doozNumber\'?: number;\n}');
@@ -46,7 +46,7 @@ describe('Generation of derived classes using polymorphic.json (as is generated 
       expect(ast.declarations.length).toBe(1);
       expect(ast.declarations[0]).toEqual(jasmine.any(InterfaceDeclaration));
       const decl = ast.declarations[0] as InterfaceDeclaration;
-      expect(decl.name).toBe('DiscBase');
+      expect(decl.name).toBe('FooBarDiscBase');
       expect(decl.properties).toHaveSize(2);
       expect(decl.properties[0].name).toBe('$type');
       expect(decl.properties[0].type).toBe('string');
@@ -64,9 +64,9 @@ describe('Generation of derived classes using polymorphic.json (as is generated 
       expect(ast.declarations.length).toBe(1);
       expect(ast.declarations[0]).toEqual(jasmine.any(TypeAliasDeclaration));
       const decl = ast.declarations[0] as TypeAliasDeclaration;
-      expect(decl.name).toBe('DiscOne');
+      expect(decl.name).toBe('FooBarDiscOne');
       const text = ts.substring(decl.start || 0, decl.end || ts.length);
-      expect(text.replace(/\n/g, ' ')).toContain('DiscOne = FooBarDiscBase & { \'$type\': \'disc-1\'; \'discNumber\'?: number; }');
+      expect(text.replace(/\n/g, ' ')).toContain('FooBarDiscOne = FooBarDiscBase & { \'$type\': \'disc-1\'; \'discNumber\'?: number; }');
       done();
     });
   });
@@ -79,9 +79,9 @@ describe('Generation of derived classes using polymorphic.json (as is generated 
       expect(ast.declarations.length).toBe(1);
       expect(ast.declarations[0]).toEqual(jasmine.any(TypeAliasDeclaration));
       const decl = ast.declarations[0] as TypeAliasDeclaration;
-      expect(decl.name).toBe('DiscTwo');
+      expect(decl.name).toBe('FooBarDiscTwo');
       const text = ts.substring(decl.start || 0, decl.end || ts.length);
-      expect(text.replace(/\n/g, ' ')).toContain('DiscTwo = FooBarDiscBase & { \'$type\': \'disc-2\'; \'discText\'?: string; }');
+      expect(text.replace(/\n/g, ' ')).toContain('FooBarDiscTwo = FooBarDiscBase & { \'$type\': \'disc-2\'; \'discText\'?: string; }');
       done();
     });
   });

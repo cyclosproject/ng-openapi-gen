@@ -9,7 +9,7 @@ import { {{baseServiceClass}} } from '../{{baseServiceFile}}';
 import { {{configurationClass}} } from '../{{configurationFile}}';
 import { {{responseClass}} } from '../{{responseFile}}';
 
-{{#imports}}import { {{{typeName}}}{{#useAlias}} as {{{qualifiedName}}}{{/useAlias}} } from '{{{@root.pathToRoot}}}{{{fullPath}}}';
+{{#imports}}import { {{{typeName}}} } from '{{{@root.pathToRoot}}}{{{fullPath}}}';
 {{/imports}}
 
 {{{tsComments}}}@Injectable({ providedIn: 'root' })

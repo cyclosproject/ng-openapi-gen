@@ -19,25 +19,25 @@ describe('Generation tests using self-ref.json', () => {
       expect(ast.declarations.length).toBe(1);
       expect(ast.declarations[0]).toEqual(jasmine.any(InterfaceDeclaration));
       const decl = ast.declarations[0] as InterfaceDeclaration;
-      expect(decl.name).toBe('Baz');
+      expect(decl.name).toBe('FooBarBaz');
       expect(decl.properties.length).toBe(3);
 
       const ref = decl.properties.find(p => p.name === 'refProperty');
       expect(ref).withContext('refProperty property').toBeDefined();
       if (ref) {
-        expect(ref.type).toBe('Baz');
+        expect(ref.type).toBe('FooBarBaz');
       }
 
       const array = decl.properties.find(p => p.name === 'arrayProperty');
       expect(array).withContext('arrayProperty property').toBeDefined();
       if (array) {
-        expect(array.type).toBe('Array<Baz>');
+        expect(array.type).toBe('Array<FooBarBaz>');
       }
 
       const object = decl.properties.find(p => p.name === 'objectProperty');
       expect(object).withContext('objectProperty property').toBeDefined();
       if (object) {
-        expect(object.type).toBe('{\n\'nestedArray\': Array<Baz>;\n\'nestedRef\': Baz;\n}');
+        expect(object.type).toBe('{\n\'nestedArray\': Array<FooBarBaz>;\n\'nestedRef\': FooBarBaz;\n}');
       }
 
       done();

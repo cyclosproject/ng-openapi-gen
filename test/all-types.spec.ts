@@ -111,7 +111,7 @@ describe('Generation tests using all-types.json', () => {
       expect(ast.declarations.length).toBe(1);
       expect(ast.declarations[0]).toEqual(jasmine.any(InterfaceDeclaration));
       const decl = ast.declarations[0] as InterfaceDeclaration;
-      expect(decl.name).toBe('RefObject');
+      expect(decl.name).toBe('ABRefObject');
       expect(decl.properties.length).toBe(1);
       expect(decl.properties[0].type).toBe('string');
       done();
@@ -128,7 +128,7 @@ describe('Generation tests using all-types.json', () => {
       expect(ast.declarations.length).toBe(1);
       expect(ast.declarations[0]).toEqual(jasmine.any(TypeAliasDeclaration));
       const decl = ast.declarations[0] as TypeAliasDeclaration;
-      expect(decl.name).toBe('RefObject');
+      expect(decl.name).toBe('XYRefObject');
       // There's no support for additional properties in typescript-parser. Check as text.
       const text = ts.substring(decl.start || 0, decl.end || ts.length);
       expect(text).toContain('[key: string]: any');

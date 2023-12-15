@@ -1,7 +1,7 @@
 import { OpenAPIObject, SchemaObject } from 'openapi3-ts';
 import { EnumValue } from './enum-value';
 import { GenType } from './gen-type';
-import { fileName, tsComments, tsType, unqualifiedName } from './gen-utils';
+import { fileName, tsComments, tsType, qualifiedName } from './gen-utils';
 import { Options } from './options';
 import { Property } from './property';
 import { upperCase } from 'lodash';
@@ -31,7 +31,7 @@ export class Model extends GenType {
   additionalPropertiesType: string;
 
   constructor(public openApi: OpenAPIObject, name: string, public schema: SchemaObject, options: Options) {
-    super(name, unqualifiedName, options);
+    super(name, qualifiedName, options);
 
     const description = schema.description || '';
     this.tsComments = tsComments(description, 0, schema.deprecated);
