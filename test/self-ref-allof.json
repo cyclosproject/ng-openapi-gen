@@ -1,0 +1,57 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Blah",
+    "version": "1"
+  },
+  "paths": {},
+  "components": {
+    "schemas": {
+      "Parent.Class": {
+        "type": "object",
+        "properties": {
+          "parentProps": {
+            "type": "string"
+          }
+        }
+      },
+      "Foo.Bar.Baz": {
+        "allOf": [{ "$ref": "#/components/schemas/Parent.Class" }, {
+          "type": "object",
+          "required": [
+            "arrayProperty"
+          ],
+          "properties": {
+            "refProperty": {
+              "$ref": "#/components/schemas/Foo.Bar.Baz"
+            },
+            "arrayProperty": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/Foo.Bar.Baz"
+              }
+            },
+            "objectProperty": {
+              "type": "object",
+              "required": [
+                "nestedArray",
+                "nestedRef"
+              ],
+              "properties": {
+                "nestedArray": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Foo.Bar.Baz"
+                  }
+                },
+                "nestedRef": {
+                  "$ref": "#/components/schemas/Foo.Bar.Baz"
+                }
+              }
+            }
+          }
+        }]
+      }
+    }
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "$schema": "../ng-openapi-gen-schema.json",
+  "input": "self-ref-allof.json",
+  "output": "out/self-ref-allof",
+  "ignoreUnusedModels": false
+}

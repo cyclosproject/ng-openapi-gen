@@ -70,7 +70,7 @@ export class Model extends GenType {
       this.properties = sortedNames.map(propName => propertiesByName.get(propName) as Property);
     } else {
       // Simple / array / enum / union / intersection
-      this.simpleType = tsType(schema, options, openApi);
+      this.simpleType = tsType(schema, options, openApi, this);
     }
     this.collectImports(schema);
     this.updateImports();
