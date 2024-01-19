@@ -3,5 +3,17 @@
   "input": "all-operations.json",
   "output": "out/all-operations",
   "defaultTag": "noTag",
-  "excludeParameters": ["X-Exclude"]
+  "excludeParameters": [
+    "X-Exclude"
+  ],
+  "keepFullResponseMediaType": [
+    {
+      "mediaType": "spring",
+      "use": "full"
+    },
+    {
+      "mediaType": "hal\\+json",
+      "use": "tail"
+    }
+  ]
 }

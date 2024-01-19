@@ -201,7 +201,13 @@ export class Operation {
       if (content && content.length > 0) {
         for (const type of content) {
           if (type && type.mediaType) {
-            map.set(this.variantMethodPart(type), type);
+            const part = this.variantMethodPart(type);
+
+            if (map.has(part)) {
+              this.logger.warn(`Overwriting variant method part '${part}' for media type '${map.get(part)?.mediaType}' by media type '${type.mediaType}'.`);
+            }
+
+            map.set(part, type);
           }
         }
       }
@@ -234,19 +240,46 @@ export class Operation {
    */
   private variantMethodPart(content: Content | null): string {
     if (content) {
-      let type = content.mediaType.replace(/\/\*/, '');
+      const keep = this.keepFullResponseMediaType(content.mediaType);
+      let type = content.mediaType;
+      type = content.mediaType.replace(/\/\*/, '');
       if (type === '*' || type === 'application/octet-stream') {
         return '$Any';
       }
-      type = last(type.split('/')) as string;
-      const plus = type.lastIndexOf('+');
-      if (plus >= 0) {
-        type = type.substring(plus + 1);
+
+      if (keep !== 'full') {
+        type = last(type.split('/')) as string;
+
+        if (keep !== 'tail') {
+          const plus = type.lastIndexOf('+');
+          if (plus >= 0) {
+            type = type.substring(plus + 1);
+          }
+        }
       }
+
       return this.options.skipJsonSuffix && type === 'json' ? '' : `$${typeName(type)}`;
     } else {
       return '';
     }
   }
 
+  /**
+   * Returns hint, how the expected response type in the request method names should be abbreviated.
+   */
+  private keepFullResponseMediaType(mediaType: string) {
+    if (this.options.keepFullResponseMediaType === true) {
+      return 'full';
+    }
+
+    if (Array.isArray(this.options.keepFullResponseMediaType)) {
+      for (const check of this.options.keepFullResponseMediaType) {
+        if (check.mediaType === undefined || new RegExp(check.mediaType).test(mediaType)) {
+          return check.use ?? 'short';
+        }
+      }
+    }
+
+    return 'short';
+  }
 }

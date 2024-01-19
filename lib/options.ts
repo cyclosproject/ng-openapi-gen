@@ -120,4 +120,15 @@ export interface Options {
 
   /** When true, no verbose output will be displayed */
   silent?: boolean;
+
+  /**
+   * When true, the expected response type in the request method names are not abbreviated and all response variants are kept.
+   * When array is given, `mediaType` is expected to be a RegExp string matching the response media type. The first match in the array
+   * will decide whether or how to shorten the media type. If no mediaType is given, it will always match.
+   *
+   * 'short':     application/x-spring-data-compact+json    ->    getEntities$Json
+   * 'tail':      application/x-spring-data-compact+json    ->    getEntities$XSpringDataCompactJson
+   * 'full':      application/x-spring-data-compact+json    ->    getEntities$ApplicationXSpringDataCompactJson
+   */
+  keepFullResponseMediaType?: boolean | Array<{ mediaType?: string; use: 'full' | 'tail' | 'short' }>;
 }
