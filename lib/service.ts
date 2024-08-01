@@ -25,6 +25,9 @@ export class Service extends GenType {
         this.addImport(variant);
         // Import the variant parameters
         this.addImport(variant.paramsImport);
+        for (const imp of variant.imports) {
+          this.addImport(imp);
+        }
         // Import the variant result type
         this.collectImports(variant.successResponse?.spec?.schema);
         // Add the request body additional dependencies
