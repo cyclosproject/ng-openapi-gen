@@ -123,4 +123,7 @@ export interface Options {
 
   /** When true (default) models names will be camelized, besides having the first letter capitalized. Setting to false will prevent camelizing. */
   camelizeModelNames?: boolean;
+
+  /** List of paths to early exclude from the processing */
+  excludePaths?: string[];
 }
