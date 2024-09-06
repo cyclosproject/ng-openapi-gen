@@ -1,0 +1,9 @@
+{
+  "$schema": "../ng-openapi-gen-schema.json",
+  "input": "keep-model-names.json",
+  "output": "out/keep-model-names/",
+  "camelizeModelNames": false,
+  "ignoreUnusedModels": false,
+  "modelPrefix": "Pre",
+  "modelSuffix": "Pos"
+}

@@ -217,6 +217,11 @@
       "description": "When set to true, no verbose output will be displayed.",
       "default": "false",
       "type": "boolean"
+    },
+    "camelizeModelNames": {
+      "description": "When true (default) models names will be camelized, besides having the first letter capitalized. Setting to false will prevent camelizing.",
+      "default": "true",
+      "type": "boolean"
     }
   }
 }

@@ -120,4 +120,7 @@ export interface Options {
 
   /** When true, no verbose output will be displayed */
   silent?: boolean;
+
+  /** When true (default) models names will be camelized, besides having the first letter capitalized. Setting to false will prevent camelizing. */
+  camelizeModelNames?: boolean;
 }
