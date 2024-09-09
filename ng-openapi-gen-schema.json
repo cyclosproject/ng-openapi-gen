@@ -222,6 +222,36 @@
       "description": "When true (default) models names will be camelized, besides having the first letter capitalized. Setting to false will prevent camelizing.",
       "default": "true",
       "type": "boolean"
+    },
+    "keepFullResponseMediaType": {
+      "description": "When true, the expected response type in the request method names are not abbreviated and all response variants are kept.\\nWhen array is given, `mediaType` is expected to be a RegExp string matching the response media type. The first match in the array\\nwill decide whether or how to shorten the media type. If no mediaType is given, it will always match.\\n'short':     application/x-spring-data-compact+json    ->    getEntities$Json\\n'tail':      application/x-spring-data-compact+json    ->    getEntities$XSpringDataCompactJson\\n'full':      application/x-spring-data-compact+json    ->    getEntities$ApplicationXSpringDataCompactJson",
+      "default": "false",
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "use"
+            ],
+            "properties": {
+              "mediaType": {
+                "type": "string"
+              },
+              "use": {
+                "enum": [
+                  "full",
+                  "tail",
+                  "short"
+                ]
+              }
+            }
+          }
+        }
+      ]
     }
   }
 }
