@@ -20,7 +20,7 @@ describe('Generation tests using all-operations.json', () => {
   let gen: NgOpenApiGen;
 
   beforeEach(() => {
-    gen = new NgOpenApiGen(allOperationsSpec as OpenAPIObject, options);
+    gen = new NgOpenApiGen(allOperationsSpec as OpenAPIObject, options as any);
     gen.generate();
   });
 
@@ -532,5 +532,55 @@ describe('Generation tests using all-operations.json', () => {
     expect(operation.allResponses.length).toBe(1);
     const success = operation.successResponse;
     expect(success?.statusCode).toEqual('204');
+  });
+
+
+  it('GET /path8', () => {
+    const optionsWithCustomizedResponseType = { ...options } as Options;
+    gen = new NgOpenApiGen(allOperationsSpec as OpenAPIObject, optionsWithCustomizedResponseType);
+    gen.generate();
+    const operation = gen.operations.get('path8Get');
+    expect(operation).toBeDefined();
+
+    if (!operation) return;
+
+    // Assert each variant
+    const vars = operation.variants;
+    expect(vars.length).toBe(4);
+
+    const jsonPlain = vars[0];
+    expect(jsonPlain.responseType).toBe('json');
+    expect(jsonPlain.methodName).toBe('path8Get$Json');
+
+    const halJsonPlain = vars[1];
+    expect(halJsonPlain.responseType).toBe('json');
+    expect(halJsonPlain.methodName).toBe('path8Get$HalJson');
+
+    const compactJsonPlain = vars[2];
+    expect(compactJsonPlain.responseType).toBe('json');
+    expect(compactJsonPlain.methodName).toBe('path8Get$ApplicationXSpringDataCompactJson');
+
+    const text = vars[3];
+    expect(text.responseType).toBe('text');
+    expect(text.methodName).toBe('path8Get$UriList');
+  });
+
+
+  it('POST /path8', () => {
+    const optionsWithCustomizedResponseType = { ...options } as Options;
+    gen = new NgOpenApiGen(allOperationsSpec as OpenAPIObject, optionsWithCustomizedResponseType);
+    gen.generate();
+    const operation = gen.operations.get('path8Post');
+    expect(operation).toBeDefined();
+    expect(operation?.variants[0].responseType).toBe('json');
+
+    if (!operation) return;
+
+    // Assert each variant
+    const vars = operation.variants;
+    expect(vars.length).toBe(1);
+
+    const jsonPlain = vars[0];
+    expect(jsonPlain.methodName).toBe('path8Post');
   });
 });
