@@ -299,10 +299,20 @@ Regardless If your Angular project was generated or is managed by
 [Angular CLI](https://cli.angular.io/), or you have started your project with
 some other seed (for example, using [webpack](https://webpack.js.org/)
 directly), you can setup a script to make sure the generated API classes are
-consistent with the swagger descriptor.
+consistent with the OpenAPI descriptor.
 
-To do so, create the `ng-openapi-gen.json` configuration file and add the
-following `scripts` to your `package.json`:
+It is not a good practice to have generated committed to the source control
+system (such as git). The only exception, is for projects using a third party
+API definition that never changes, in which ng-openapi-gen is expected to run
+only once. To ignore the generator output folder to in GIT, assuming the
+default output folder `src/app/api`, create the `src/app/.gitignore` file,
+with a line being `api`.
+
+Setting up a script will make sure that whenever your project is started or
+built, the generated files are consistent with the API definition. To do so,
+create the `ng-openapi-gen.json` configuration file and add the following
+`scripts` to your `package.json`:
+
 ```json
 {
   "scripts": {
@@ -312,6 +322,7 @@ following `scripts` to your `package.json`:
   }
 }
 ```
+
 This way whenever you run `npm start` or `npm run build`, the API classes
 will be generated before actually serving / building your application.
 
