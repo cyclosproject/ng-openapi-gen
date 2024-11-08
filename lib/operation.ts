@@ -139,7 +139,7 @@ export class Operation {
     const result: Content[] = [];
     if (desc) {
       for (const type of Object.keys(desc)) {
-        result.push(new Content(type, desc[type] as MediaTypeObject, this.options, this.openApi));
+        result.push(new Content(type, desc[type] as MediaTypeObject, this.options, this.openApi, this.method));
       }
     }
     return result;

@@ -1,0 +1,31 @@
+type KeysOfType<T, SelectedType> = {
+  [key in keyof T]: SelectedType extends T[key] ? key : never;
+}[keyof T];
+
+type IfEquals<X, Y, A = X, B = never> = (<T>() => T extends X ? 1 : 2) extends <
+  T
+>() => T extends Y ? 1 : 2
+  ? A
+  : B;
+
+type WritableKeys<T> = {
+  [P in keyof T]: IfEquals<{ [Q in P]: T[P] }, { -readonly [Q in P]: T[P] }, P>;
+}[keyof T];
+
+type WritableObject<T> = {
+  [K in WritableKeys<T>]: T[K];
+};
+
+type OptionalPropertyOf<T> = Exclude<
+  {
+    [K in keyof T]: T extends Record<K, T[K]> ? never : K;
+  }[keyof T],
+  undefined
+>;
+
+export type WriteableNoOptional<T> = Omit<
+  WritableObject<T>,
+  OptionalPropertyOf<T>
+>;
+export type Writable<T> = WriteableNoOptional<T> &
+  Pick<T, OptionalPropertyOf<T>>;
