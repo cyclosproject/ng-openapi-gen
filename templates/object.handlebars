@@ -1,6 +1,6 @@
 export interface {{typeName}} {
 {{#properties}}
-{{{tsComments}}}{{{identifier}}}{{^required}}?{{/required}}: {{{type}}};
+{{{tsComments}}}{{#required}}{{#readOnly}}readonly {{/readOnly}}{{/required}}{{{identifier}}}{{^required}}?{{/required}}: {{{type}}};
 {{/properties}}
 {{#additionalPropertiesType}}
 
