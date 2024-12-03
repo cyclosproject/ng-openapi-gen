@@ -1,5 +1,5 @@
 import { OpenAPIObject } from '@loopback/openapi-v3-types';
-import { ClassDeclaration, EnumDeclaration, InterfaceDeclaration, TypeAliasDeclaration, TypescriptParser } from 'typescript-parser';
+import { ClassDeclaration, EnumDeclaration, InterfaceDeclaration, NamedExport, TypeAliasDeclaration, TypescriptParser } from 'typescript-parser';
 import { NgOpenApiGen } from '../lib/ng-openapi-gen';
 import { Options } from '../lib/options';
 import options from './all-types.config.json';
@@ -523,6 +523,21 @@ describe('Generation tests using all-types.json', () => {
       const text = ts.substring(decl.start || 0, decl.end || ts.length);
       expect(text).toContain('Circle = Shape & {');
       expect(text).toContain('\'radius\'?: number');
+      done();
+    });
+  });
+
+  it('index file', done => {
+    const ref = gen.models.get('InlineObject');
+    const ts = gen.templates.apply('index', ref);
+    const parser = new TypescriptParser();
+    parser.parseSource(ts).then(ast => {
+      expect(ast.exports.length).withContext('Has the correct number of exports').toBe(5);
+      expect(ast.exports.some((ex: NamedExport) => ex.from === './api-configuration')).withContext('Has an ApiConfiguration export').toBeDefined();
+      expect(ast.exports.some((ex: NamedExport) => ex.from === './base-service')).withContext('Has a BaseService export').toBeDefined();
+      expect(ast.exports.some((ex: NamedExport) => ex.from === './request-builder')).withContext('Has a RequestBuilder export').toBeDefined();
+      expect(ast.exports.some((ex: NamedExport) => ex.from === './strict-http-response')).withContext('Has a StrictHttpResponse export').toBeDefined();
+      expect(ast.exports.some((ex: NamedExport) => ex.from === './api.module')).withContext('Has an ApiModule export').toBeDefined();
       done();
     });
   });
