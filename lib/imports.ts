@@ -11,6 +11,7 @@ export class Import implements Importable {
   file: string;
   useAlias: boolean;
   fullPath: string;
+  typeOnly: boolean;
 
   // Fields from Importable
   importName: string;
@@ -19,11 +20,12 @@ export class Import implements Importable {
   importTypeName?: string;
   importQualifiedName?: string;
 
-  constructor(name: string, typeName: string, qName: string, path: string, file: string) {
+  constructor(name: string, typeName: string, qName: string, path: string, file: string, typeOnly: boolean) {
     this.name = name;
     this.typeName = typeName;
     this.qualifiedName = qName;
     this.useAlias = this.typeName !== this.qualifiedName;
+    this.typeOnly = typeOnly;
     this.path = path;
     this.file = file;
     this.fullPath = `${this.path.split('/').filter(p => p.length).join('/')}/${this.file.split('/').filter(p => p.length).join('/')}`;
@@ -48,14 +50,14 @@ export class Imports {
   /**
    * Adds an import
    */
-  add(param: string | Importable) {
+  add(param: string | Importable, typeOnly: boolean) {
     let imp: Import;
     if (typeof param === 'string') {
       // A model
-      imp = new Import(param, unqualifiedName(param, this.options), qualifiedName(param, this.options), 'models/', modelFile(param, this.options));
+      imp = new Import(param, unqualifiedName(param, this.options), qualifiedName(param, this.options), 'models/', modelFile(param, this.options), typeOnly);
     } else {
       // An Importable
-      imp = new Import(param.importName, param.importTypeName ?? param.importName, param.importQualifiedName ?? param.importName, `${param.importPath}`, param.importFile);
+      imp = new Import(param.importName, param.importTypeName ?? param.importName, param.importQualifiedName ?? param.importName, `${param.importPath}`, param.importFile, typeOnly);
     }
     this._imports.set(imp.name, imp);
   }
