@@ -22,8 +22,10 @@ export class Globals {
   modelIndexFile?: string;
   serviceIndexFile?: string;
   rootUrl?: string;
+  standalone: boolean;
 
   constructor(options: Options) {
+    this.standalone = options.standalone || false;
     this.configurationClass = options.configuration || 'ApiConfiguration';
     this.configurationFile = fileName(this.configurationClass);
     this.configurationParams = `${this.configurationClass}Params`;
@@ -40,7 +42,7 @@ export class Globals {
     this.requestBuilderFile = fileName(this.requestBuilderClass);
     this.responseClass = options.response || 'StrictHttpResponse';
     this.responseFile = fileName(this.responseClass);
-    if (options.module !== false && options.module !== '') {
+    if (options.standalone !== true && options.module !== false && options.module !== '') {
       this.moduleClass = options.module === true || options.module === undefined ? 'ApiModule' : options.module;
       // Angular's best practices demands xxx.module.ts, not xxx-module.ts
       this.moduleFile = fileName(this.moduleClass as string).replace(/\-module$/, '.module');

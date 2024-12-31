@@ -71,6 +71,9 @@ export interface Options {
   /** Class name of the module that provides all services. Set to false to skip. Defaults to `ApiModule`. */
   module?: string | boolean;
 
+  /** Whether to generate for standalone usage. Defaults to false */
+  standalone?: boolean;
+
   /**
    * Determines how root enums will be generated. Possible values are:
    *
