@@ -215,7 +215,7 @@
     },
     "silent": {
       "description": "When set to true, no verbose output will be displayed.",
-      "default": "false",
+      "default": false,
       "type": "boolean"
     },
     "camelizeModelNames": {
@@ -252,6 +252,11 @@
           }
         }
       ]
+    },
+    "standalone": {
+      "description": "When set to true, Code generation follows standalone practice. Instead of a module with a `forRoot` static method, a `provide{{configuration}}` function will be generated.",
+      "default": false,
+      "type": "boolean"
     }
   }
 }
