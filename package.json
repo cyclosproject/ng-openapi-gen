@@ -1,5 +1,5 @@
 {
-  "name": "ng-openapi-gen",
+  "name": "@kominal/ng-openapi-gen",
   "version": "0.52.0",
   "license": "MIT",
   "author": "Cyclos development team",
@@ -20,7 +20,7 @@
   "main": "lib/ng-openapi-gen.js",
   "scripts": {
     "test": "jasmine-ts --project=tsconfig.json --config=jasmine.json",
-    "lint": "eslint 'lib/**'",
+    "lint": "eslint lib/**",
     "compile": "tsc --project tsconfig.json && ncp \"LICENSE\" dist && ncp \"README.md\" \"dist/README.md\" && ncp \"templates\" \"dist/templates\" && ncp \"node_modules\" \"dist/node_modules\" && rimraf \"dist/test\" && replace-in-file \"\\\"private\\\": true\" \"\\\"private\\\": false\" dist/package.json",
     "build": "npm run lint && npm run compile && npm test",
     "test:watch": "nodemon --watch './**/*' --exec 'npm run test'"
