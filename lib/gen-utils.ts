@@ -264,6 +264,11 @@ function rawTsType(schema: SchemaObject, options: Options, openApi: OpenAPIObjec
     return 'Blob';
   }
 
+  // A Blob
+  if (type === 'string' && schema.format === 'date-time') {
+    return 'Date';
+  }
+
   // A simple type (integer doesn't exist as type in JS, use number instead)
   return type === 'integer' ? 'number' : type;
 }
