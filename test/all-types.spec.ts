@@ -501,9 +501,9 @@ describe('Generation tests using all-types.json', () => {
       expect(decl.name).toBe('AuditCdr');
       const text = ts.substring(decl.start || 0, decl.end || ts.length);
       expect(text).toContain('AuditCdr = AuditLog & {');
-      expect(text).toContain('\'callEndDate\'?: string');
+      expect(text).toContain('\'callEndDate\'?: Date');
       expect(text).toContain('\'callFrom\'?: string');
-      expect(text).toContain('\'callStartDate\'?: string');
+      expect(text).toContain('\'callStartDate\'?: Date');
       expect(text).toContain('\'callTo\'?: string');
       done();
     });
