@@ -1,0 +1,42 @@
+{
+  "openapi": "3.0",
+  "info": {
+    "title": "Test generation styles of const",
+    "version": "1.0"
+  },
+  "components" : {
+    "schemas" : {
+      "FlavorConst" : {
+        "description" : "Some ice-cream flavors",
+        "type" : "object",
+        "required" : [ "flavor" ],
+        "properties" : {
+          "flavor" : {
+            "type" : "string",            
+            "const" : "IonlyWantChocolate"
+          }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/foo": {
+      "get": {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/FlavorConst"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

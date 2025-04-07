@@ -250,7 +250,7 @@ function rawTsType(schema: SchemaObject, options: Options, openApi: OpenAPIObjec
   }
 
   // Inline enum
-  const enumValues = schema.enum || [];
+  const enumValues = schema.enum || ((schema as any).const ? [(schema as any).const] : []);
   if (enumValues.length > 0) {
     if (type === 'number' || type === 'integer' || type === 'boolean') {
       return enumValues.join(' | ');

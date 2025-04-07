@@ -5,8 +5,10 @@
 export { {{configurationClass}} } from './{{{configurationFile}}}';
 export { {{baseServiceClass}} } from './{{{baseServiceFile}}}';
 export { {{requestBuilderClass}} } from './{{{requestBuilderFile}}}';
-export type { {{responseClass}} } from './{{{responseFile}}}';
+{{#if moduleClass}}
 export { {{moduleClass}} } from './{{{moduleFile}}}';
+{{/if}}
+export type { {{responseClass}} } from './{{{responseFile}}}';
 {{#modelIndex.imports}}export {{#typeOnly}}type {{/typeOnly}}{ {{{typeName}}}{{#useAlias}} as {{{qualifiedName}}}{{/useAlias}} } from './models{{{file}}}';
 {{/modelIndex.imports}}
 {{#services}}export { {{typeName}} } from './services/{{{fileName}}}';
