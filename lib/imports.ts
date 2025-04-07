@@ -64,7 +64,7 @@ export class Imports {
 
   toArray(): Import[] {
     const array = [...this._imports.values()];
-    array.sort((a, b) => a.importName.localeCompare(b.importName));
+    array.sort((a, b) => a.importName.localeCompare(b.importName, 'en'));
     return array;
   }
 
