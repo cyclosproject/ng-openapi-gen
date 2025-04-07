@@ -48,9 +48,9 @@ export abstract class GenType {
     this._imports = new Imports(options);
   }
 
-  protected addImport(param: string | Importable | null | undefined) {
+  protected addImport(param: string | Importable | null | undefined, typeOnly?: boolean) {
     if (param && !this.skipImport(param)) {
-      this._imports.add(param);
+      this._imports.add(param, !!typeOnly);
     }
   }
 

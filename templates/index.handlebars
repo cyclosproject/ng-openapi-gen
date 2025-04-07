@@ -5,11 +5,11 @@
 export { {{configurationClass}} } from './{{{configurationFile}}}';
 export { {{baseServiceClass}} } from './{{{baseServiceFile}}}';
 export { {{requestBuilderClass}} } from './{{{requestBuilderFile}}}';
-export { {{responseClass}} } from './{{{responseFile}}}';
 {{#if moduleClass}}
 export { {{moduleClass}} } from './{{{moduleFile}}}';
 {{/if}}
-{{#modelIndex.imports}}export { {{{typeName}}}{{#useAlias}} as {{{qualifiedName}}}{{/useAlias}} } from './models{{{file}}}';
+export type { {{responseClass}} } from './{{{responseFile}}}';
+{{#modelIndex.imports}}export {{#typeOnly}}type {{/typeOnly}}{ {{{typeName}}}{{#useAlias}} as {{{qualifiedName}}}{{/useAlias}} } from './models{{{file}}}';
 {{/modelIndex.imports}}
 {{#services}}export { {{typeName}} } from './services/{{{fileName}}}';
 {{/services}}
