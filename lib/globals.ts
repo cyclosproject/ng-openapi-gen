@@ -20,6 +20,7 @@ export class Globals {
   moduleClass?: string;
   moduleFile?: string;
   modelIndexFile?: string;
+  functionIndexFile?: string;
   serviceIndexFile?: string;
   rootUrl?: string;
 
@@ -50,6 +51,9 @@ export class Globals {
     }
     if (options.modelIndex !== false && options.modelIndex !== '') {
       this.modelIndexFile = options.modelIndex === true || options.modelIndex === undefined ? 'models' : options.modelIndex;
+    }
+    if (options.functionIndex !== false && options.functionIndex !== '') {
+      this.functionIndexFile = options.functionIndex === true || options.functionIndex === undefined ? 'functions' : options.functionIndex;
     }
   }
 
