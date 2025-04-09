@@ -13,3 +13,5 @@ export type { {{responseClass}} } from './{{{responseFile}}}';
 {{/modelIndex.imports}}
 {{#services}}export { {{typeName}} } from './services/{{{fileName}}}';
 {{/services}}
+{{#functions}}export { {{paramsType}}, {{methodName}} } from './{{{importPath}}}/{{{importFile}}}';
+{{/functions}}
