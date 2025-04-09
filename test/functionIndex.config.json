@@ -1,0 +1,7 @@
+{
+  "$schema": "../ng-openapi-gen-schema.json",
+  "input": "test/functionIndex.json",
+  "output": "out/functionIndex",
+  "useTempDir": true,
+  "functionIndex": true
+}

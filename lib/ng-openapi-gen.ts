@@ -83,24 +83,32 @@ export class NgOpenApiGen {
         }
       }
 
-      // Generate each service and function
+      // Generate each service
       const generateServices = this.options.services ?? true;
       const services = [...this.services.values()];
       for (const service of services) {
         if (generateServices) {
           this.write('service', service, service.fileName, 'services');
         }
-        for (const op of service.operations) {
-          for (const variant of op.variants) {
-            this.write('fn', variant, variant.importFile, variant.importPath);
-          }
-        }
+      }
+
+      // Generate each function
+      const functions = services.reduce((acc, service) => [
+        ...acc,
+        ...service.operations.reduce((opAcc, operation) => [
+          ...opAcc,
+          ...operation.variants
+        ], [])
+      ], []);
+      for (const fn of functions) {
+        this.write('fn', fn, fn.importFile, fn.importPath);
       }
 
       // Context object passed to general templates
       const general = {
         services: services,
-        models: models
+        models: models,
+        functions: functions
       };
 
       // Generate the general files
@@ -120,6 +128,9 @@ export class NgOpenApiGen {
       const modelIndex = this.globals.modelIndexFile || this.options.indexFile ? new ModelIndex(models, this.options) : null;
       if (this.globals.modelIndexFile) {
         this.write('modelIndex', { ...general, modelIndex }, this.globals.modelIndexFile);
+      }
+      if (this.globals.functionIndexFile) {
+        this.write('functionIndex', general, this.globals.functionIndexFile);
       }
       if (generateServices && this.globals.serviceIndexFile) {
         this.write('serviceIndex', general, this.globals.serviceIndexFile);

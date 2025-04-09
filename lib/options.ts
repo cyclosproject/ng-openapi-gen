@@ -29,6 +29,9 @@ export interface Options {
   /** Typescript file, without '.ts' extension that exports all models. Set to false to skip. Defaults to `models`. */
   modelIndex?: string | boolean;
 
+  /** Typescript file, without '.ts' extension that exports all functions. Set to false to skip. Defaults to `functions`. */
+  functionIndex?: string | boolean;
+
   /** Typescript file, without '.ts' extension that exports all services. Set to false to skip. Defaults to `services`. */
   serviceIndex?: string | boolean;
 
