@@ -184,6 +184,11 @@
       "default": false,
       "type": "boolean"
     },
+    "experimental": {
+      "description": "When specified, activates experimental features like readOnly ",
+      "default": false,
+      "type": "boolean"
+    },
     "customizedResponseType": {
       "type": "object",
       "description": "Defines which paths to use which responseType, commonly used when build-in deduction can't fullfill your needs",

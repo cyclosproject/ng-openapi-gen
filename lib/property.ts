@@ -12,6 +12,8 @@ export class Property {
   tsComments: string;
   type: string;
 
+  public readOnly: boolean;
+
   constructor(
     public model: Model,
     public name: string,
@@ -22,6 +24,7 @@ export class Property {
 
     this.type = tsType(this.schema, options, openApi, model);
     this.identifier = escapeId(this.name);
+    this.readOnly = (schema as SchemaObject).readOnly || false;
     const description = (schema as SchemaObject).description || '';
     this.tsComments = tsComments(description, 1, (schema as SchemaObject).deprecated);
   }

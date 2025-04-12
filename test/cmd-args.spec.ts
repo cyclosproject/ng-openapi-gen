@@ -26,6 +26,20 @@ describe('cmd-args.ts', () => {
       expect(options.customizedResponseType).toEqual({});
     });
 
+    it('should customizedResponseType be overrided by cmd\'s if both config and args contains customizedResponseType', () => {
+      const sysArgs = [
+        '--input',
+        'abc',
+        '--customizedResponseType',
+        '{}',
+        '--config',
+        'test/cmd-args-test-config.json',
+        '--experimental',
+        'true',
+      ];
+      const options = parseOptions(sysArgs);
+      expect(options.experimental).toEqual(true);
+    });
   });
 
 });

@@ -128,6 +128,10 @@ export class NgOpenApiGen {
         this.write('index', { ...general, modelIndex }, 'index');
       }
 
+      if (this.globals.utilsFile) {
+        this.write('utils', general, this.globals.utilsFile);
+      }
+
       // Now synchronize the temp to the output folder
       syncDirs(this.tempDir, this.outDir, this.options.removeStaleFiles !== false, this.logger);
 
@@ -150,6 +154,7 @@ export class NgOpenApiGen {
   private initHandlebars() {
     this.handlebarsManager = new HandlebarsManager();
     this.handlebarsManager.readCustomJsFile(this.options);
+    this.handlebarsManager.instance.registerHelper('isWriteMethod', (a) => String(a).toLowerCase() !== 'get');
   }
 
   private readTemplates() {
