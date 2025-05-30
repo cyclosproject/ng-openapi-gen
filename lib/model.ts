@@ -5,6 +5,7 @@ import { fileName, tsComments, tsType, unqualifiedName } from './gen-utils';
 import { Options } from './options';
 import { Property } from './property';
 import { upperCase } from 'lodash';
+import { Enum } from './enum';
 
 
 /**
@@ -19,7 +20,7 @@ export class Model extends GenType {
 
   // Simple properties
   simpleType: string;
-  enumValues: EnumValue[];
+  enums: Enum[] = [];
   enumArrayName?: string;
   enumArrayFileName?: string;
 
@@ -30,8 +31,8 @@ export class Model extends GenType {
   properties: Property[];
   additionalPropertiesType: string;
 
-  constructor(public openApi: OpenAPIObject, name: string, public schema: SchemaObject, options: Options) {
-    super(name, unqualifiedName, options);
+  constructor(public openApi: OpenAPIObject, modelName: string, public schema: SchemaObject, options: Options) {
+    super(modelName, unqualifiedName, options);
 
     const description = schema.description || '';
     this.tsComments = tsComments(description, 0, schema.deprecated);
@@ -39,21 +40,31 @@ export class Model extends GenType {
     const type = schema.type || 'any';
 
     // Handle enums
-    if ((schema.enum || []).length > 0 && ['string', 'number', 'integer'].includes(type)) {
-      this.enumArrayName = upperCase(this.typeName).replace(/\s+/g, '_');
-      this.enumArrayFileName = fileName(this.typeName + '-array');
+    // eslint-disable-next-line guard-for-in
+    for (const propName of Object.keys(schema.properties ?? {})) {
+      const propSchema = schema.properties![propName];
+      if (!propSchema || (typeof propSchema === 'object' && '$ref' in propSchema)) continue;
 
-      const names = schema['x-enumNames'] as string[] || [];
-      const descriptions = schema['x-enumDescriptions'] as string[] || [];
-      const values = schema.enum || [];
-      this.enumValues = [];
-      for (let i = 0; i < values.length; i++) {
-        const enumValue = new EnumValue(type, names[i], descriptions[i], values[i], options);
-        this.enumValues.push(enumValue);
+      const propType = propSchema.type || 'string';
+
+      if ((propSchema.enum ?? []).length > 0 && ['string', 'number', 'integer'].includes(propType)) {
+        this.enumArrayName = upperCase(this.typeName).replace(/\s+/g, '_');
+        this.enumArrayFileName = fileName(this.typeName + '-array');
+
+        const names = schema['x-enumNames'] as string[] || [];
+        const descriptions = schema['x-enumDescriptions'] as string[] || [];
+        const values = propSchema.enum ?? [];
+
+        const enumValues = [];
+        for (let i = 0; i < values.length; i++) {
+          const enumValue = new EnumValue(propType, names[i], descriptions[i], values[i], options);
+          enumValues.push(enumValue);
+        }
+
+        this.enums.push(new Enum(propName, modelName, enumValues));
+
+        this.isEnum = options.enumStyle !== 'alias';
       }
-
-      // When enumStyle is 'alias' it is handled as a simple type.
-      this.isEnum = options.enumStyle !== 'alias';
     }
 
     const hasAllOf = schema.allOf && schema.allOf.length > 0;
