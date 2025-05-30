@@ -9,7 +9,7 @@ export class ModelIndex extends GenType {
 
   constructor(models: Model[], options: Options) {
     super('models', n => n, options);
-    models.forEach(model => this.addImport(model.name, !model.isEnum));
+    models.forEach(model => this.addImport(model.name, !model.isEnumRef));
     this.updateImports();
   }
 

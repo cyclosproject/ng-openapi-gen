@@ -15,12 +15,14 @@ export class Model extends GenType {
 
   // General type
   isSimple: boolean;
+  isEnumRef: boolean;
   isEnum: boolean;
   isObject: boolean;
 
   // Simple properties
   simpleType: string;
   enums: Enum[] = [];
+  enumRefValues: EnumValue[];
   enumArrayName?: string;
   enumArrayFileName?: string;
 
@@ -39,8 +41,25 @@ export class Model extends GenType {
 
     const type = schema.type || 'any';
 
-    // Handle enums
-    // eslint-disable-next-line guard-for-in
+    // Handle $ref enums
+    if ((schema.enum || []).length > 0 && ['string', 'number', 'integer'].includes(type)) {
+      this.enumArrayName = upperCase(this.typeName).replace(/\s+/g, '_');
+      this.enumArrayFileName = fileName(this.typeName + '-array');
+
+      const names = schema['x-enumNames'] as string[] || [];
+      const descriptions = schema['x-enumDescriptions'] as string[] || [];
+      const values = schema.enum || [];
+      this.enumRefValues = [];
+      for (let i = 0; i < values.length; i++) {
+        const enumValue = new EnumValue(type, names[i], descriptions[i], values[i], options);
+        this.enumRefValues.push(enumValue);
+      }
+
+      // When enumStyle is 'alias' it is handled as a simple type.
+      this.isEnumRef = options.enumStyle !== 'alias';
+    }
+
+    // Handle enums defined at prop level
     for (const propName of Object.keys(schema.properties ?? {})) {
       const propSchema = schema.properties![propName];
       if (!propSchema || (typeof propSchema === 'object' && '$ref' in propSchema)) continue;
@@ -51,8 +70,8 @@ export class Model extends GenType {
         this.enumArrayName = upperCase(this.typeName).replace(/\s+/g, '_');
         this.enumArrayFileName = fileName(this.typeName + '-array');
 
-        const names = schema['x-enumNames'] as string[] || [];
-        const descriptions = schema['x-enumDescriptions'] as string[] || [];
+        const names = propSchema['x-enumNames'] as string[] || [];
+        const descriptions = propSchema['x-enumDescriptions'] as string[] || [];
         const values = propSchema.enum ?? [];
 
         const enumValues = [];
@@ -70,7 +89,7 @@ export class Model extends GenType {
     const hasAllOf = schema.allOf && schema.allOf.length > 0;
     const hasOneOf = schema.oneOf && schema.oneOf.length > 0;
     this.isObject = (type === 'object' || !!schema.properties) && !schema.nullable && !hasAllOf && !hasOneOf;
-    this.isSimple = !this.isObject && !this.isEnum;
+    this.isSimple = !this.isObject && !this.isEnumRef && !this.isEnum;
 
     if (this.isObject) {
       // Object
