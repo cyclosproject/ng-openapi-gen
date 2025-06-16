@@ -59,6 +59,8 @@ export function {{importName}}$Signal(http: HttpClient, rootUrl: string, paramsC
   {{#requestBody}}
       rb.body(params.body, '{{{mediaType}}}');
   {{/requestBody}}
+    } else {
+      return undefined;
     }
     return rb.build({ responseType: '{{{responseType}}}', accept: '{{{accept}}}', context })
   }, httpResourceOptions);
