@@ -26,30 +26,28 @@
     "test:watch": "nodemon --watch './**/*' --exec 'npm run test'"
   },
   "dependencies": {
-    "@apidevtools/json-schema-ref-parser": "~9.1.2",
+    "@apidevtools/json-schema-ref-parser": "^14.2.1",
     "argparse": "^2.0.1",
     "eol": "^0.10.0",
-    "fs-extra": "^10.1.0",
+    "fs-extra": "^11.3.2",
     "handlebars": "^4.7.8",
-    "jsesc": "^3.0.2",
-    "json-schema": "^0.4.0",
+    "jsesc": "^3.1.0",
     "lodash": "^4.17.21",
     "typescript": "~5.1.3"
   },
   "peerDependencies": {
-    "@angular/core": ">=12.0.0",
-    "rxjs": ">=6.0.0"
+    "@angular/core": ">=16.0.0",
+    "rxjs": ">=6.5.0"
   },
   "devDependencies": {
     "@loopback/openapi-v3-types": "^1.2.1",
-    "@types/argparse": "^2.0.16",
-    "@types/fs-extra": "^9.0.13",
+    "@types/argparse": "^2.0.17",
+    "@types/fs-extra": "^11.0.4",
     "@types/jasmine": "^3.10.18",
     "@types/jsesc": "^3.0.3",
     "@types/json-schema": "^7.0.15",
-    "@types/lodash": "^4.17.7",
-    "@types/mkdirp": "^1.0.2",
-    "@types/node": "^17.0.45",
+    "@types/lodash": "^4.17.20",
+    "@types/node": "^22.18.5",
     "@typescript-eslint/eslint-plugin": "^8.44.0",
     "@typescript-eslint/parser": "^8.44.0",
     "eslint": "^9.35.0",
@@ -57,11 +55,10 @@
     "jasmine": "^3.99.0",
     "jasmine-spec-reporter": "^7.0.0",
     "jasmine-ts": "^0.4.0",
-    "mem": "^9.0.2",
     "ncp": "^2.0.0",
-    "nodemon": "^3.1.4",
-    "replace-in-file": "^7.2.0",
-    "rimraf": "^5.0.10",
+    "nodemon": "^3.1.10",
+    "replace-in-file": "^8.3.0",
+    "rimraf": "^6.0.1",
     "ts-node": "^10.9.2",
     "typescript-parser": "^2.6.1"
   }

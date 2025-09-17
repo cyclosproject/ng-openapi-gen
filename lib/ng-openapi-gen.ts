@@ -143,7 +143,7 @@ export class NgOpenApiGen {
     const file = path.join(this.tempDir, subDir || '.', `${baseName}.ts`);
     const dir = path.dirname(file);
 
-    fs.mkdirpSync(dir);
+    fs.ensureDirSync(dir);
     fs.writeFileSync(file, ts, { encoding: 'utf-8' });
   }
 
