@@ -1,13 +1,14 @@
 import { upperFirst } from 'lodash';
-import { OpenAPIObject } from 'openapi3-ts';
 import { ClassDeclaration, FunctionDeclaration, InterfaceDeclaration, TypescriptParser } from 'typescript-parser';
 import { Content } from '../lib/content';
 import { NgOpenApiGen } from '../lib/ng-openapi-gen';
 import { Options } from '../lib/options';
 import options from './all-operations.config.json';
 import allOperationsSpec from './all-operations.json';
+import { OpenAPIObject } from '../lib/openapi-typings';
 
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 1000;
+const spec = allOperationsSpec as unknown as OpenAPIObject;
 
 function paramsName(name: string) {
   if (name.endsWith('$Response')) {
@@ -20,7 +21,7 @@ describe('Generation tests using all-operations.json', () => {
   let gen: NgOpenApiGen;
 
   beforeEach(() => {
-    gen = new NgOpenApiGen(allOperationsSpec as OpenAPIObject, options as any);
+    gen = new NgOpenApiGen(spec, options as any);
     gen.generate();
   });
 
@@ -515,7 +516,7 @@ describe('Generation tests using all-operations.json', () => {
         toUse: 'arraybuffer'
       }
     };
-    gen = new NgOpenApiGen(allOperationsSpec as OpenAPIObject, optionsWithCustomizedResponseType);
+    gen = new NgOpenApiGen(spec, optionsWithCustomizedResponseType);
     gen.generate();
     const operation = gen.operations.get('path6Get');
     expect(operation).toBeDefined();
@@ -537,7 +538,7 @@ describe('Generation tests using all-operations.json', () => {
 
   it('GET /path8', () => {
     const optionsWithCustomizedResponseType = { ...options } as Options;
-    gen = new NgOpenApiGen(allOperationsSpec as OpenAPIObject, optionsWithCustomizedResponseType);
+    gen = new NgOpenApiGen(allOperationsSpec as unknown as OpenAPIObject, optionsWithCustomizedResponseType);
     gen.generate();
     const operation = gen.operations.get('path8Get');
     expect(operation).toBeDefined();
@@ -568,7 +569,7 @@ describe('Generation tests using all-operations.json', () => {
 
   it('POST /path8', () => {
     const optionsWithCustomizedResponseType = { ...options } as Options;
-    gen = new NgOpenApiGen(allOperationsSpec as OpenAPIObject, optionsWithCustomizedResponseType);
+    gen = new NgOpenApiGen(allOperationsSpec as unknown as OpenAPIObject, optionsWithCustomizedResponseType);
     gen.generate();
     const operation = gen.operations.get('path8Post');
     expect(operation).toBeDefined();

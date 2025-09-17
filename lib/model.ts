@@ -1,10 +1,10 @@
-import { OpenAPIObject, SchemaObject } from 'openapi3-ts';
+import { upperCase } from 'lodash';
 import { EnumValue } from './enum-value';
 import { GenType } from './gen-type';
-import { fileName, tsComments, tsType, unqualifiedName } from './gen-utils';
+import { fileName, tsComments, tsType, unqualifiedName, resolveRef } from './gen-utils';
+import { OpenAPIObject, SchemaObject, getSchemaType, isNullable, isReferenceObject } from './openapi-typings';
 import { Options } from './options';
 import { Property } from './property';
-import { upperCase } from 'lodash';
 
 
 /**
@@ -36,19 +36,20 @@ export class Model extends GenType {
     const description = schema.description || '';
     this.tsComments = tsComments(description, 0, schema.deprecated);
 
-    const type = schema.type || 'any';
+    const type = getSchemaType(schema);
 
     // Handle enums
-    if ((schema.enum || []).length > 0 && ['string', 'number', 'integer'].includes(type)) {
+    const typeForEnum = Array.isArray(type) ? type[0] : type;
+    if ((schema.enum || []).length > 0 && typeForEnum && ['string', 'number', 'integer'].includes(typeForEnum)) {
       this.enumArrayName = upperCase(this.typeName).replace(/\s+/g, '_');
       this.enumArrayFileName = fileName(this.typeName + '-array');
 
-      const names = schema['x-enumNames'] as string[] || [];
-      const descriptions = schema['x-enumDescriptions'] as string[] || [];
+      const names = (schema as any)['x-enumNames'] as string[] || [];
+      const descriptions = (schema as any)['x-enumDescriptions'] as string[] || [];
       const values = schema.enum || [];
       this.enumValues = [];
       for (let i = 0; i < values.length; i++) {
-        const enumValue = new EnumValue(type, names[i], descriptions[i], values[i], options);
+        const enumValue = new EnumValue(typeForEnum, names[i], descriptions[i], values[i], options);
         this.enumValues.push(enumValue);
       }
 
@@ -58,7 +59,7 @@ export class Model extends GenType {
 
     const hasAllOf = schema.allOf && schema.allOf.length > 0;
     const hasOneOf = schema.oneOf && schema.oneOf.length > 0;
-    this.isObject = (type === 'object' || !!schema.properties) && !schema.nullable && !hasAllOf && !hasOneOf;
+    this.isObject = (type === 'object' || !!schema.properties) && !isNullable(schema) && !hasAllOf && !hasOneOf;
     this.isSimple = !this.isObject && !this.isEnum;
 
     if (this.isObject) {
@@ -124,7 +125,15 @@ export class Model extends GenType {
       }
     }
     if (schema.allOf) {
-      schema.allOf.forEach(s => this.collectObject(s, propertiesByName));
+      schema.allOf.forEach(s => {
+        if (isReferenceObject(s)) {
+          // Resolve reference and collect properties
+          const resolved = resolveRef(this.openApi, s.$ref) as SchemaObject;
+          this.collectObject(resolved, propertiesByName);
+        } else {
+          this.collectObject(s, propertiesByName);
+        }
+      });
     }
   }
 }

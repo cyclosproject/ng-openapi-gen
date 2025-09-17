@@ -1,11 +1,12 @@
-import { OpenAPIObject } from '@loopback/openapi-v3-types';
 import { ClassDeclaration, TypescriptParser } from 'typescript-parser';
 import { NgOpenApiGen } from '../lib/ng-openapi-gen';
 import { Options } from '../lib/options';
 import options from './skipJsonSuffix.config.json';
 import skipJsonSuffixSpec from './skipJsonSuffix.json';
+import { OpenAPIObject } from '../lib/openapi-typings';
 
-const gen = new NgOpenApiGen(skipJsonSuffixSpec as OpenAPIObject, options as Options);
+const spec = skipJsonSuffixSpec as unknown as OpenAPIObject;
+const gen = new NgOpenApiGen(spec, options as Options);
 gen.generate();
 
 

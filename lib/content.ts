@@ -1,6 +1,6 @@
-import { MediaTypeObject, OpenAPIObject } from 'openapi3-ts';
-import { Options } from './options';
 import { tsType } from './gen-utils';
+import { MediaTypeObject, OpenAPIObject } from './openapi-typings';
+import { Options } from './options';
 
 /**
  * Either a request body or response content

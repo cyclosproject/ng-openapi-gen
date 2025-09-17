@@ -1,11 +1,13 @@
-import { OpenAPIObject } from '@loopback/openapi-v3-types';
+
 import { ClassDeclaration, EnumDeclaration, InterfaceDeclaration, NamedExport, TypeAliasDeclaration, TypescriptParser } from 'typescript-parser';
 import { NgOpenApiGen } from '../lib/ng-openapi-gen';
 import { Options } from '../lib/options';
 import options from './all-types.config.json';
 import allTypesSpec from './all-types.json';
+import { OpenAPIObject } from '../lib/openapi-typings';
+const spec = allTypesSpec as unknown as OpenAPIObject;
 
-const gen = new NgOpenApiGen(allTypesSpec as OpenAPIObject, options as Options);
+const gen = new NgOpenApiGen(spec, options as Options);
 gen.generate();
 
 it('Api', done => {

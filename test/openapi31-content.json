@@ -1,0 +1,234 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "OpenAPI 3.1 Content Types Test",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/upload": {
+      "post": {
+        "operationId": "uploadFile",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/FileUpload"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JsonData"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Upload successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UploadResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/data-formats": {
+      "get": {
+        "operationId": "getFormattedData",
+        "responses": {
+          "200": {
+            "description": "Formatted data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FormattedData"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/numeric-types": {
+      "get": {
+        "operationId": "getNumericTypes",
+        "responses": {
+          "200": {
+            "description": "Numeric types example",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NumericTypes"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/string-constraints": {
+      "get": {
+        "operationId": "getStringConstraints",
+        "responses": {
+          "200": {
+            "description": "String constraints example",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringConstraints"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "FileUpload": {
+        "type": "object",
+        "properties": {
+          "binaryData": {
+            "type": "string",
+            "format": "binary",
+            "description": "Binary file data"
+          },
+          "filename": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9._-]+$"
+          },
+          "metadata": {
+            "type": "object",
+            "additionalProperties": true
+          }
+        }
+      },
+      "JsonData": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": ["object", "array", "string"],
+            "description": "Flexible data field"
+          },
+          "priority": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10
+          }
+        }
+      },
+      "UploadResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "size": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "checksums": {
+            "type": "object",
+            "properties": {
+              "md5": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{32}$"
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
+            }
+          }
+        }
+      },
+      "FormattedData": {
+        "type": "object",
+        "properties": {
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "website": {
+            "type": "string",
+            "format": "uri"
+          },
+          "ipv6Address": {
+            "type": "string",
+            "format": "ipv6"
+          },
+          "base64Data": {
+            "type": "string",
+            "format": "byte"
+          }
+        }
+      },
+      "NumericTypes": {
+        "type": "object",
+        "properties": {
+          "integer32": {
+            "type": "integer",
+            "format": "int32",
+            "minimum": 0,
+            "maximum": 2147483647
+          },
+          "integer64": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "floatNumber": {
+            "type": "number",
+            "format": "float"
+          },
+          "doubleNumber": {
+            "type": "number",
+            "format": "double"
+          },
+          "unionNumber": {
+            "type": ["integer", "number"],
+            "description": "Can be integer or float"
+          }
+        }
+      },
+      "StringConstraints": {
+        "type": "object",
+        "properties": {
+          "limitedString": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 50
+          },
+          "patternString": {
+            "type": "string",
+            "pattern": "^[A-Z]{2,5}[0-9]{3,6}$"
+          },
+          "enumOrConst": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": ["value1", "value2", "value3"]
+              },
+              {
+                "const": "special_constant"
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+}

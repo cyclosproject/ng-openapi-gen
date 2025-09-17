@@ -5,9 +5,9 @@ describe('filterPaths', () => {
 
   it('should include all paths if nothing is set', () => {
     const paths = {
-      '/path1': { GET: { tags: ['tag1'] } },
-      '/path2': { POST: { tags: ['tag2'] } },
-      '/path3': { PUT: { tags: ['tag3'] } },
+      '/path1': { get: { tags: ['tag1'], responses: {} } },
+      '/path2': { post: { tags: ['tag2'], responses: {} } },
+      '/path3': { put: { tags: ['tag3'], responses: {} } },
     };
     const result = filterPaths(paths, [], [], []);
     expect(result).toEqual(paths);
@@ -33,9 +33,9 @@ describe('filterPaths', () => {
 
   it('should exclude paths based on excludeTags', () => {
     const paths = {
-      '/path1': { GET: { tags: ['tag1'] } },
-      '/path2': { POST: { tags: ['tag2'] } },
-      '/path3': { PUT: { tags: ['tag3'] } },
+      '/path1': { get: { tags: ['tag1'], responses: {} } },
+      '/path2': { post: { tags: ['tag2'], responses: {} } },
+      '/path3': { put: { tags: ['tag3'], responses: {} } },
     };
 
     const excludeTags = ['tag2'];
@@ -43,16 +43,16 @@ describe('filterPaths', () => {
     const result = filterPaths(paths, excludeTags, [], []);
 
     expect(result).toEqual({
-      '/path1': { GET: { tags: ['tag1'] } },
-      '/path3': { PUT: { tags: ['tag3'] } },
+      '/path1': { get: { tags: ['tag1'], responses: {} } },
+      '/path3': { put: { tags: ['tag3'], responses: {} } },
     });
   });
 
   it('should include paths based on includeTags', () => {
     const paths = {
-      '/path1': { GET: { tags: ['tag1'] } },
-      '/path2': { POST: { tags: ['tag2'] } },
-      '/path3': { PUT: { tags: ['tag3'] } },
+      '/path1': { get: { tags: ['tag1'], responses: {} } },
+      '/path2': { post: { tags: ['tag2'], responses: {} } },
+      '/path3': { put: { tags: ['tag3'], responses: {} } },
     };
 
     const includeTags = ['tag1', 'tag3'];
@@ -60,8 +60,8 @@ describe('filterPaths', () => {
     const result = filterPaths(paths, [], [], includeTags);
 
     expect(result).toEqual({
-      '/path1': { GET: { tags: ['tag1'] } },
-      '/path3': { PUT: { tags: ['tag3'] } },
+      '/path1': { get: { tags: ['tag1'], responses: {} } },
+      '/path3': { put: { tags: ['tag3'], responses: {} } },
     });
   });
 
@@ -89,10 +89,10 @@ describe('filterPaths', () => {
 
   it('should handle multiple filters simultaneously', () => {
     const paths = {
-      '/path1': { GET: { tags: ['tag1'] } },
-      '/path2': { POST: { tags: ['tag2'] } },
-      '/path3': { PUT: { tags: ['tag3'] } },
-      '/path4': { DELETE: { tags: ['tag4'] } },
+      '/path1': { get: { tags: ['tag1'], responses: {} } },
+      '/path2': { post: { tags: ['tag2'], responses: {} } },
+      '/path3': { put: { tags: ['tag3'], responses: {} } },
+      '/path4': { delete: { tags: ['tag4'], responses: {} } },
     };
 
     const excludeTags = ['tag2', 'tag4'];
@@ -102,29 +102,29 @@ describe('filterPaths', () => {
     const result = filterPaths(paths, excludeTags, excludePaths, includeTags);
 
     expect(result).toEqual({
-      '/path1': { GET: { tags: ['tag1'] } },
-      '/path3': { PUT: { tags: ['tag3'] } },
+      '/path1': { get: { tags: ['tag1'], responses: {} } },
+      '/path3': { put: { tags: ['tag3'], responses: {} } },
     });
   });
 
   it('should handle paths with no tags', () => {
     const paths = {
-      '/path1': { GET: {} },
-      '/path2': { POST: {} },
+      '/path1': { get: { responses: {} } },
+      '/path2': { post: { responses: {} } },
     };
 
     const result = filterPaths(paths, ['tag1'], [], []);
 
     expect(result).toEqual({
-      '/path1': { GET: {} },
-      '/path2': { POST: {} },
+      '/path1': { get: { responses: {} } },
+      '/path2': { post: { responses: {} } },
     });
   });
 
   it('should handle paths with multiple methods', () => {
     const paths = {
-      '/path1': { GET: { tags: ['tag1'] }, POST: { tags: ['tag2'] } },
-      '/path2': { PUT: { tags: ['tag3'] }, DELETE: { tags: ['tag4'] } },
+      '/path1': { get: { tags: ['tag1'], responses: {} }, post: { tags: ['tag2'], responses: {} } },
+      '/path2': { put: { tags: ['tag3'], responses: {} }, delete: { tags: ['tag4'], responses: {} } },
     };
 
     const excludeTags = ['tag2', 'tag4'];
@@ -133,15 +133,15 @@ describe('filterPaths', () => {
     const result = filterPaths(paths, excludeTags, [], includeTags);
 
     expect(result).toEqual({
-      '/path1': { GET: { tags: ['tag1'] } },
-      '/path2': { PUT: { tags: ['tag3'] } },
+      '/path1': { get: { tags: ['tag1'], responses: {} } },
+      '/path2': { put: { tags: ['tag3'], responses: {} } },
     });
   });
 
   it('should be case-insensitive when matching tag', () => {
     const paths = {
-      '/path1': { GET: { tags: ['Tag1'] } },
-      '/path2': { POST: { tags: ['tag2'] } },
+      '/path1': { get: { tags: ['Tag1'], responses: {} } },
+      '/path2': { post: { tags: ['tag2'], responses: {} } },
     };
 
     const excludeTags = ['tag1'];
@@ -155,8 +155,8 @@ describe('filterPaths', () => {
 
   it('should exclude paths with no remaining methods', () => {
     const paths = {
-      '/path1': { GET: { tags: ['tag1'] } },
-      '/path2': { POST: { tags: ['tag2'] } },
+      '/path1': { get: { tags: ['tag1'], responses: {} } },
+      '/path2': { post: { tags: ['tag2'], responses: {} } },
     };
 
     const excludeTags = ['tag1', 'tag2'];
@@ -168,8 +168,8 @@ describe('filterPaths', () => {
 
   it('should not modify the original paths object', () => {
     const paths = {
-      '/path1': { GET: { tags: ['tag1'] } },
-      '/path2': { POST: { tags: ['tag2'] } },
+      '/path1': { get: { tags: ['tag1'], responses: {} } },
+      '/path2': { post: { tags: ['tag2'], responses: {} } },
     };
 
     const excludeTags = ['tag2'];
@@ -178,13 +178,13 @@ describe('filterPaths', () => {
 
     // Ensure the original object is not modified
     expect(paths).toEqual({
-      '/path1': { GET: { tags: ['tag1'] } },
-      '/path2': { POST: { tags: ['tag2'] } },
+      '/path1': { get: { tags: ['tag1'], responses: {} } },
+      '/path2': { post: { tags: ['tag2'], responses: {} } },
     });
 
     // Ensure the result is correct
     expect(result).toEqual({
-      '/path1': { GET: { tags: ['tag1'] } },
+      '/path1': { get: { tags: ['tag1'], responses: {} } },
     });
   });
 });

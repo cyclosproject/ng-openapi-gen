@@ -23,7 +23,7 @@ const parameterNotExploded = new Parameter(
       title: 'fake open api',
       version: '3.0.0'
     },
-    paths: []
+    paths: {} as any
   });
 
 const parameterExploded = new Parameter(
@@ -49,7 +49,7 @@ const parameterExploded = new Parameter(
       title: 'fake open api',
       version: '3.0.0'
     },
-    paths: []
+    paths: {} as any
   });
 
 const parameter = new Parameter(
@@ -73,7 +73,7 @@ const parameter = new Parameter(
       title: 'fake open api',
       version: '3.0.0'
     },
-    paths: []
+    paths: {} as any
   });
 
 describe('Parameters constructor', () => {

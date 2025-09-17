@@ -3,7 +3,7 @@ import { NgOpenApiGen } from '../lib/ng-openapi-gen';
 import options from './person-place.config.json';
 import personAndPlaceSpec from './person-place.json';
 
-const gen = new NgOpenApiGen(personAndPlaceSpec, options);
+const gen = new NgOpenApiGen(personAndPlaceSpec as any, options);
 gen.generate();
 
 describe('Generation tests using person-place.json', () => {

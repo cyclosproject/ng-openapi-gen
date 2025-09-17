@@ -1,11 +1,12 @@
-import { OpenAPIObject } from '@loopback/openapi-v3-types';
 import { InterfaceDeclaration, TypescriptParser } from 'typescript-parser';
 import { NgOpenApiGen } from '../lib/ng-openapi-gen';
 import { Options } from '../lib/options';
 import options from './camelize-model-names.config.json';
 import camelizeModelNamesSpec from './camelize-model-names.json';
+import { OpenAPIObject } from '../lib/openapi-typings';
 
-const gen = new NgOpenApiGen(camelizeModelNamesSpec as OpenAPIObject, options as Options);
+const spec = camelizeModelNamesSpec as unknown as OpenAPIObject;
+const gen = new NgOpenApiGen(spec, options as Options);
 gen.generate();
 
 describe('Generation tests using camelize-model-names.json', () => {

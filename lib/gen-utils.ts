@@ -1,11 +1,19 @@
 import fs from 'fs-extra';
 import jsesc from 'jsesc';
 import { camelCase, deburr, kebabCase, upperCase, upperFirst } from 'lodash';
-import { OpenAPIObject, ReferenceObject, SchemaObject } from 'openapi3-ts';
 import path from 'path';
 import { Logger } from './logger';
 import { Model } from './model';
 import { Options } from './options';
+import {
+  OpenAPIObject,
+  ReferenceObject,
+  SchemaObject,
+  isReferenceObject,
+  isArraySchemaObject,
+  isNullable,
+  getSchemaType
+} from './openapi-typings';
 
 export const HTTP_METHODS = ['get', 'put', 'post', 'delete', 'options', 'head', 'patch', 'trace'];
 type SchemaOrRef = SchemaObject | ReferenceObject;
@@ -192,11 +200,67 @@ function rawTsType(schema: SchemaObject, options: Options, openApi: OpenAPIObjec
     }
   }
 
-  const type = schema.type || 'any';
+  const type = getSchemaType(schema);
+
+  // Handle OpenAPI 3.1 union types (type array)
+  if (Array.isArray(type)) {
+    const nonNullTypes = type.filter(t => t !== 'null');
+    const hasNull = type.includes('null');
+
+    if (nonNullTypes.length > 1) {
+      // Generate union of the different types
+      const unionTypes = nonNullTypes.map(t => {
+        // Create a schema object with single type for recursive processing
+        const singleTypeSchema = { ...schema, type: t as any };
+        return rawTsType(singleTypeSchema, options, openApi, container);
+      }).filter(t => t !== null);
+
+      // Remove duplicates
+      const uniqueTypes = [...new Set(unionTypes)];
+
+      if (uniqueTypes.length === 1) {
+        return hasNull ? `(${uniqueTypes[0]} | null)` : uniqueTypes[0];
+      }
+
+      const unionType = uniqueTypes.join(' | ');
+      return hasNull ? `(${unionType} | null)` : `(${unionType})`;
+    } else if (nonNullTypes.length === 1) {
+      // Single non-null type, process normally
+      const singleType = nonNullTypes[0];
+      const singleTypeSchema = { ...schema, type: singleType as any };
+      const result = rawTsType(singleTypeSchema, options, openApi, container);
+      return hasNull ? `(${result} | null)` : result;
+    } else if (hasNull) {
+      // Only null type
+      return 'null';
+    }
+    // Fallback to any if no valid types
+    return 'any';
+  }
 
   // An array
-  if (type === 'array' || schema.items) {
-    const items = schema.items || {};
+  if (type === 'array' || isArraySchemaObject(schema)) {
+    // Check for OpenAPI 3.1 prefixItems (tuple types)
+    if ('prefixItems' in schema && Array.isArray((schema as any).prefixItems)) {
+      const prefixItems = (schema as any).prefixItems;
+      const tupleTypes = prefixItems.map((item: any) => tsType(item, options, openApi, container));
+
+      // Check if additional items are allowed
+      const additionalItems = (schema as any).items;
+      if (additionalItems === false || additionalItems === undefined) {
+        // Exact tuple - no additional items
+        return `[${tupleTypes.join(', ')}]`;
+      } else if (additionalItems) {
+        // Tuple with additional items of specific type
+        const additionalType = tsType(additionalItems, options, openApi, container);
+        return `[${tupleTypes.join(', ')}, ...${additionalType}[]]`;
+      } else {
+        // Tuple with any additional items
+        return `[${tupleTypes.join(', ')}, ...any[]]`;
+      }
+    }
+
+    const items = isArraySchemaObject(schema) && 'items' in schema ? schema.items : {};
     const itemsType = tsType(items, options, openApi, container);
     return `Array<${itemsType}>`;
   }
@@ -265,7 +329,13 @@ function rawTsType(schema: SchemaObject, options: Options, openApi: OpenAPIObjec
   }
 
   // A simple type (integer doesn't exist as type in JS, use number instead)
-  return type === 'integer' ? 'number' : type;
+  if (type) {
+    const finalType = type === 'integer' ? 'number' : type;
+    return finalType;
+  }
+
+  // If no type is specified, default to 'any'
+  return 'any';
 }
 
 /**
@@ -277,18 +347,18 @@ export function tsType(schemaOrRef: SchemaOrRef | undefined, options: Options, o
     return 'any';
   }
 
-  if (schemaOrRef.$ref) {
+  if (isReferenceObject(schemaOrRef)) {
     // A reference
     const resolved = resolveRef(openApi, schemaOrRef.$ref) as SchemaObject;
     const name = simpleName(schemaOrRef.$ref);
     // When referencing the same container, use its type name
-    return maybeAppendNull((container && container.name === name) ? container.typeName : qualifiedName(name, options), !!resolved.nullable);
+    return maybeAppendNull((container && container.name === name) ? container.typeName : qualifiedName(name, options), isNullable(resolved));
   }
 
   // Resolve the actual type (maybe nullable)
   const schema = schemaOrRef as SchemaObject;
   const type = rawTsType(schema, options, openApi, container);
-  return maybeAppendNull(type, !!schema.nullable);
+  return maybeAppendNull(type, isNullable(schema));
 }
 
 /**
@@ -372,7 +442,7 @@ export function syncDirs(srcDir: string, destDir: string, removeStale: boolean, 
  * Tries to get a discriminator info from a base schema and for a derived one.
  */
 function tryGetDiscriminator(baseSchemaOrRef: SchemaObject | ReferenceObject, derivedSchema: SchemaObject, openApi: OpenAPIObject) {
-  const baseSchema = (baseSchemaOrRef.$ref ? resolveRef(openApi, baseSchemaOrRef.$ref) : baseSchemaOrRef) as SchemaObject;
+  const baseSchema = (isReferenceObject(baseSchemaOrRef) ? resolveRef(openApi, baseSchemaOrRef.$ref) : baseSchemaOrRef) as SchemaObject;
   const discriminatorProp = baseSchema.discriminator?.propertyName;
   if (discriminatorProp) {
     const discriminatorValue = tryGetDiscriminatorValue(baseSchema, derivedSchema, openApi);

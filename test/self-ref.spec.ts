@@ -12,7 +12,7 @@ import selfRefAllof from './self-ref-allof.json';
 
 describe('Test self referencing', () => {
   describe('Generation tests using self-ref.json', () => {
-    const gen = new NgOpenApiGen(selfRef, options);
+    const gen = new NgOpenApiGen(selfRef as any, options);
     gen.generate();
     it('Baz model', done => {
       const baz = gen.models.get('Foo.Bar.Baz');
@@ -51,7 +51,7 @@ describe('Test self referencing', () => {
   });
 
   describe('Generation tests using self-ref-allof.json', () => {
-    const gen = new NgOpenApiGen(selfRefAllof, optionsAllof);
+    const gen = new NgOpenApiGen(selfRefAllof as any, optionsAllof);
     gen.generate();
     it('Baz model', done => {
       const baz = gen.models.get('Foo.Bar.Baz');

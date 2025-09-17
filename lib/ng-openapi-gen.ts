@@ -1,11 +1,20 @@
 import $RefParser from '@apidevtools/json-schema-ref-parser';
-import { OpenAPIObject, OperationObject, PathItemObject, ReferenceObject, SchemaObject } from '@loopback/openapi-v3-types';
 import eol from 'eol';
+
+// Import centralized OpenAPI types and utilities
+import {
+  OpenAPIObject,
+  OperationObject,
+  PathItemObject,
+  PathsObject,
+  ReferenceObject,
+  SchemaObject
+} from './openapi-typings';
 import fs from 'fs-extra';
 import os from 'os';
 import path from 'path';
 import { parseOptions } from './cmd-args';
-import { HTTP_METHODS, deleteDirRecursive, methodName, simpleName, syncDirs } from './gen-utils';
+import { HTTP_METHODS, deleteDirRecursive, methodName, simpleName, syncDirs, resolveRef } from './gen-utils';
 import { Globals } from './globals';
 import { HandlebarsManager } from './handlebars-manager';
 import { Logger } from './logger';
@@ -35,6 +44,9 @@ export class NgOpenApiGen {
     public options: Options) {
 
     this.logger = new Logger(options.silent);
+
+    // Validate OpenAPI version
+    this.validateOpenApiVersion();
 
     this.outDir = this.options.output || 'src/app/api';
     // Make sure the output path doesn't end with a slash
@@ -183,7 +195,19 @@ export class NgOpenApiGen {
     const schemas = (this.openApi.components || {}).schemas || {};
     for (const name of Object.keys(schemas)) {
       const schema = schemas[name];
-      const model = new Model(this.openApi, name, schema, this.options);
+      if (!schema) continue;
+
+      // Resolve reference if needed
+      let resolvedSchema: SchemaObject;
+      if ('$ref' in schema) {
+        // It's a ReferenceObject, resolve it
+        resolvedSchema = resolveRef(this.openApi, schema.$ref) as SchemaObject;
+      } else {
+        // It's already a SchemaObject
+        resolvedSchema = schema;
+      }
+
+      const model = new Model(this.openApi, name, resolvedSchema, this.options);
       this.models.set(name, model);
     }
   }
@@ -193,69 +217,72 @@ export class NgOpenApiGen {
 
     // First read all operations, as tags are by operation
     const operationsByTag = new Map<string, Operation[]>();
-    for (const opPath of Object.keys(this.openApi.paths)) {
-      const pathSpec = this.openApi.paths[opPath] as PathItemObject;
-      for (const method of HTTP_METHODS) {
-        const methodSpec = pathSpec[method] as OperationObject;
-        if (methodSpec) {
-          let id = methodSpec.operationId;
-          if (id) {
+    if (this.openApi.paths) {
+      for (const opPath of Object.keys(this.openApi.paths)) {
+        const pathSpec = this.openApi.paths[opPath] as PathItemObject;
+        if (!pathSpec) continue;
+        for (const method of HTTP_METHODS) {
+          const methodSpec = (pathSpec as any)[method] as OperationObject;
+          if (methodSpec) {
+            let id = methodSpec.operationId;
+            if (id) {
             // Make sure the id is valid
-            id = methodName(id);
-          } else {
+              id = methodName(id);
+            } else {
             // Generate an id
-            id = methodName(`${opPath}.${method}`);
-            this.logger.warn(`Operation '${opPath}.${method}' didn't specify an 'operationId'. Assuming '${id}'.`);
-          }
-          if (this.operations.has(id)) {
+              id = methodName(`${opPath}.${method}`);
+              this.logger.warn(`Operation '${opPath}.${method}' didn't specify an 'operationId'. Assuming '${id}'.`);
+            }
+            if (this.operations.has(id)) {
             // Duplicated id. Add a suffix
-            let suffix = 0;
-            let newId = id;
-            while (this.operations.has(newId)) {
-              newId = `${id}_${++suffix}`;
+              let suffix = 0;
+              let newId = id;
+              while (this.operations.has(newId)) {
+                newId = `${id}_${++suffix}`;
+              }
+              this.logger.warn(`Duplicate operation id '${id}'. Assuming id ${newId} for operation '${opPath}.${method}'.`);
+              id = newId;
             }
-            this.logger.warn(`Duplicate operation id '${id}'. Assuming id ${newId} for operation '${opPath}.${method}'.`);
-            id = newId;
-          }
 
-          const operation = new Operation(this.openApi, opPath, pathSpec, method, id, methodSpec, this.options);
-          // Set a default tag if no tags are found
-          if (operation.tags.length === 0) {
-            this.logger.warn(`No tags set on operation '${opPath}.${method}'. Assuming '${defaultTag}'.`);
-            operation.tags.push(defaultTag);
-          }
-          for (const tag of operation.tags) {
-            let operations = operationsByTag.get(tag);
-            if (!operations) {
-              operations = [];
-              operationsByTag.set(tag, operations);
+            const operation = new Operation(this.openApi, opPath, pathSpec, method, id, methodSpec, this.options);
+            // Set a default tag if no tags are found
+            if (operation.tags.length === 0) {
+              this.logger.warn(`No tags set on operation '${opPath}.${method}'. Assuming '${defaultTag}'.`);
+              operation.tags.push(defaultTag);
             }
-            operations.push(operation);
-          }
+            for (const tag of operation.tags) {
+              let operations = operationsByTag.get(tag);
+              if (!operations) {
+                operations = [];
+                operationsByTag.set(tag, operations);
+              }
+              operations.push(operation);
+            }
 
-          // Store the operation
-          this.operations.set(id, operation);
+            // Store the operation
+            this.operations.set(id, operation);
+          }
         }
       }
-    }
 
-    // Then create a service per operation, as long as the tag is included
-    const includeTags = this.options.includeTags || [];
-    const excludeTags = this.options.excludeTags || [];
-    const tags = this.openApi.tags || [];
-    for (const tagName of operationsByTag.keys()) {
-      if (includeTags.length > 0 && !includeTags.includes(tagName)) {
-        this.logger.info(`Ignoring tag ${tagName} because it is not listed in the 'includeTags' option`);
-        continue;
+      // Then create a service per operation, as long as the tag is included
+      const includeTags = this.options.includeTags || [];
+      const excludeTags = this.options.excludeTags || [];
+      const tags = this.openApi.tags || [];
+      for (const tagName of operationsByTag.keys()) {
+        if (includeTags.length > 0 && !includeTags.includes(tagName)) {
+          this.logger.info(`Ignoring tag ${tagName} because it is not listed in the 'includeTags' option`);
+          continue;
+        }
+        if (excludeTags.length > 0 && excludeTags.includes(tagName)) {
+          this.logger.info(`Ignoring tag ${tagName} because it is listed in the 'excludeTags' option`);
+          continue;
+        }
+        const operations = operationsByTag.get(tagName) || [];
+        const tag = tags.find(t => t.name === tagName) || { name: tagName };
+        const service = new Service(tag, operations, this.options);
+        this.services.set(tag.name, service);
       }
-      if (excludeTags.length > 0 && excludeTags.includes(tagName)) {
-        this.logger.info(`Ignoring tag ${tagName} because it is listed in the 'excludeTags' option`);
-        continue;
-      }
-      const operations = operationsByTag.get(tagName) || [];
-      const tag = tags.find(t => t.name === tagName) || { name: tagName };
-      const service = new Service(tag, operations, this.options);
-      this.services.set(tag.name, service);
     }
   }
 
@@ -312,10 +339,11 @@ export class NgOpenApiGen {
     if (!schema) {
       return [];
     }
-    if (schema.$ref) {
+    // Type guard for ReferenceObject
+    if ('$ref' in schema) {
       return [simpleName(schema.$ref)];
     }
-    schema = schema as SchemaObject;
+    // Now we know it's a SchemaObject
     const result: string[] = [];
     (schema.allOf || []).forEach(s => Array.prototype.push.apply(result, this.allReferencedNames(s)));
     (schema.anyOf || []).forEach(s => Array.prototype.push.apply(result, this.allReferencedNames(s)));
@@ -328,10 +356,26 @@ export class NgOpenApiGen {
     if (typeof schema.additionalProperties === 'object') {
       Array.prototype.push.apply(result, this.allReferencedNames(schema.additionalProperties));
     }
-    if (schema.items) {
+    // Type guard for ArraySchemaObject (has items property)
+    if ('type' in schema && schema.type === 'array' && 'items' in schema) {
       Array.prototype.push.apply(result, this.allReferencedNames(schema.items));
     }
     return result;
+  }
+
+  private validateOpenApiVersion(): void {
+    const version = this.openApi.openapi;
+    if (!version) {
+      throw new Error('OpenAPI specification version is missing');
+    }
+
+    // Check if it's a supported version (3.0.x or 3.1.x)
+    const versionRegex = /^3\.(0|1)(\.\d+)?$/;
+    if (!versionRegex.test(version)) {
+      throw new Error(`Unsupported OpenAPI version: ${version}. Only OpenAPI 3.0.x and 3.1.x are supported.`);
+    }
+
+    this.logger.info(`Using OpenAPI specification version: ${version}`);
   }
 
   private setEndOfLine(text: string): string {
@@ -368,7 +412,7 @@ export async function runNgOpenApiGen() {
     }) as OpenAPIObject;
 
     const {excludeTags = [], excludePaths = [], includeTags = []} = options;
-    openApi.paths = filterPaths(openApi.paths, excludeTags, excludePaths, includeTags);
+    openApi.paths = filterPaths(openApi.paths ?? {}, excludeTags, excludePaths, includeTags);
 
     const gen = new NgOpenApiGen(openApi, options);
 
@@ -379,9 +423,9 @@ export async function runNgOpenApiGen() {
   }
 }
 
-export function filterPaths(paths: OpenAPIObject['paths'], excludeTags: Options['excludeTags'] = [], excludePaths: Options['excludePaths'] = [], includeTags: Options['includeTags'] = []) {
+export function filterPaths(paths: PathsObject, excludeTags: Options['excludeTags'] = [], excludePaths: Options['excludePaths'] = [], includeTags: Options['includeTags'] = []) {
   paths = JSON.parse(JSON.stringify(paths));
-  const filteredPaths: OpenAPIObject['paths'] = {};
+  const filteredPaths: PathsObject = {};
   for (const key in paths) {
     if (!paths.hasOwnProperty(key)) continue ;
 
@@ -390,9 +434,17 @@ export function filterPaths(paths: OpenAPIObject['paths'], excludeTags: Options[
       continue;
     }
 
+    const pathItem = paths[key];
+    if (!pathItem) continue;
+
     let shouldRemovePath = false;
-    for (const method of Object.keys(paths[key])) {
-      const tags: string[] = paths[key]?.[method]?.tags || [];
+    const httpMethods = ['get', 'put', 'post', 'delete', 'options', 'head', 'patch', 'trace'] as const;
+
+    for (const method of httpMethods) {
+      const operation = pathItem[method];
+      if (!operation) continue;
+
+      const tags: string[] = operation.tags || [];
       // if tag on method in includeTags then continue
       if (tags.some(tag => includeTags.includes(tag))) {
         continue;
@@ -400,10 +452,11 @@ export function filterPaths(paths: OpenAPIObject['paths'], excludeTags: Options[
       // if tag on method in excludeTags then remove the method
       if (tags.some(tag => excludeTags.includes(tag)) || !!includeTags?.length) {
         console.log(`Path ${key} is excluded by excludeTags`);
-        delete paths[key]?.[method];
+        delete (pathItem as any)[method];
 
         // if path has no method left then "should remove"
-        if (Object.keys(paths[key]).length === 0 ) {
+        const remainingMethods = httpMethods.filter(m => pathItem[m]);
+        if (remainingMethods.length === 0) {
           shouldRemovePath = true;
           break;
         }
@@ -412,7 +465,7 @@ export function filterPaths(paths: OpenAPIObject['paths'], excludeTags: Options[
     if (shouldRemovePath) {
       continue;
     }
-    filteredPaths[key] = paths[key];
+    filteredPaths[key] = pathItem;
   }
   return filteredPaths;
 }

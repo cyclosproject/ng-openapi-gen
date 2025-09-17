@@ -1,11 +1,13 @@
-import { OpenAPIObject } from 'openapi3-ts';
 import { NgOpenApiGen } from '../lib/ng-openapi-gen';
+import { OpenAPIObject } from '../lib/openapi-typings';
 import options from './noModule.config.json';
 import templatesSpec from './noModule.json';
 import { NamedExport, TypescriptParser } from 'typescript-parser';
 
+const spec = templatesSpec as unknown as OpenAPIObject;
+
 describe('Generation tests with index and no ApiModule', () => {
-  const gen = new NgOpenApiGen(templatesSpec as OpenAPIObject, options);
+  const gen = new NgOpenApiGen(spec, options);
 
   beforeAll(() => {
     gen.generate();

@@ -1,8 +1,21 @@
 import { last, upperFirst } from 'lodash';
-import { ContentObject, MediaTypeObject, OpenAPIObject, OperationObject, ParameterObject, PathItemObject, ReferenceObject, RequestBodyObject, ResponseObject, SecurityRequirementObject, SecuritySchemeObject } from 'openapi3-ts';
 import { Content } from './content';
 import { resolveRef, typeName } from './gen-utils';
 import { Logger } from './logger';
+import {
+  OpenAPIObject,
+  OperationObject,
+  ParameterObject,
+  PathItemObject,
+  ReferenceObject,
+  RequestBodyObject,
+  ResponseObject,
+  SecurityRequirementObject,
+  SecuritySchemeObject,
+  MediaTypeObject,
+  ContentObject,
+  isReferenceObject
+} from './openapi-typings';
 import { OperationVariant } from './operation-variant';
 import { Options } from './options';
 import { Parameter } from './parameter';
@@ -43,7 +56,7 @@ export class Operation {
     this.path = this.path.replace(/\'/g, '\\\'');
     this.tags = spec.tags || [];
     this.pathVar = `${upperFirst(id)}Path`;
-    this.methodName = spec['x-operation-name'] || this.id;
+    this.methodName = (spec as any)['x-operation-name'] || this.id;
 
     // Add both the common and specific parameters
     const allParams = [
@@ -70,7 +83,7 @@ export class Operation {
 
     let body = spec.requestBody;
     if (body) {
-      if (body.$ref) {
+      if (isReferenceObject(body)) {
         body = resolveRef(this.openApi, body.$ref);
       }
       body = body as RequestBodyObject;
@@ -99,7 +112,7 @@ export class Operation {
     const result: Parameter[] = [];
     if (params) {
       for (let param of params) {
-        if (param.$ref) {
+        if (isReferenceObject(param)) {
           param = resolveRef(this.openApi, param.$ref);
         }
         param = param as ParameterObject;
@@ -125,7 +138,7 @@ export class Operation {
       return Object.keys(param).map(key => {
         const scope = param[key];
         const security: SecuritySchemeObject = resolveRef(this.openApi, `#/components/securitySchemes/${key}`);
-        return new Security(key, security, scope, this.options, this.openApi);
+        return new Security(key, security, scope);
       });
     });
   }
@@ -165,9 +178,9 @@ export class Operation {
     return { success: successResponse, all: allResponses };
   }
 
-  private getResponse(responseObject: ResponseObject, statusCode: string): Response {
+  private getResponse(responseObject: ResponseObject | ReferenceObject, statusCode: string): Response {
     let responseDesc = undefined;
-    if (responseObject.$ref) {
+    if (isReferenceObject(responseObject)) {
       responseDesc = resolveRef(this.openApi, responseObject.$ref);
     } else {
       responseDesc = responseObject as ResponseObject;

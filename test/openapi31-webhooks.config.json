@@ -1,0 +1,5 @@
+{
+  "$schema": "../ng-openapi-gen-schema.json",
+  "input": "test/openapi31-webhooks.json",
+  "output": "out/openapi31-webhooks"
+}

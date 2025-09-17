@@ -1,8 +1,10 @@
 import { NgOpenApiGen } from '../lib/ng-openapi-gen';
 import options from './default-success-response.config.json';
 import defaultSuccessResponseSpec from './default-success-response.json';
+import { OpenAPIObject } from '../lib/openapi-typings';
 
-const gen = new NgOpenApiGen(defaultSuccessResponseSpec, options);
+const spec = defaultSuccessResponseSpec as unknown as OpenAPIObject;
+const gen = new NgOpenApiGen(spec, options);
 gen.generate();
 
 describe('Generation tests using default-success-response.json', () => {

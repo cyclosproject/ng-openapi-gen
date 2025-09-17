@@ -1,6 +1,6 @@
-import { TagObject } from 'openapi3-ts';
 import { GenType } from './gen-type';
 import { serviceClass, tsComments } from './gen-utils';
+import { TagObject } from './openapi-typings';
 import { Operation } from './operation';
 import { Options } from './options';
 
@@ -43,10 +43,10 @@ export class Service extends GenType {
         }
       }
 
-      // Add the security group imports
-      for (const securityGroup of operation.security) {
-        securityGroup.forEach(security => this.collectImports(security.spec.schema));
-      }
+      // Security schemes don't have schemas to import in newer OpenAPI versions
+      // for (const securityGroup of operation.security) {
+      //   securityGroup.forEach(security => this.collectImports(security.spec.schema));
+      // }
     }
     this.updateImports();
   }

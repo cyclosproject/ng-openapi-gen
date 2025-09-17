@@ -1,6 +1,6 @@
-import { RequestBodyObject } from 'openapi3-ts';
 import { Content } from './content';
 import { tsComments } from './gen-utils';
+import { RequestBodyObject } from './openapi-typings';
 import { Options } from './options';
 
 /**

@@ -1,0 +1,158 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "OpenAPI 3.1 JSON Schema Features Test",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/schema-features": {
+      "post": {
+        "operationId": "testSchemaFeatures",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AdvancedSchemaFeatures"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseWithDiscriminator"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/array-contains": {
+      "get": {
+        "operationId": "getArrayWithContains",
+        "responses": {
+          "200": {
+            "description": "Array with contains example",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArrayWithContains"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AdvancedSchemaFeatures": {
+        "type": "object",
+        "properties": {
+          "tupleArray": {
+            "type": "array",
+            "prefixItems": [
+              {"type": "string"},
+              {"type": "number"},
+              {"type": "boolean"}
+            ],
+            "items": false,
+            "description": "Tuple with prefixItems (OpenAPI 3.1 feature)"
+          },
+          "conditionalProperty": {
+            "type": "object",
+            "properties": {
+              "type": {"type": "string"},
+              "value": {}
+            },
+            "if": {
+              "properties": {"type": {"const": "number"}}
+            },
+            "then": {
+              "properties": {"value": {"type": "number"}}
+            },
+            "else": {
+              "properties": {"value": {"type": "string"}}
+            }
+          }
+        }
+      },
+      "Dog": {
+        "type": "object",
+        "properties": {
+          "pet_type": {
+            "const": "dog"
+          },
+          "breed": {
+            "type": "string",
+            "enum": ["Dingo", "Husky", "Retriever", "Shepherd"]
+          },
+          "bark": {
+            "type": "boolean"
+          }
+        },
+        "required": ["pet_type", "breed"]
+      },
+      "Cat": {
+        "type": "object",
+        "properties": {
+          "pet_type": {
+            "const": "cat"
+          },
+          "hunts": {
+            "type": "boolean"
+          },
+          "age": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "required": ["pet_type"]
+      },
+      "ResponseWithDiscriminator": {
+        "oneOf": [
+          {"$ref": "#/components/schemas/Dog"},
+          {"$ref": "#/components/schemas/Cat"}
+        ],
+        "discriminator": {
+          "propertyName": "pet_type",
+          "mapping": {
+            "dog": "#/components/schemas/Dog",
+            "cat": "#/components/schemas/Cat"
+          }
+        }
+      },
+      "ArrayWithContains": {
+        "type": "object",
+        "properties": {
+          "mixedArray": {
+            "type": "array",
+            "contains": {
+              "type": "string",
+              "pattern": "^special"
+            },
+            "items": {
+              "type": ["string", "number"]
+            },
+            "description": "Array that must contain at least one string starting with 'special'"
+          },
+          "dependentField": {
+            "type": "object",
+            "properties": {
+              "hasDiscount": {"type": "boolean"},
+              "discountPercent": {"type": "number"}
+            },
+            "dependentRequired": {
+              "hasDiscount": ["discountPercent"]
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,6 +1,6 @@
-import { OpenAPIObject, ReferenceObject, SchemaObject } from 'openapi3-ts';
 import { escapeId, tsComments, tsType } from './gen-utils';
 import { Model } from './model';
+import { OpenAPIObject, ReferenceObject, SchemaObject } from './openapi-typings';
 import { Options } from './options';
 
 /**

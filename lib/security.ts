@@ -1,6 +1,5 @@
-import { OpenAPIObject, SecuritySchemeObject } from 'openapi3-ts';
-import { tsComments, tsType, methodName } from './gen-utils';
-import { Options } from './options';
+import { tsComments, methodName } from './gen-utils';
+import { SecuritySchemeObject, ApiKeySecurityScheme } from './openapi-typings';
 
 /**
  * An operation security
@@ -27,11 +26,19 @@ export class Security {
   in: string;
   type: string;
 
-  constructor(key: string, public spec: SecuritySchemeObject, public scope: string[] = [], options: Options, openApi: OpenAPIObject) {
-    this.name = spec.name || '';
+  constructor(key: string, public spec: SecuritySchemeObject, public scope: string[] = []) {
+    // Handle different types of security schemes
+    if (spec.type === 'apiKey') {
+      const apiKeySpec = spec as ApiKeySecurityScheme;
+      this.name = apiKeySpec.name || '';
+      this.in = apiKeySpec.in || 'header';
+    } else {
+      this.name = '';
+      this.in = 'header';
+    }
+
     this.var = methodName(key);
     this.tsComments = tsComments(spec.description || '', 2);
-    this.in = spec.in || 'header';
-    this.type = tsType(spec.schema, options, openApi);
+    this.type = 'string'; // Default type for security parameters
   }
 }

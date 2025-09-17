@@ -1,14 +1,16 @@
-import { OpenAPIObject } from 'openapi3-ts';
 import { NgOpenApiGen } from '../lib/ng-openapi-gen';
 import options from './enums.config.json';
 import enumsSpec from './enums.json';
 import * as fs from 'fs';
 import { Options } from '../lib/options';
+import { OpenAPIObject } from '../lib/openapi-typings';
+
+const spec = enumsSpec as unknown as OpenAPIObject;
 
 describe('Test enum generation', () => {
 
   it('default enum style', () => {
-    const genDefault = new NgOpenApiGen(enumsSpec as OpenAPIObject, {
+    const genDefault = new NgOpenApiGen(spec, {
       ...options,
       output: 'out/enumStyle/default/'
     } as Options);
@@ -23,7 +25,7 @@ describe('Test enum generation', () => {
   });
 
   it('enum style "alias"', () => {
-    const genAlias = new NgOpenApiGen(enumsSpec as OpenAPIObject, {
+    const genAlias = new NgOpenApiGen(spec, {
       ...options,
       output: 'out/enumStyle/alias/',
       enumStyle: 'alias'
@@ -34,7 +36,7 @@ describe('Test enum generation', () => {
   });
 
   it('enum style "upper"', () => {
-    const genUpper = new NgOpenApiGen(enumsSpec as OpenAPIObject, {
+    const genUpper = new NgOpenApiGen(spec, {
       ...options,
       output: 'out/enumStyle/upper/',
       enumStyle: 'upper'
@@ -50,7 +52,7 @@ describe('Test enum generation', () => {
   });
 
   it('enum style "pascal"', () => {
-    const genPascal = new NgOpenApiGen(enumsSpec as OpenAPIObject, {
+    const genPascal = new NgOpenApiGen(spec, {
       ...options,
       output: 'out/enumStyle/pascal/',
       enumStyle: 'pascal'
@@ -66,7 +68,7 @@ describe('Test enum generation', () => {
   });
 
   it('enum style "ignorecase"', () => {
-    const genIgnorecase = new NgOpenApiGen(enumsSpec as OpenAPIObject, {
+    const genIgnorecase = new NgOpenApiGen(spec, {
       ...options,
       output: 'out/enumStyle/ignorecase/',
       enumStyle: 'ignorecase'

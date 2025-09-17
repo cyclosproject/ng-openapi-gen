@@ -1,9 +1,9 @@
 import { upperFirst } from 'lodash';
-import { SchemaObject } from 'openapi3-ts';
 import { Content } from './content';
 import { GenType } from './gen-type';
 import { ensureNotReserved, fileName, resolveRef, tsComments } from './gen-utils';
 import { Importable } from './importable';
+import { SchemaObject, isReferenceObject } from './openapi-typings';
 import { Operation } from './operation';
 import { Options } from './options';
 
@@ -87,7 +87,7 @@ export class OperationVariant extends GenType implements Importable {
 
     // When the schema is in binary format, return 'blob'
     let schemaOrRef = successResponse.spec?.schema || { type: 'string' };
-    if (schemaOrRef.$ref) {
+    if (isReferenceObject(schemaOrRef)) {
       schemaOrRef = resolveRef(operation.openApi, schemaOrRef.$ref);
     }
     const schema = schemaOrRef as SchemaObject;

@@ -1,14 +1,15 @@
-import { OpenAPIObject } from 'openapi3-ts';
 import { NgOpenApiGen } from '../lib/ng-openapi-gen';
 import options from './templates.config.json';
 import templatesSpec from './templates.json';
 import * as fs from 'fs';
 import { Options } from '../lib/options';
+import { OpenAPIObject } from '../lib/openapi-typings';
 
-const gen = new NgOpenApiGen(templatesSpec as OpenAPIObject, options as Options);
-const genCr = new NgOpenApiGen(templatesSpec as OpenAPIObject, { ...options, endOfLineStyle: 'cr' } as Options);
-const genLf = new NgOpenApiGen(templatesSpec as OpenAPIObject, { ...options, endOfLineStyle: 'lf' } as Options);
-const genCrlf = new NgOpenApiGen(templatesSpec as OpenAPIObject, { ...options, endOfLineStyle: 'crlf' } as Options);
+const spec = templatesSpec as unknown as OpenAPIObject;
+const gen = new NgOpenApiGen(spec, options as Options);
+const genCr = new NgOpenApiGen(spec, { ...options, endOfLineStyle: 'cr' } as Options);
+const genLf = new NgOpenApiGen(spec, { ...options, endOfLineStyle: 'lf' } as Options);
+const genCrlf = new NgOpenApiGen(spec, { ...options, endOfLineStyle: 'crlf' } as Options);
 
 gen.generate();
 

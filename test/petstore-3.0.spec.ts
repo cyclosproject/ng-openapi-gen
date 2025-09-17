@@ -1,12 +1,12 @@
 import { InterfaceDeclaration, TypeAliasDeclaration, TypescriptParser, ClassDeclaration } from 'typescript-parser';
 import { NgOpenApiGen } from '../lib/ng-openapi-gen';
-import options from './petstore.config.json';
-import petstore from './petstore.json';
+import options from './petstore-3.0.config.json';
+import petstore from './petstore-3.0.json';
 
-const gen = new NgOpenApiGen(petstore, options);
+const gen = new NgOpenApiGen(petstore as any, options);
 gen.generate();
 
-describe('Generation tests using petstore.json', () => {
+describe('Generation tests using petstore-3.0.json', () => {
 
   it('Tags', () => {
     expect(gen.services.size).toBe(1);

@@ -1,14 +1,16 @@
-import { OpenAPIObject } from 'openapi3-ts';
 import { NgOpenApiGen } from '../lib/ng-openapi-gen';
 import options from './const.config.json';
 import constsSpec from './const.json';
 import * as fs from 'fs';
 import { Options } from '../lib/options';
+import { OpenAPIObject } from '../lib/openapi-typings';
+
+const spec = constsSpec as unknown as OpenAPIObject;
 
 describe('Test const generation', () => {
 
   it('const', () => {
-    const genDefault = new NgOpenApiGen(constsSpec as OpenAPIObject, {
+    const genDefault = new NgOpenApiGen(spec, {
       ...options,
       output: 'out/constStyle/default/'
     } as Options);

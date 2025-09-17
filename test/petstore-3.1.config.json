@@ -1,0 +1,7 @@
+{
+  "$schema": "../ng-openapi-gen-schema.json",
+  "input": "petstore-3.1.json",
+  "output": "out/petstore-3.1",
+  "modelPrefix": "Petstore",
+  "modelSuffix": "Model"
+}

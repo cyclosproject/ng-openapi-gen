@@ -1,0 +1,153 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "OpenAPI 3.1 Nullable Types Test",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/nullable-array": {
+      "get": {
+        "operationId": "getNullableArray",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NullableArrayResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/mixed-types": {
+      "post": {
+        "operationId": "postMixedTypes",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MixedTypesInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MixedTypesOutput"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/jsonschema-types": {
+      "get": {
+        "operationId": "getJsonSchemaTypes",
+        "responses": {
+          "200": {
+            "description": "JSON Schema types example",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JsonSchemaTypes"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "NullableArrayResponse": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": ["array", "null"],
+            "items": {
+              "type": "string"
+            },
+            "description": "Array that can be null in OpenAPI 3.1"
+          },
+          "nullableString": {
+            "type": ["string", "null"],
+            "description": "String that can be null"
+          },
+          "optionalArray": {
+            "type": "array",
+            "items": {
+              "type": ["string", "null"]
+            },
+            "description": "Array of nullable strings"
+          }
+        }
+      },
+      "MixedTypesInput": {
+        "type": "object",
+        "properties": {
+          "unionType": {
+            "type": ["string", "number", "boolean"],
+            "description": "OpenAPI 3.1 union type"
+          },
+          "constValue": {
+            "const": "fixed_value",
+            "description": "Const value in OpenAPI 3.1"
+          },
+          "enumWithNull": {
+            "type": ["string", "null"],
+            "enum": ["option1", "option2", null],
+            "description": "Enum that includes null"
+          }
+        }
+      },
+      "MixedTypesOutput": {
+        "type": "object",
+        "properties": {
+          "result": {
+            "type": ["string", "number"],
+            "description": "Result can be string or number"
+          },
+          "status": {
+            "const": "success",
+            "description": "Always success"
+          },
+          "data": {
+            "type": ["object", "array", "null"],
+            "description": "Flexible data field"
+          }
+        }
+      },
+      "JsonSchemaTypes": {
+        "type": "object",
+        "properties": {
+          "unionField": {
+            "type": ["string", "number", "boolean"],
+            "description": "Union of primitive types"
+          },
+          "nullableUnion": {
+            "type": ["string", "number", "null"],
+            "description": "Union that includes null"
+          },
+          "constField": {
+            "const": "constant_value",
+            "description": "Constant field"
+          },
+          "enumWithTypes": {
+            "type": ["string", "number"],
+            "enum": ["text", 42, "other"],
+            "description": "Enum with mixed types"
+          }
+        }
+      }
+    }
+  }
+}
