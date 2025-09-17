@@ -336,14 +336,14 @@ export class NgOpenApiGen {
 
   private setEndOfLine(text: string): string {
     switch (this.options.endOfLineStyle) {
-      case 'cr':
-        return eol.cr(text);
-      case 'lf':
-        return eol.lf(text);
-      case 'crlf':
-        return eol.crlf(text);
-      default:
-        return eol.auto(text);
+    case 'cr':
+      return eol.cr(text);
+    case 'lf':
+      return eol.lf(text);
+    case 'crlf':
+      return eol.crlf(text);
+    default:
+      return eol.auto(text);
     }
   }
 }

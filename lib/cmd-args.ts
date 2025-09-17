@@ -124,7 +124,7 @@ function objectifyCustomizedResponseType(args: { customizedResponseType?: string
 
   try {
     args.customizedResponseType = JSON.parse(args.customizedResponseType);
-  } catch (error) {
+  } catch {
     throw new Error(`Invalid JSON string: [${args.customizedResponseType}] \n for --customizedResponseType`);
   }
 }

@@ -367,19 +367,19 @@ describe('Generation tests using all-types.json', () => {
         let i = 0;
         for (i = 0; i < substr.length; i++) {
           switch (substr.charAt(i)) {
-            case '{':
-              recursion++;
-              break;
-            case '}':
-              if (--recursion < 0) {
-                return i;
-              }
-              break;
-            case ';':
-              if (recursion === 0) {
-                return i;
-              }
-              break;
+          case '{':
+            recursion++;
+            break;
+          case '}':
+            if (--recursion < 0) {
+              return i;
+            }
+            break;
+          case ';':
+            if (recursion === 0) {
+              return i;
+            }
+            break;
           }
         }
         return i;
