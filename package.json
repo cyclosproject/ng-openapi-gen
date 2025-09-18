@@ -19,7 +19,7 @@
   },
   "main": "lib/ng-openapi-gen.js",
   "scripts": {
-    "test": "node --require ts-node/register ./node_modules/.bin/jasmine --config=jasmine.json",
+    "test": "TS_NODE_PROJECT=tsconfig.json node --require ts-node/register ./node_modules/.bin/jasmine --config=jasmine.json",
     "lint": "eslint 'lib/**' 'test/*.ts'",
     "compile": "tsc --project tsconfig.json && ncp \"LICENSE\" dist && ncp \"README.md\" \"dist/README.md\" && ncp \"templates\" \"dist/templates\" && ncp \"node_modules\" \"dist/node_modules\" && rimraf \"dist/test\" && replace-in-file \"\\\"private\\\": true\" \"\\\"private\\\": false\" dist/package.json",
     "build": "npm run lint && npm run compile && npm test",
