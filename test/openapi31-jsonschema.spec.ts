@@ -1,22 +1,14 @@
 import { ClassDeclaration, InterfaceDeclaration, TypescriptParser } from 'typescript-parser';
 import { NgOpenApiGen } from '../lib/ng-openapi-gen';
-import { Options } from '../lib/options';
-import jsonschemaSpec from './openapi31-jsonschema.json';
 import { OpenAPIObject } from '../lib/openapi-typings';
+import options from './openapi31-jsonschema.config.json';
+import jsonschemaSpec from './openapi31-jsonschema.json';
 const spec = jsonschemaSpec as OpenAPIObject;
 
-const root = __dirname;
+const gen = new NgOpenApiGen(spec, options);
+gen.generate();
 
 describe('OpenAPI 3.1 JSON Schema Features Tests', () => {
-  let gen: NgOpenApiGen;
-
-  beforeEach(() => {
-    gen = new NgOpenApiGen(spec, {
-      output: root + '/../out/openapi31-jsonschema',
-    } as Options);
-    gen.generate();
-  });
-
   it('should handle prefixItems as tuple types', () => {
     const model = gen.models.get('AdvancedSchemaFeatures');
     expect(model).toBeDefined();
@@ -33,8 +25,6 @@ describe('OpenAPI 3.1 JSON Schema Features Tests', () => {
         expect(tupleArrayProp).toBeDefined();
         // OpenAPI 3.1 prefixItems now correctly generates tuple types
         expect(tupleArrayProp?.type).toContain('[string, number, boolean]');
-
-
       });
     }
   });
@@ -60,8 +50,6 @@ describe('OpenAPI 3.1 JSON Schema Features Tests', () => {
         expect(breedProp?.type).toContain('Dingo');
         expect(breedProp?.type).toContain('Husky');
         expect(breedProp?.type).toContain('Retriever');
-
-
       });
     }
   });
@@ -80,8 +68,6 @@ describe('OpenAPI 3.1 JSON Schema Features Tests', () => {
         const petTypeProp = decl.properties.find(p => p.name === 'pet_type');
         expect(petTypeProp).toBeDefined();
         expect(petTypeProp?.type).toContain('cat');
-
-
       });
     }
   });
@@ -99,8 +85,6 @@ describe('OpenAPI 3.1 JSON Schema Features Tests', () => {
         // Should reference Dog and Cat types
         expect(ts).toContain('Dog');
         expect(ts).toContain('Cat');
-
-
       });
     }
   });
@@ -140,8 +124,6 @@ describe('OpenAPI 3.1 JSON Schema Features Tests', () => {
         // Should have testSchemaFeatures method
         const testSchemaFeaturesMethod = cls.methods.find(m => m.name.includes('testSchemaFeatures'));
         expect(testSchemaFeaturesMethod).toBeDefined();
-
-
       });
     }
   });
