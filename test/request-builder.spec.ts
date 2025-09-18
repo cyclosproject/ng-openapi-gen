@@ -15,7 +15,7 @@ describe('Request builder', () => {
     const request = rb.build();
     const params = request.options.params;
     if (params == null) {
-      fail();
+      expect.fail();
     } else {
       expect(params.get('p1')).toBe('a');
       expect(params.get('p2')).toBe('b');
@@ -33,7 +33,7 @@ describe('Request builder', () => {
     const request = rb.build();
     const params = request.options.params;
     if (params == null) {
-      fail();
+      expect.fail();
     } else {
       expect(params.getAll('p1')).toEqual(['a1', 'b1', 'c1']);
       expect(params.getAll('p2')).toEqual(['a2,b2,c2']);
@@ -52,7 +52,7 @@ describe('Request builder', () => {
     const request = rb.build();
     const params = request.options.params;
     if (params == null) {
-      fail();
+      expect.fail();
     } else {
       expect(params.has('p1')).toBe(false); // p1 uses exploded properties
       expect(params.getAll('k1')).toEqual(['a1']);
@@ -118,7 +118,7 @@ describe('Request builder', () => {
     const request = rb.build();
     const headers = request.options.headers;
     if (headers == null) {
-      fail();
+      expect.fail();
     } else {
       expect(headers.get('p1')).toBe('a');
       expect(headers.get('p2')).toBe('b');
@@ -132,7 +132,7 @@ describe('Request builder', () => {
     const request = rb.build();
     const headers = request.options.headers;
     if (headers == null) {
-      fail();
+      expect.fail();
     } else {
       expect(headers.getAll('p1')).toEqual(['a1', 'b1', 'c1']);
       expect(headers.getAll('p2')).toEqual(['a2', 'b2', 'c2']);
@@ -146,7 +146,7 @@ describe('Request builder', () => {
     const request = rb.build();
     const headers = request.options.headers;
     if (headers == null) {
-      fail();
+      expect.fail();
     } else {
       expect(headers.getAll('p1')).toEqual(['k1,a1,k2,b1,k3,c1']);
       expect(headers.getAll('p2')).toEqual(['k1=a2,k2=b2,k3=c2']);

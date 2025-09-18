@@ -18,7 +18,7 @@ describe('Generation tests with index and no ApiModule', () => {
     const ts = gen.templates.apply('index', ref);
     const parser = new TypescriptParser();
     parser.parseSource(ts).then(ast => {
-      expect(ast.exports.length).withContext('Has the correct number of exports').toBe(4);
+      expect(ast.exports.length).toBe(4);
       expect(ast.exports.some((ex: NamedExport) => ex.from === './api-configuration')).toBeDefined();
       expect(ast.exports.some((ex: NamedExport) => ex.from === './base-service')).toBeDefined();
       expect(ast.exports.some((ex: NamedExport) => ex.from === './request-builder')).toBeDefined();

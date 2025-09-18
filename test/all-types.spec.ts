@@ -312,13 +312,13 @@ describe('Generation tests using all-types.json', () => {
       expect(decl.name).toBe('Nullables');
       expect(decl.properties.length).toBe(3);
       expect(decl.properties[0].name).toBe('inlinedNullableObject');
-      expect(decl.properties[0].type).withContext('inlinedNullableObject property').toBe('({\n\'someProperty\': string;\n}) | null');
+      expect(decl.properties[0].type).toBe('({\n\'someProperty\': string;\n}) | null');
       expect(decl.properties[0].isOptional).toBe(false);
       expect(decl.properties[1].name).toBe('nullableObject');
-      expect(decl.properties[1].type).withContext('nullableObject property').toBe('NullableObject | null');
+      expect(decl.properties[1].type).toBe('NullableObject | null');
       expect(decl.properties[1].isOptional).toBe(false);
       expect(decl.properties[2].name).toBe('withNullableProperty');
-      expect(decl.properties[2].type).withContext('withNullableProperty property').toBe('{\n\'someProperty\': NullableObject | null;\n}');
+      expect(decl.properties[2].type).toBe('{\n\'someProperty\': NullableObject | null;\n}');
       expect(decl.properties[2].isOptional).toBe(false);
 
     });
@@ -339,7 +339,7 @@ describe('Generation tests using all-types.json', () => {
       expect(decl.properties.length).toBe(1);
       const prop = decl.properties[0];
       expect(prop.name).toBe('object');
-      expect(prop.type).withContext('object property').toBe('{\n\'string\'?: string;\n\'nullableString\'?: string | null;\n\'ref\'?: RefEnum;\n\'nullableRef\'?: RefEnum | null;\n}');
+      expect(prop.type).toBe('{\n\'string\'?: string;\n\'nullableString\'?: string | null;\n\'ref\'?: RefEnum;\n\'nullableRef\'?: RefEnum | null;\n}');
       expect(prop.isOptional).toBe(true);
 
     });
@@ -391,19 +391,19 @@ describe('Generation tests using all-types.json', () => {
       function assertProperty(name: string, type: string, required = false) {
         const idx = text.indexOf(name);
         if (idx === -1) {
-          fail(`Property not found: ${name}`);
+          expect.fail(`Property not found: ${name}`);
         }
         const textFromProperty = text.substring(idx);
         const start = textFromProperty.indexOf(':');
         const end = findEndOfType(textFromProperty);
-        expect(textFromProperty.substring(start + 1, end).trim()).withContext(`${name} type`).toBe(type);
+        expect(textFromProperty.substring(start + 1, end).trim()).toBe(type);
 
         // Test for required or optional
         const requiredToken = textFromProperty.charAt(start - 1);
         if (required) {
-          expect(requiredToken).withContext(`${name} required`).not.toBe('?');
+          expect(requiredToken).not.toBe('?');
         } else {
-          expect(requiredToken).withContext(`${name} optional`).toBe('?');
+          expect(requiredToken).toBe('?');
         }
       }
       assertProperty('stringProp', 'string');
@@ -534,7 +534,7 @@ describe('Generation tests using all-types.json', () => {
     const ts = gen.templates.apply('index', ref);
     const parser = new TypescriptParser();
     parser.parseSource(ts).then(ast => {
-      expect(ast.exports.length).withContext('Has the correct number of exports').toBe(5);
+      expect(ast.exports.length).toBe(5);
       expect(ast.exports.some((ex: NamedExport) => ex.from === './api-configuration')).toBeDefined();
       expect(ast.exports.some((ex: NamedExport) => ex.from === './base-service')).toBeDefined();
       expect(ast.exports.some((ex: NamedExport) => ex.from === './request-builder')).toBeDefined();

@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "module": "ESNext",
+    "module": "CommonJS",
     "esModuleInterop": true,
     "target": "ES2020",
     "noImplicitAny": true,
@@ -24,7 +24,8 @@
       "vitest/globals"
     ],
     "lib": [
-      "es2017"
+      "es2017",
+      "dom"
     ]
   },
   "include": [
