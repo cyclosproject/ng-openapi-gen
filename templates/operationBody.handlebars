@@ -1,5 +1,10 @@
-{{{bodyMethodTsComments}}}{{methodName}}({{>operationParameters}}): Observable<{{{resultType}}}> {
-    return this.{{responseMethodName}}(params, context).pipe(
+{{{bodyMethodTsComments}}}{{methodName}}({{>operationParameters}}): {{#if @root.promises}}Promise<{{{resultType}}}>{{else}}Observable<{{{resultType}}}>{{/if}} {
+    const resp = this.{{responseMethodName}}(params, context);
+    {{#if @root.promises}}
+    return resp.then((r: {{@root.responseClass}}<{{{resultType}}}>): {{{resultType}}} => r.body);
+    {{else}}
+    return resp.pipe(
       map((r: {{@root.responseClass}}<{{{resultType}}}>): {{{resultType}}} => r.body)
     );
+    {{/if}}
   }

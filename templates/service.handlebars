@@ -3,7 +3,11 @@
 
 import { HttpClient, HttpContext } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+{{#if promises}}
+import { firstValueFrom } from 'rxjs';
+{{else}}
 import { Observable } from 'rxjs';
+{{/if}}
 import { map } from 'rxjs/operators';
 
 import { {{baseServiceClass}} } from '../{{baseServiceFile}}';

@@ -38,6 +38,9 @@ export interface Options {
   /** When false, no services will be generated (clients will use functions directly) */
   services?: boolean;
 
+  /** When true, generates Promise-based service methods. When false, Observable-based. */
+  promises?: boolean;
+
   /** Prefix for generated service classes. Defaults to empty. */
   servicePrefix?: string;
 
@@ -60,7 +63,7 @@ export interface Options {
   baseService?: string;
 
   /** Name for the service to call functions directly. Defaults to 'ApiService'. */
-  apiService?: string;
+  apiService?: string | boolean;
 
   /** Name for the request builder class to generate. Defaults to 'RequestBuilder'. */
   requestBuilder?: string;

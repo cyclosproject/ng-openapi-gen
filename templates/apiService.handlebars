@@ -3,7 +3,7 @@
 
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpContext, HttpResponse } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable{{#if promises}}, firstValueFrom{{/if}} } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import { {{configurationClass}} } from './{{configurationFile}}';
 import { {{responseClass}} } from './{{responseFile}}';
@@ -42,22 +42,31 @@ export class {{apiServiceClass}} {
   /**
    * Executes an API call, returning the response body only
    */
-  invoke<P, R>(fn: ApiFnRequired<P, R>, params: P, context?: HttpContext): Observable<R>;
-  invoke<P, R>(fn: ApiFnOptional<P, R>, params?: P, context?: HttpContext): Observable<R>;
-  invoke<P, R>(fn: ApiFnRequired<P, R> | ApiFnOptional<P, R>, params: P, context?: HttpContext): Observable<R> {
-    return this.invoke$Response(fn, params, context)
-      .pipe(map(r => r.body));
+  invoke<P, R>(fn: ApiFnRequired<P, R>, params: P, context?: HttpContext): {{#if promises}}Promise<R>{{else}}Observable<R>{{/if}};
+  invoke<P, R>(fn: ApiFnOptional<P, R>, params?: P, context?: HttpContext): {{#if promises}}Promise<R>{{else}}Observable<R>{{/if}};
+  {{#if promises}}async {{/if}}invoke<P, R>(fn: ApiFnRequired<P, R> | ApiFnOptional<P, R>, params: P, context?: HttpContext): {{#if promises}}Promise<R>{{else}}Observable<R>{{/if}} {
+    const resp = this.invoke$Response(fn, params, context);
+    {{#if promises}}
+    return (await resp).body;
+    {{else}}
+    return obs.pipe(map(r => r.body));
+    {{/if}}
   }
 
   /**
    * Executes an API call, returning the entire response
    */
-  invoke$Response<P, R>(fn: ApiFnRequired<P, R>, params: P, context?: HttpContext): Observable<StrictHttpResponse<R>>;
-  invoke$Response<P, R>(fn: ApiFnOptional<P, R>, params?: P, context?: HttpContext): Observable<StrictHttpResponse<R>>;
-  invoke$Response<P, R>(fn: ApiFnRequired<P, R> | ApiFnOptional<P, R>, params: P, context?: HttpContext): Observable<StrictHttpResponse<R>> {
-    return fn(this.http, this.rootUrl, params, context)
+  invoke$Response<P, R>(fn: ApiFnRequired<P, R>, params: P, context?: HttpContext): {{#if promises}}Promise<StrictHttpResponse<R>>{{else}}Observable<StrictHttpResponse<R>>{{/if}};
+  invoke$Response<P, R>(fn: ApiFnOptional<P, R>, params?: P, context?: HttpContext): {{#if promises}}Promise<StrictHttpResponse<R>>{{else}}Observable<StrictHttpResponse<R>>{{/if}};
+  invoke$Response<P, R>(fn: ApiFnRequired<P, R> | ApiFnOptional<P, R>, params: P, context?: HttpContext): {{#if promises}}Promise<StrictHttpResponse<R>>{{else}}Observable<StrictHttpResponse<R>>{{/if}} {
+    const obs = fn(this.http, this.rootUrl, params, context)
       .pipe(
         filter(r => r instanceof HttpResponse),
         map(r => r as StrictHttpResponse<R>));
+    {{#if promises}}
+    return firstValueFrom(obs);
+    {{else}}
+    return obs;
+    {{/if}}
   }
 }

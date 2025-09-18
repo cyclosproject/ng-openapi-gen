@@ -20,40 +20,9 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Run tests (watch)",
-      "program": "${workspaceFolder}/node_modules/.bin/vitest",
-      "args": [],
-      "console": "integratedTerminal",
-      "cwd": "${workspaceFolder}",
-      "stopOnEntry": false,
-      "skipFiles": [
-        "<node_internals>/**",
-        "node_modules/**"
-      ]
-    },
-    {
-      "type": "node",
-      "request": "launch",
-      "name": "Run tests (UI)",
-      "program": "${workspaceFolder}/node_modules/.bin/vitest",
-      "args": [
-        "--ui"
-      ],
-      "console": "integratedTerminal",
-      "cwd": "${workspaceFolder}",
-      "stopOnEntry": false,
-      "skipFiles": [
-        "<node_internals>/**",
-        "node_modules/**"
-      ]
-    },
-    {
-      "type": "node",
-      "request": "launch",
       "name": "Run directly",
-      "program": "${workspaceFolder}/node_modules/.bin/ts-node",
+      "program": "${workspaceFolder}/dist/lib/index.js",
       "args": [
-        "${workspaceFolder}/lib/index.ts",
         "-i",
         "${workspaceFolder}/test/all-types.json",
         "-o",

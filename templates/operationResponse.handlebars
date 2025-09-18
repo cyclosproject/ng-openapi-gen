@@ -1,3 +1,8 @@
-{{{responseMethodTsComments}}}{{responseMethodName}}({{>operationParameters}}): Observable<{{@root.responseClass}}<{{{resultType}}}>> {
-    return {{importName}}(this.http, this.rootUrl, params, context);
+{{{responseMethodTsComments}}}{{responseMethodName}}({{>operationParameters}}): {{#if @root.promises}}Promise<{{@root.responseClass}}<{{{resultType}}}>>{{else}}Observable<{{@root.responseClass}}<{{{resultType}}}>>{{/if}} {
+    const obs = {{importName}}(this.http, this.rootUrl, params, context);
+    {{#if @root.promises}}
+    return firstValueFrom(obs);
+    {{else}}
+    return obs;
+    {{/if}}
   }

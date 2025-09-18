@@ -12,16 +12,17 @@ For a generator for [Swagger / OpenAPI 2.0](https://github.com/OAI/OpenAPI-Speci
 
 ## Highlights
 
-- It should be easy to use and to integrate with Angular CLI;
-- It should support `OpenAPI` specifications in both `JSON` and `YAML` formats;
+- Easy to use and to integrate with Angular CLI;
+- Supports OpenAPI 3.0 and 3.1 specifications in both `JSON` and `YAML` formats;
 - Each OpenAPI path is mapped to a function. Those functions are invoked using a generated `@Injectable` service;
   - Alternatively, it is possible to generate an `@Injectable` service per tag. This has a bit cleaner API at expense of extra bundle size;
-- It should be easy to access the original `HttpResponse`, for example, to read headers.
-  - This is achieved by generating a variant suffixed with `$Response` for each generated function;
+- Supports both `Promise` (default) and `Observable` as result types for services;
+- Allows accessing the original `HttpResponse`, for example, to read headers;
+  - This is achieved by generating a variant suffixed with `$Response` on services;
 - `OpenAPI` supports combinations of request body and response content types. For each combination, a distinct function is generated;
 - It is possible to specify a subset of functions / models to generate.
   - Think of this not for saving on bundle size, as tree-shaking includes only used functions / models, but to have a cleaner library;
-- It should be easy to specify a custom root URL for the web service endpoints;
+- It is possible to specify a custom root URL for the web service endpoints;
 - Generated files should compile using strict TypeScript compiler flags, such as `noUnusedLocals` and `noUnusedParameters`.
 
 ## Limitations
@@ -52,6 +53,8 @@ the settings that have changed:
   JavaScript class, taking up space in the bundle size.
 - `"enumArray": true`. The major drawback of `enumStyle: alias` is there's no way to iterate all existing values. With `enumArray` we
   generate a sibling `.ts` file which exports an array (of the correct enum type) with all items on it.
+- `"promises": true`: By default, generated services return `Promise`s, not `Observable`s. If you prefer to keep working with `Observable`s,
+  set `"promises": false`.
 
 So, if you're upgrading from previous versions and want the generation to be similar, set all these settings in your configuration with
 their corresponding previous values.
@@ -122,20 +125,25 @@ are not generated. To use these functions, a generated @Injectable `ApiService` 
 configuration. Here is an example:
 
 ```typescript
-import { Component, OnInit, inject } from '@angular/core';
-import { ApiService } from 'src/api/api.service';
-import { getResults } from 'src/api/fn/api/get-results';
-import { Result } from 'src/api/models';
-import { Observable } from 'rxjs';
+import { Component, inject, OnInit, signal } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
+import { ApiService } from './api/api.service';
+import { getResults } from './api/fn/operations/get-results';
+import { Result } from './api/models';
 
-@Directive()
-export class ApiFnComponent implements OnInit {
-  results$!: Observable<Result[]>;
+@Component({
+  selector: 'app-root',
+  imports: [RouterOutlet],
+  templateUrl: './app.html',
+  styleUrl: './app.css',
+})
+export class App implements OnInit {
+  protected readonly results = signal<Result[] | null>(null);
 
-  apiService = inject(ApiService);
+  private apiService = inject(ApiService);
 
-  ngOnInit() {
-    this.results$ = this.apiService.invoke(getResults, { limit: 10 });
+  async ngOnInit() {
+    this.results.set(await this.apiService.invoke(getResults, { limit: 5 }));
   }
 }
 ```
@@ -146,22 +154,29 @@ the service in a component, with functions, only the corresponding function will
 it injects a service, all 50 functions will be bundled. You can set the `"services": true` configuration option, and use it like this:
 
 ```typescript
-import { Component, OnInit, inject } from '@angular/core';
-import { ResultsService } from 'src/api/services/results.service';
-import { Result } from 'src/api/models';
-import { Observable } from 'rxjs';
+import { Component, inject, OnInit, signal } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
+import { Result } from './api/models';
+import { ResultsService } from './api/services';
 
-@Directive()
-export class ApiFnComponent implements OnInit {
-  results$!: Observable<Result[]>;
+@Component({
+  selector: 'app-root',
+  imports: [RouterOutlet],
+  templateUrl: './app.html',
+  styleUrl: './app.css',
+})
+export class App implements OnInit {
+  protected readonly results = signal<Result[] | null>(null);
 
-  resultsService = inject(ResultsService);
+  private resultsService = inject(ResultsService);
 
-  ngOnInit() {
-    this.results$ = this.resultsService.getResults({ limit: 10 });
+  async ngOnInit() {
+    this.results.set(await this.resultsService.getResults({ limit: 5 }));
   }
 }
 ```
+
+Notice there are minimal cosmetic improvements, at expense of extra bundle sizes, especially for large APIs.
 
 ## Specifying the root URL / web service endpoint
 
@@ -170,17 +185,24 @@ configure this from the application. The easiest way is to inject the `ApiConfig
 `configuration` setting) in your bootstrap component and set it directly:
 
 ```typescript
+import { Component, inject, OnInit, signal } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
+import { ApiConfiguration } from './api/api-configuration';
+import { Result } from './api/models';
+
 @Component({
   selector: 'app-root',
-  imports: [],
-  templateUrl: 'app.component.html',
-  styleUrl: 'app.component.scss'
+  imports: [RouterOutlet],
+  templateUrl: './app.html',
+  styleUrl: './app.css',
 })
-export class AppComponent implements OnInit {
-  apiConfiguration = inject(ApiConfiguration);
+export class App implements OnInit {
+  protected readonly results = signal<Result[] | null>(null);
 
-  ngOnInit() {
-    this.apiConfiguration.rootUrl = 'https://www.my-server.com/api';
+  private apiConfiguration = inject(ApiConfiguration);
+
+  async ngOnInit() {
+    this.apiConfiguration.rootUrl = 'http://localhost:3000';
   }
 }
 ```
@@ -192,13 +214,12 @@ when importing the module. However, this is only kept for historical reasons, an
 ## Passing request headers / customizing the request
 
 To pass request headers, such as authorization or API keys, as well as having a centralized error handling, a standard
-[HttpInterceptor](https://angular.io/guide/http#intercepting-all-requests-or-responses) should be used. Here is an example of a functional
-HTTP interceptor:
+[interceptor](https://angular.dev/guide/http/interceptors) should be used. Here is an example of a functional interceptor:
 
 ```typescript
 import { HttpInterceptorFn } from '@angular/common/http';
 
-export const MY_INTERCEPTOR: HttpInterceptorFn = (req, next) => {
+export const API_INTERCEPTOR: HttpInterceptorFn = (req, next) => {
   console.log('Intercepted request:', req);
   return next(req);
 };
@@ -208,14 +229,13 @@ Then, use it in your `app.config.ts`:
 
 ```typescript
 import { ApplicationConfig } from '@angular/core';
-
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
-import { MY_INTERCEPTOR } from './my-api-interceptor';
+import { API_INTERCEPTOR } from './api-interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideHttpClient(withInterceptors([MY_INTERCEPTOR])),
     // ... others
+    provideHttpClient(withInterceptors([API_INTERCEPTOR])),
   ],
 };
 ```
@@ -233,9 +253,9 @@ files are consistent with the API definition. To do so, create the `ng-openapi-g
 ```json
 {
   "scripts": {
-    "ng-openapi-gen": "ng-openapi-gen",
-    "start": "npm run ng-openapi-gen && npm run ng -- serve",
-    "build": "npm run ng-openapi-gen && npm run ng -- build -prod"
+    "generate:api": "ng-openapi-gen",
+    "start": "npm run generate:api && npm run ng -- serve",
+    "build": "npm run generate:api && npm run ng -- build -prod"
   }
 }
 ```
@@ -246,12 +266,11 @@ Also, if you use several configuration files, you can specify multiple times the
 ```json
 {
   "scripts": {
-    "ng-openapi-gen": "ng-openapi-gen",
-    "generate.api1": "npm run ng-openapi-gen -c api1.json",
-    "generate.api2": "npm run ng-openapi-gen -c api2.json",
-    "generate": "npm run generate.api1 && npm run generate.api2",
-    "start": "npm run generate && npm run ng -- serve",
-    "build": "npm run generate && npm run ng -- build -prod"
+    "generate:api": "npm run generate:api:a && npm run generate:api:b",
+    "generate.api:a": "ng-openapi-gen -c api-a.json",
+    "generate.api:b": "ng-openapi-gen -c api-b.json",
+    "start": "npm run generate:api && npm run ng -- serve",
+    "build": "npm run generate:api && npm run ng -- build -prod"
   }
 }
 ```

@@ -1,0 +1,7 @@
+{
+  "$schema": "../ng-openapi-gen-schema.json",
+  "input": "petstore-3.0.json",
+  "output": "out/promises",
+  "services": true,
+  "promises": true
+}

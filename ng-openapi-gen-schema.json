@@ -65,9 +65,17 @@
       "default": "ApiConfiguration"
     },
     "apiService": {
-      "description": "Name for the service used to invoke functions. Defaults to 'ApiService'.",
+      "description": "Name for the service used to invoke functions. Defaults to 'ApiService'. Set to false to not generate it.",
       "type": "string",
-      "default": "ApiService"
+      "default": "ApiService",
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "boolean"
+        }
+      ]
     },
     "excludeParameters": {
       "description": "When specified, ignores on generated services any parameters whose names are in this list.",
@@ -125,6 +133,11 @@
       "type": "boolean"
     },
 
+    "promises": {
+      "description": "When set to true, generated methods will return Promises instead of Observables. Defaults to true.",
+      "default": true,
+      "type": "boolean"
+    },
     "services": {
       "description": "When set to true, services will be generated. Services are injectable classes that work as a facade to functions, a bit prettier API at cost of increased bundle size. Defaults to false.",
       "default": false,
