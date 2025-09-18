@@ -240,6 +240,53 @@ export class Operation {
     // For example: application/json, application/foo-bar+json, text/json ...
     const requestVariants = this.contentsByMethodPart(this.requestBody);
     const responseVariants = this.contentsByMethodPart(this.successResponse);
+
+    // Check if we have a potential ambiguity: both request and response have single content types
+    // that would result in the same method suffix, causing duplicate method names
+    const hasAmbiguity = requestVariants.size === 1 && responseVariants.size === 1 &&
+      [...requestVariants.keys()][0] === '' && [...responseVariants.keys()][0] === '' &&
+      [...requestVariants.values()][0] !== null && [...responseVariants.values()][0] !== null;
+
+    if (hasAmbiguity) {
+      // Additional check: are the media types actually the same?
+      const requestMediaType = [...requestVariants.values()][0]?.mediaType;
+      const responseMediaType = [...responseVariants.values()][0]?.mediaType;
+
+      if (requestMediaType && responseMediaType) {
+        // Calculate what the method parts would be for each
+        const requestPart = this.variantMethodPart([...requestVariants.values()][0]!);
+        const responsePart = this.variantMethodPart([...responseVariants.values()][0]!);
+
+        // Only recalculate with preserved suffixes if the method parts would be the same
+        if (requestPart === responsePart) {
+          requestVariants.clear();
+          responseVariants.clear();
+
+          if (this.requestBody?.content && this.requestBody.content.length > 0) {
+            for (const content of this.requestBody.content) {
+              if (content && content.mediaType) {
+                const part = this.variantMethodPart(content);
+                requestVariants.set(part, content);
+              }
+            }
+          } else {
+            requestVariants.set('', null);
+          }
+
+          if (this.successResponse?.content && this.successResponse.content.length > 0) {
+            for (const content of this.successResponse.content) {
+              if (content && content.mediaType) {
+                const part = this.variantMethodPart(content);
+                responseVariants.set(part, content);
+              }
+            }
+          } else {
+            responseVariants.set('', null);
+          }
+        }
+      }
+    }
+
     requestVariants.forEach((requestContent, requestPart) => {
       responseVariants.forEach((responseContent, responsePart) => {
         const methodName = this.methodName + requestPart + responsePart;

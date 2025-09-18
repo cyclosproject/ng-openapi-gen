@@ -1,0 +1,7 @@
+{
+  "$schema": "../ng-openapi-gen-schema.json",
+  "input": "cbor-duplicate-methods.json",
+  "output": "out/cbor-duplicate-methods",
+  "services": true,
+  "promises": false
+}
