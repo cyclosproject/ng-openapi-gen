@@ -16,4 +16,8 @@ jobs:
       with:
         node-version: 22.x
     - run: npm install
+    - run: cat package.json
+    - run: node --version
+    - run: ls -l test/
+    - run: ls -l lib/
     - run: npm run build
