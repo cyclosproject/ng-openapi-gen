@@ -17,7 +17,7 @@ describe('OpenAPI 3.1 Content Types and Formats Tests', () => {
     gen.generate();
   });
 
-  it('should handle binary format correctly', done => {
+  it('should handle binary format correctly', () => {
     const model = gen.models.get('FileUpload');
     expect(model).toBeDefined();
     if (model) {
@@ -25,7 +25,7 @@ describe('OpenAPI 3.1 Content Types and Formats Tests', () => {
       const parser = new TypescriptParser();
       parser.parseSource(ts).then(ast => {
         expect(ast.declarations.length).toBe(1);
-        expect(ast.declarations[0]).toEqual(jasmine.any(InterfaceDeclaration));
+        expect(ast.declarations[0]).toEqual(expect.any(InterfaceDeclaration));
         const decl = ast.declarations[0] as InterfaceDeclaration;
 
         // Check binaryData property - should handle binary format
@@ -34,12 +34,12 @@ describe('OpenAPI 3.1 Content Types and Formats Tests', () => {
         // Binary format correctly generates Blob type
         expect(binaryDataProp?.type).toContain('Blob');
 
-        done();
+
       });
     }
   });
 
-  it('should handle multiple union types properly', done => {
+  it('should handle multiple union types properly', () => {
     const model = gen.models.get('JsonData');
     expect(model).toBeDefined();
     if (model) {
@@ -53,12 +53,12 @@ describe('OpenAPI 3.1 Content Types and Formats Tests', () => {
         expect(dataProp).toBeDefined();
         expect(dataProp?.type).toContain('} | Array<any> | string');
 
-        done();
+
       });
     }
   });
 
-  it('should handle various string formats', done => {
+  it('should handle various string formats', () => {
     const model = gen.models.get('FormattedData');
     expect(model).toBeDefined();
     if (model) {
@@ -80,12 +80,12 @@ describe('OpenAPI 3.1 Content Types and Formats Tests', () => {
         expect(ipv6Prop).toBeDefined();
         expect(ipv6Prop?.type).toContain('string');
 
-        done();
+
       });
     }
   });
 
-  it('should handle numeric types and constraints', done => {
+  it('should handle numeric types and constraints', () => {
     const model = gen.models.get('NumericTypes');
     expect(model).toBeDefined();
     if (model) {
@@ -105,12 +105,12 @@ describe('OpenAPI 3.1 Content Types and Formats Tests', () => {
         // TODO: Union types currently only use first type
         expect(unionNumberProp?.type).toContain('number');
 
-        done();
+
       });
     }
   });
 
-  it('should handle anyOf with enum and const', done => {
+  it('should handle anyOf with enum and const', () => {
     const model = gen.models.get('StringConstraints');
     expect(model).toBeDefined();
     if (model) {
@@ -127,12 +127,12 @@ describe('OpenAPI 3.1 Content Types and Formats Tests', () => {
         expect(enumOrConstProp?.type).toContain('value3');
         expect(enumOrConstProp?.type).toContain('special_constant');
 
-        done();
+
       });
     }
   });
 
-  it('should generate service methods for all operations', done => {
+  it('should generate service methods for all operations', () => {
     const service = gen.services.get('Api');
     expect(service).toBeDefined();
     if (service) {
@@ -140,7 +140,7 @@ describe('OpenAPI 3.1 Content Types and Formats Tests', () => {
       const parser = new TypescriptParser();
       parser.parseSource(ts).then(ast => {
         expect(ast.declarations.length).toBe(1);
-        expect(ast.declarations[0]).toEqual(jasmine.any(ClassDeclaration));
+        expect(ast.declarations[0]).toEqual(expect.any(ClassDeclaration));
         const cls = ast.declarations[0] as ClassDeclaration;
 
         // Should have uploadFile method
@@ -159,7 +159,7 @@ describe('OpenAPI 3.1 Content Types and Formats Tests', () => {
         const getStringConstraintsMethod = cls.methods.find(m => m.name.includes('getStringConstraints'));
         expect(getStringConstraintsMethod).toBeDefined();
 
-        done();
+
       });
     }
   });

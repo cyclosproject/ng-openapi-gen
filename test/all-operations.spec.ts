@@ -7,7 +7,6 @@ import options from './all-operations.config.json';
 import allOperationsSpec from './all-operations.json';
 import { OpenAPIObject } from '../lib/openapi-typings';
 
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 1000;
 const spec = allOperationsSpec as unknown as OpenAPIObject;
 
 function paramsName(name: string) {
@@ -33,7 +32,7 @@ describe('Generation tests using all-operations.json', () => {
     expect(gen.services.size).toBe(4);
   });
 
-  it('Tag 1', done => {
+  it('Tag 1', () => {
     const tag1 = gen.services.get('tag1');
     expect(tag1).toBeDefined();
     if (!tag1) return;
@@ -42,11 +41,11 @@ describe('Generation tests using all-operations.json', () => {
     const parser = new TypescriptParser();
     parser.parseSource(ts).then(ast => {
       expect(ast.declarations.length).toBe(1);
-      expect(ast.declarations[0]).toEqual(jasmine.any(ClassDeclaration));
+      expect(ast.declarations[0]).toEqual(expect.any(ClassDeclaration));
       const cls = ast.declarations[0] as ClassDeclaration;
       function assertPath1Get(name: string) {
         const method = cls.methods.find(m => m.name === name);
-        expect(method).withContext(`method ${name}`).toBeDefined();
+        expect(method).toBeDefined();
         if (method) {
           expect(method.parameters.length).toBe(2);
           const type = method.parameters[0].type;
@@ -60,7 +59,7 @@ describe('Generation tests using all-operations.json', () => {
 
       function assertPath2Get(name: string) {
         const method = cls.methods.find(m => m.name === name);
-        expect(method).withContext(`method ${name}`).toBeDefined();
+        expect(method).toBeDefined();
         if (method) {
           expect(method.parameters.length).toBe(2);
           const type = method.parameters[0].type;
@@ -70,11 +69,11 @@ describe('Generation tests using all-operations.json', () => {
       assertPath2Get('path2Get$Response');
       assertPath2Get('path2Get');
 
-      done();
+
     });
   });
 
-  it('Tag 2', done => {
+  it('Tag 2', () => {
     const tag2 = gen.services.get('tag2');
     expect(tag2).toBeDefined();
     if (!tag2) return;
@@ -84,11 +83,11 @@ describe('Generation tests using all-operations.json', () => {
     const parser = new TypescriptParser();
     parser.parseSource(ts).then(ast => {
       expect(ast.declarations.length).toBe(1);
-      expect(ast.declarations[0]).toEqual(jasmine.any(ClassDeclaration));
+      expect(ast.declarations[0]).toEqual(expect.any(ClassDeclaration));
       const cls = ast.declarations[0] as ClassDeclaration;
       function assertPath1Post(name: string) {
         const method = cls.methods.find(m => m.name === name);
-        expect(method).withContext(`method ${name}`).toBeDefined();
+        expect(method).toBeDefined();
         if (method) {
           expect(method.parameters.length).toBe(2);
           const type = method.parameters[0].type;
@@ -100,7 +99,7 @@ describe('Generation tests using all-operations.json', () => {
       assertPath1Post('path1Post$Plain$Response');
       assertPath1Post('path1Post$Plain');
 
-      done();
+
     });
   });
 
@@ -112,7 +111,7 @@ describe('Generation tests using all-operations.json', () => {
     expect(tagWithNesting.namespace).toBe('tag/tag2/tag3/tag4');
   });
 
-  it('No tag', done => {
+  it('No tag', () => {
     const noTag = gen.services.get('noTag');
     expect(noTag).toBeDefined();
     if (!noTag) return;
@@ -122,11 +121,11 @@ describe('Generation tests using all-operations.json', () => {
     const parser = new TypescriptParser();
     parser.parseSource(ts).then(ast => {
       expect(ast.declarations.length).toBe(1);
-      expect(ast.declarations[0]).toEqual(jasmine.any(ClassDeclaration));
+      expect(ast.declarations[0]).toEqual(expect.any(ClassDeclaration));
       const cls = ast.declarations[0] as ClassDeclaration;
       function assertPath3Del(name: string) {
         const method = cls.methods.find(m => m.name === name);
-        expect(method).withContext(`method ${name}`).toBeDefined();
+        expect(method).toBeDefined();
         if (method) {
           expect(method.parameters.length).toBe(2);
           const type = method.parameters[0].type;
@@ -138,7 +137,7 @@ describe('Generation tests using all-operations.json', () => {
 
       function assertPath4Put(name: string) {
         const method = cls.methods.find(m => m.name === name);
-        expect(method).withContext(`method ${name}`).toBeDefined();
+        expect(method).toBeDefined();
         if (method) {
           expect(method.parameters.length).toBe(2);
           const type = method.parameters[0].type;
@@ -160,13 +159,13 @@ describe('Generation tests using all-operations.json', () => {
       assertPath4Put('path4Put$Any$Image');
 
       const withQuotes = cls.methods.find(m => m.name === 'withQuotes');
-      expect(withQuotes).withContext('method withQuotes').toBeDefined();
+      expect(withQuotes).toBeDefined();
 
-      done();
+
     });
   });
 
-  it('NoTag-path-3-del-fn', done => {
+  it('NoTag-path-3-del-fn', () => {
     const noTag = gen.services.get('noTag');
     const path3Del = noTag?.operations?.find(op => op.id === 'path3Del');
     expect(path3Del).toBeDefined();
@@ -175,11 +174,11 @@ describe('Generation tests using all-operations.json', () => {
     const parser = new TypescriptParser();
     parser.parseSource(ts).then(ast => {
       expect(ast.declarations.length).toBe(2);
-      expect(ast.declarations[0]).toEqual(jasmine.any(InterfaceDeclaration));
+      expect(ast.declarations[0]).toEqual(expect.any(InterfaceDeclaration));
       const params = ast.declarations[0] as InterfaceDeclaration;
       expect(params?.name).toEqual('Path3Del$Params');
 
-      expect(ast.declarations[1]).toEqual(jasmine.any(FunctionDeclaration));
+      expect(ast.declarations[1]).toEqual(expect.any(FunctionDeclaration));
       const fn = ast.declarations[1] as FunctionDeclaration;
       expect(fn?.name).toEqual('path3Del');
       expect(fn?.parameters?.length).toEqual(4);
@@ -192,7 +191,7 @@ describe('Generation tests using all-operations.json', () => {
       expect(fn?.parameters?.[3]?.name).toEqual('context');
       expect(fn?.parameters?.[3]?.type).toEqual('HttpContext');
 
-      done();
+
     });
   });
 
@@ -287,7 +286,7 @@ describe('Generation tests using all-operations.json', () => {
     expect(params[2].name).toBe('post1');
     expect(params[2].type).toBe('number');
     expect(params[2].in).toBe('query');
-    expect(operation.requestBody).withContext('request body').toBeDefined();
+    expect(operation.requestBody).toBeDefined();
     if (operation.requestBody) {
       expect(operation.requestBody.required).toBe(true);
       expect(operation.requestBody.content.length).toBe(2);
@@ -324,7 +323,7 @@ describe('Generation tests using all-operations.json', () => {
     expect(params[2].name).toBe('param2');
     expect(params[2].type).toBe('string');
     expect(params[2].in).toBe('header');
-    expect(operation.requestBody).withContext('request body').toBeUndefined();
+    expect(operation.requestBody).toBeUndefined();
     expect(operation.variants.length).toBe(1);
     expect(operation.allResponses.length).toBe(0);
   });
@@ -341,11 +340,11 @@ describe('Generation tests using all-operations.json', () => {
     expect(params[0].name).toBe('id');
     expect(params[0].type).toBe('number');
     expect(params[0].in).toBe('path');
-    expect(operation.requestBody).withContext('request body').toBeUndefined();
+    expect(operation.requestBody).toBeUndefined();
     expect(operation.variants.length).toBe(1);
     expect(operation.allResponses.length).toBe(1);
     const success = operation.successResponse;
-    expect(success).withContext('success response').toBeDefined();
+    expect(success).toBeDefined();
     const resp200 = operation.allResponses.find(r => r.statusCode === '200');
     expect(resp200).toBe(success);
     if (resp200) {
@@ -361,44 +360,44 @@ describe('Generation tests using all-operations.json', () => {
     expect(operation.path).toBe('/path4');
     expect(operation.method).toBe('put');
     expect(operation.parameters.length).toBe(0);
-    expect(operation.requestBody).withContext('request body').toBeDefined();
+    expect(operation.requestBody).toBeDefined();
     if (operation.requestBody) {
       expect(operation.requestBody.required).toBe(false);
       expect(operation.requestBody.content.length).toBe(3);
       const json = operation.requestBody.content.find(c => c.mediaType === 'application/json');
-      expect(json).withContext('application/json request').toBeDefined();
+      expect(json).toBeDefined();
       if (json) {
         expect(json.type).toBe('RefObject');
       }
       const plain = operation.requestBody.content.find(c => c.mediaType === 'text/plain');
-      expect(plain).withContext('text/plain request').toBeDefined();
+      expect(plain).toBeDefined();
       if (plain) {
         expect(plain.type).toBe('string');
       }
       const _any = operation.requestBody.content.find(c => c.mediaType === '*/*');
-      expect(_any).withContext('*/* request').toBeDefined();
+      expect(_any).toBeDefined();
       if (_any) {
         expect(_any.type).toBe('Blob');
       }
     }
     expect(operation.allResponses.length).toBe(4);
     const success = operation.successResponse;
-    expect(success).withContext('success response').toBeDefined();
+    expect(success).toBeDefined();
     if (success) {
       expect(success.statusCode).toBe('200');
       expect(success.content.length).toBe(3);
       const plain = success.content.find(c => c.mediaType === 'text/plain');
-      expect(plain).withContext('plain response').toBeDefined();
+      expect(plain).toBeDefined();
       if (plain) {
         expect(plain.type).toBe('string');
       }
       const binary = success.content.find(c => c.mediaType === 'text/binary');
-      expect(binary).withContext('binary response').toBeDefined();
+      expect(binary).toBeDefined();
       if (binary) {
         expect(binary.type).toBe('Blob');
       }
       const _any = success.content.find(c => c.mediaType === 'image/*');
-      expect(_any).withContext('image response').toBeDefined();
+      expect(_any).toBeDefined();
       if (_any) {
         expect(_any.type).toBe('Blob');
       }

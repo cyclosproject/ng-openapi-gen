@@ -12,7 +12,7 @@ gen.generate();
 
 describe('Generation tests using skipJsonSuffix.config', () => {
 
-  it('Api', done => {
+  it('Api', () => {
     const api = gen.services.get('Api');
     expect(api).toBeDefined();
     if (api) {
@@ -20,14 +20,14 @@ describe('Generation tests using skipJsonSuffix.config', () => {
       const parser = new TypescriptParser();
       parser.parseSource(ts).then(ast => {
         expect(ast.declarations.length).toBe(1);
-        expect(ast.declarations[0]).toEqual(jasmine.any(ClassDeclaration));
+        expect(ast.declarations[0]).toEqual(expect.any(ClassDeclaration));
         const cls = ast.declarations[0] as ClassDeclaration;
         function assertMethodExists(name: string) {
           const method = cls.methods.find(m => m.name === name);
-          expect(method).withContext(`method ${name}`).toBeDefined();
+          expect(method).toBeDefined();
         } function assertMethodNotExists(name: string) {
           const method = cls.methods.find(m => m.name === name);
-          expect(method).withContext(`method ${name}`).toBeUndefined();
+          expect(method).toBeUndefined();
         }
         assertMethodExists('fooGet$Response');
         assertMethodExists('fooGet'); // Json
@@ -37,7 +37,7 @@ describe('Generation tests using skipJsonSuffix.config', () => {
         assertMethodExists('barGet');
         assertMethodNotExists('barGet$Plain');
 
-        done();
+
       });
     }
   });

@@ -16,12 +16,12 @@ describe('Test enum generation', () => {
     } as Options);
     genDefault.generate();
     const fileContents = fs.readFileSync(fs.realpathSync(`${genDefault.outDir}/models/flavor-enum.ts`));
-    expect(/Vanilla = 'vanilla'/.test(fileContents.toString())).toBeTrue();
-    expect(/StrawBerry = 'StrawBerry'/.test(fileContents.toString())).toBeTrue();
-    expect(/CookieDough = 'cookie dough'/.test(fileContents.toString())).toBeTrue();
-    expect(/ChocolateChip = 'Chocolate Chip'/.test(fileContents.toString())).toBeTrue();
-    expect(/ButterPecan = 'butter_pecan'/.test(fileContents.toString())).toBeTrue();
-    expect(/CokeLight = 'COKE light'/.test(fileContents.toString())).toBeTrue();
+    expect(/Vanilla = 'vanilla'/.test(fileContents.toString())).toBe(true);
+    expect(/StrawBerry = 'StrawBerry'/.test(fileContents.toString())).toBe(true);
+    expect(/CookieDough = 'cookie dough'/.test(fileContents.toString())).toBe(true);
+    expect(/ChocolateChip = 'Chocolate Chip'/.test(fileContents.toString())).toBe(true);
+    expect(/ButterPecan = 'butter_pecan'/.test(fileContents.toString())).toBe(true);
+    expect(/CokeLight = 'COKE light'/.test(fileContents.toString())).toBe(true);
   });
 
   it('enum style "alias"', () => {
@@ -32,7 +32,7 @@ describe('Test enum generation', () => {
     } as Options);
     genAlias.generate();
     const fileContents = fs.readFileSync(fs.realpathSync(`${genAlias.outDir}/models/flavor-enum.ts`));
-    expect(/export type FlavorEnum = 'vanilla' | 'StrawBerry' | 'cookie dough' | 'Chocolate Chip' | 'butter_pecan' | 'COKE light';/.test(fileContents.toString())).toBeTrue();
+    expect(/export type FlavorEnum = 'vanilla' | 'StrawBerry' | 'cookie dough' | 'Chocolate Chip' | 'butter_pecan' | 'COKE light';/.test(fileContents.toString())).toBe(true);
   });
 
   it('enum style "upper"', () => {
@@ -43,12 +43,12 @@ describe('Test enum generation', () => {
     } as Options);
     genUpper.generate();
     const fileContents = fs.readFileSync(fs.realpathSync(`${genUpper.outDir}/models/flavor-enum.ts`));
-    expect(/VANILLA = 'vanilla'/.test(fileContents.toString())).toBeTrue();
-    expect(/STRAW_BERRY = 'StrawBerry'/.test(fileContents.toString())).toBeTrue();
-    expect(/COOKIE_DOUGH = 'cookie dough'/.test(fileContents.toString())).toBeTrue();
-    expect(/CHOCOLATE_CHIP = 'Chocolate Chip'/.test(fileContents.toString())).toBeTrue();
-    expect(/BUTTER_PECAN = 'butter_pecan'/.test(fileContents.toString())).toBeTrue();
-    expect(/COKE_LIGHT = 'COKE light'/.test(fileContents.toString())).toBeTrue();
+    expect(/VANILLA = 'vanilla'/.test(fileContents.toString())).toBe(true);
+    expect(/STRAW_BERRY = 'StrawBerry'/.test(fileContents.toString())).toBe(true);
+    expect(/COOKIE_DOUGH = 'cookie dough'/.test(fileContents.toString())).toBe(true);
+    expect(/CHOCOLATE_CHIP = 'Chocolate Chip'/.test(fileContents.toString())).toBe(true);
+    expect(/BUTTER_PECAN = 'butter_pecan'/.test(fileContents.toString())).toBe(true);
+    expect(/COKE_LIGHT = 'COKE light'/.test(fileContents.toString())).toBe(true);
   });
 
   it('enum style "pascal"', () => {
@@ -59,12 +59,12 @@ describe('Test enum generation', () => {
     } as Options);
     genPascal.generate();
     const fileContents = fs.readFileSync(fs.realpathSync(`${genPascal.outDir}/models/flavor-enum.ts`));
-    expect(/Vanilla = 'vanilla'/.test(fileContents.toString())).toBeTrue();
-    expect(/StrawBerry = 'StrawBerry'/.test(fileContents.toString())).toBeTrue();
-    expect(/CookieDough = 'cookie dough'/.test(fileContents.toString())).toBeTrue();
-    expect(/ChocolateChip = 'Chocolate Chip'/.test(fileContents.toString())).toBeTrue();
-    expect(/ButterPecan = 'butter_pecan'/.test(fileContents.toString())).toBeTrue();
-    expect(/CokeLight = 'COKE light'/.test(fileContents.toString())).toBeTrue();
+    expect(/Vanilla = 'vanilla'/.test(fileContents.toString())).toBe(true);
+    expect(/StrawBerry = 'StrawBerry'/.test(fileContents.toString())).toBe(true);
+    expect(/CookieDough = 'cookie dough'/.test(fileContents.toString())).toBe(true);
+    expect(/ChocolateChip = 'Chocolate Chip'/.test(fileContents.toString())).toBe(true);
+    expect(/ButterPecan = 'butter_pecan'/.test(fileContents.toString())).toBe(true);
+    expect(/CokeLight = 'COKE light'/.test(fileContents.toString())).toBe(true);
   });
 
   it('enum style "ignorecase"', () => {
@@ -75,12 +75,12 @@ describe('Test enum generation', () => {
     } as Options);
     genIgnorecase.generate();
     const fileContents = fs.readFileSync(fs.realpathSync(`${genIgnorecase.outDir}/models/flavor-enum.ts`));
-    expect(/vanilla = 'vanilla'/.test(fileContents.toString())).toBeTrue();
-    expect(/StrawBerry = 'StrawBerry'/.test(fileContents.toString())).toBeTrue();
-    expect(/cookie_dough = 'cookie dough'/.test(fileContents.toString())).toBeTrue();
-    expect(/Chocolate_Chip = 'Chocolate Chip'/.test(fileContents.toString())).toBeTrue();
-    expect(/butter_pecan = 'butter_pecan'/.test(fileContents.toString())).toBeTrue();
-    expect(/COKE_light = 'COKE light'/.test(fileContents.toString())).toBeTrue();
+    expect(/vanilla = 'vanilla'/.test(fileContents.toString())).toBe(true);
+    expect(/StrawBerry = 'StrawBerry'/.test(fileContents.toString())).toBe(true);
+    expect(/cookie_dough = 'cookie dough'/.test(fileContents.toString())).toBe(true);
+    expect(/Chocolate_Chip = 'Chocolate Chip'/.test(fileContents.toString())).toBe(true);
+    expect(/butter_pecan = 'butter_pecan'/.test(fileContents.toString())).toBe(true);
+    expect(/COKE_light = 'COKE light'/.test(fileContents.toString())).toBe(true);
   });
 
 });

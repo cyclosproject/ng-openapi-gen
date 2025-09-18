@@ -13,17 +13,17 @@ describe('Generation tests with index and no ApiModule', () => {
     gen.generate();
   });
 
-  it('index file', done => {
+  it('index file', () => {
     const ref = gen.models.get('InlineObject');
     const ts = gen.templates.apply('index', ref);
     const parser = new TypescriptParser();
     parser.parseSource(ts).then(ast => {
       expect(ast.exports.length).withContext('Has the correct number of exports').toBe(4);
-      expect(ast.exports.some((ex: NamedExport) => ex.from === './api-configuration')).withContext('Has an ApiConfiguration export').toBeDefined();
-      expect(ast.exports.some((ex: NamedExport) => ex.from === './base-service')).withContext('Has a BaseService export').toBeDefined();
-      expect(ast.exports.some((ex: NamedExport) => ex.from === './request-builder')).withContext('Has a RequestBuilder export').toBeDefined();
-      expect(ast.exports.some((ex: NamedExport) => ex.from === './strict-http-response')).withContext('Has a StrictHttpResponse export').toBeDefined();
-      done();
+      expect(ast.exports.some((ex: NamedExport) => ex.from === './api-configuration')).toBeDefined();
+      expect(ast.exports.some((ex: NamedExport) => ex.from === './base-service')).toBeDefined();
+      expect(ast.exports.some((ex: NamedExport) => ex.from === './request-builder')).toBeDefined();
+      expect(ast.exports.some((ex: NamedExport) => ex.from === './strict-http-response')).toBeDefined();
+
     });
   });
 

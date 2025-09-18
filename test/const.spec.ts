@@ -16,7 +16,7 @@ describe('Test const generation', () => {
     } as Options);
     genDefault.generate();
     const fileContents = fs.readFileSync(fs.realpathSync(`${genDefault.outDir}/models/flavor-const.ts`));
-    expect(/flavor: 'IonlyWantChocolate'/.test(fileContents.toString())).toBeTrue();
+    expect(/flavor: 'IonlyWantChocolate'/.test(fileContents.toString())).toBe(true);
   });
 
 });

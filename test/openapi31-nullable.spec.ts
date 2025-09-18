@@ -17,7 +17,7 @@ describe('OpenAPI 3.1 Nullable Types Tests', () => {
     gen.generate();
   });
 
-  it('should generate NullableArrayResponse model with union types', done => {
+  it('should generate NullableArrayResponse model with union types', () => {
     const model = gen.models.get('NullableArrayResponse');
     expect(model).toBeDefined();
     if (model) {
@@ -25,7 +25,7 @@ describe('OpenAPI 3.1 Nullable Types Tests', () => {
       const parser = new TypescriptParser();
       parser.parseSource(ts).then(ast => {
         expect(ast.declarations.length).toBe(1);
-        expect(ast.declarations[0]).toEqual(jasmine.any(InterfaceDeclaration));
+        expect(ast.declarations[0]).toEqual(expect.any(InterfaceDeclaration));
         const decl = ast.declarations[0] as InterfaceDeclaration;
         expect(decl.name).toBe('NullableArrayResponse');
 
@@ -39,12 +39,12 @@ describe('OpenAPI 3.1 Nullable Types Tests', () => {
         expect(nullableStringProp).toBeDefined();
         expect(nullableStringProp?.type).toContain('string');
 
-        done();
+
       });
     }
   });
 
-  it('should generate MixedTypesInput model with union and const types', done => {
+  it('should generate MixedTypesInput model with union and const types', () => {
     const model = gen.models.get('MixedTypesInput');
     expect(model).toBeDefined();
     if (model) {
@@ -68,12 +68,12 @@ describe('OpenAPI 3.1 Nullable Types Tests', () => {
         expect(enumWithNullProp?.type).toContain('option1');
         expect(enumWithNullProp?.type).toContain('option2');
 
-        done();
+
       });
     }
   });
 
-  it('should generate JsonSchemaTypes model with complex union types', done => {
+  it('should generate JsonSchemaTypes model with complex union types', () => {
     const model = gen.models.get('JsonSchemaTypes');
     expect(model).toBeDefined();
     if (model) {
@@ -93,12 +93,12 @@ describe('OpenAPI 3.1 Nullable Types Tests', () => {
         expect(constFieldProp).toBeDefined();
         expect(constFieldProp?.type).toContain('constant_value');
 
-        done();
+
       });
     }
   });
 
-  it('should generate API service with nullable operations', done => {
+  it('should generate API service with nullable operations', () => {
     const service = gen.services.get('Api');
     expect(service).toBeDefined();
     if (service) {
@@ -106,7 +106,7 @@ describe('OpenAPI 3.1 Nullable Types Tests', () => {
       const parser = new TypescriptParser();
       parser.parseSource(ts).then(ast => {
         expect(ast.declarations.length).toBe(1);
-        expect(ast.declarations[0]).toEqual(jasmine.any(ClassDeclaration));
+        expect(ast.declarations[0]).toEqual(expect.any(ClassDeclaration));
         const cls = ast.declarations[0] as ClassDeclaration;
 
         // Should have getNullableArray method
@@ -117,7 +117,7 @@ describe('OpenAPI 3.1 Nullable Types Tests', () => {
         const postMixedTypesMethod = cls.methods.find(m => m.name.includes('postMixedTypes'));
         expect(postMixedTypesMethod).toBeDefined();
 
-        done();
+
       });
     }
   });

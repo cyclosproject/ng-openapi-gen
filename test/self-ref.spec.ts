@@ -14,37 +14,37 @@ describe('Test self referencing', () => {
   describe('Generation tests using self-ref.json', () => {
     const gen = new NgOpenApiGen(selfRef as any, options);
     gen.generate();
-    it('Baz model', done => {
+    it('Baz model', () => {
       const baz = gen.models.get('Foo.Bar.Baz');
       const ts = gen.templates.apply('model', baz);
 
       const parser = new TypescriptParser();
       parser.parseSource(ts).then(ast => {
         expect(ast.declarations.length).toBe(1);
-        expect(ast.declarations[0]).toEqual(jasmine.any(InterfaceDeclaration));
+        expect(ast.declarations[0]).toEqual(expect.any(InterfaceDeclaration));
         const decl = ast.declarations[0] as InterfaceDeclaration;
         expect(decl.name).toBe('Baz');
         expect(decl.properties.length).toBe(3);
 
         const ref = decl.properties.find(p => p.name === 'refProperty');
-        expect(ref).withContext('refProperty property').toBeDefined();
+        expect(ref).toBeDefined();
         if (ref) {
           expect(ref.type).toBe('Baz');
         }
 
         const array = decl.properties.find(p => p.name === 'arrayProperty');
-        expect(array).withContext('arrayProperty property').toBeDefined();
+        expect(array).toBeDefined();
         if (array) {
           expect(array.type).toBe('Array<Baz>');
         }
 
         const object = decl.properties.find(p => p.name === 'objectProperty');
-        expect(object).withContext('objectProperty property').toBeDefined();
+        expect(object).toBeDefined();
         if (object) {
           expect(object.type).toBe('{\n\'nestedArray\': Array<Baz>;\n\'nestedRef\': Baz;\n}');
         }
 
-        done();
+
       });
     });
 
@@ -53,14 +53,14 @@ describe('Test self referencing', () => {
   describe('Generation tests using self-ref-allof.json', () => {
     const gen = new NgOpenApiGen(selfRefAllof as any, optionsAllof);
     gen.generate();
-    it('Baz model', done => {
+    it('Baz model', () => {
       const baz = gen.models.get('Foo.Bar.Baz');
       const ts = gen.templates.apply('model', baz);
 
       const parser = new TypescriptParser();
       parser.parseSource(ts).then(ast => {
         expect(ast.declarations.length).toBe(1);
-        expect(ast.declarations[0]).toEqual(jasmine.any(TypeAliasDeclaration));
+        expect(ast.declarations[0]).toEqual(expect.any(TypeAliasDeclaration));
         const decl = ast.declarations[0] as TypeAliasDeclaration;
         expect(decl.name).toBe('Baz');
 
@@ -71,7 +71,7 @@ describe('Test self referencing', () => {
         expect(text).toContain('\'nestedArray\': Array<Baz>;');
         expect(text).toContain('\'nestedRef\': Baz;');
 
-        done();
+
       });
     });
   });

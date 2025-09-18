@@ -15,8 +15,8 @@ describe('Generation tests using system temporary directory', () => {
 
     const tempDirectory = os.tmpdir();
 
-    expect(gen.tempDir.startsWith(tempDirectory)).toBeTrue();
-    expect(gen.tempDir.endsWith('useTempDir$')).toBeTrue();
+    expect(gen.tempDir.startsWith(tempDirectory)).toBe(true);
+    expect(gen.tempDir.endsWith('useTempDir$')).toBe(true);
 
   });
 
@@ -29,7 +29,7 @@ describe('Generation tests using system temporary directory', () => {
     gen.generate();
 
     const tempDirectory = os.tmpdir();
-    expect(gen.tempDir.startsWith(tempDirectory)).toBeFalse();
+    expect(gen.tempDir.startsWith(tempDirectory)).toBe(false);
 
   });
 

@@ -19,11 +19,12 @@
   },
   "main": "lib/ng-openapi-gen.js",
   "scripts": {
-    "test": "TS_NODE_PROJECT=tsconfig.json node --require ts-node/register ./node_modules/.bin/jasmine --config=jasmine.json",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:ui": "vitest --ui",
     "lint": "eslint 'lib/**' 'test/*.ts'",
     "compile": "tsc --project tsconfig.json && ncp \"LICENSE\" dist && ncp \"README.md\" \"dist/README.md\" && ncp \"templates\" \"dist/templates\" && ncp \"node_modules\" \"dist/node_modules\" && rimraf \"dist/test\" && replace-in-file \"\\\"private\\\": true\" \"\\\"private\\\": false\" dist/package.json",
-    "build": "npm run lint && npm run compile && npm test",
-    "test:watch": "nodemon --watch './**/*' --exec 'npm run test'"
+    "build": "npm run lint && npm run compile && npm test"
   },
   "dependencies": {
     "@apidevtools/json-schema-ref-parser": "^14.2.1",
@@ -43,7 +44,6 @@
     "openapi-types": "^12.1.3",
     "@types/argparse": "^2.0.17",
     "@types/fs-extra": "^11.0.4",
-    "@types/jasmine": "^5.1.9",
     "@types/jsesc": "^3.0.3",
     "@types/json-schema": "^7.0.15",
     "@types/lodash": "^4.17.20",
@@ -52,13 +52,11 @@
     "@typescript-eslint/parser": "^8.44.0",
     "eslint": "^9.35.0",
     "eslint-plugin-jsdoc": "^58.1.1",
-    "jasmine": "^5.10.0",
-    "jasmine-spec-reporter": "^7.0.0",
+    "vitest": "^2.0.5",
+    "@vitest/ui": "^2.0.5",
     "ncp": "^2.0.0",
-    "nodemon": "^3.1.10",
     "replace-in-file": "^8.3.0",
     "rimraf": "^6.0.1",
-    "ts-node": "^10.9.2",
     "typescript-parser": "^2.6.1"
   }
 }

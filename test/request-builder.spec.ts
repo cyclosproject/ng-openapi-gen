@@ -54,12 +54,12 @@ describe('Request builder', () => {
     if (params == null) {
       fail();
     } else {
-      expect(params.has('p1')).toBeFalse(); // p1 uses exploded properties
+      expect(params.has('p1')).toBe(false); // p1 uses exploded properties
       expect(params.getAll('k1')).toEqual(['a1']);
       expect(params.getAll('k2')).toEqual(['b1']);
       expect(params.getAll('k3')).toEqual(['c1']);
       expect(params.getAll('p2')).toEqual(['k1,a2,k2,b2,k3,c2']);
-      expect(params.has('p3')).toBeFalse(); // p3 uses deep object
+      expect(params.has('p3')).toBe(false); // p3 uses deep object
       expect(params.getAll('p3[k1]')).toEqual(['a3']);
       expect(params.getAll('p3[k2]')).toEqual(['b3']);
       expect(params.getAll('p3[k3]')).toEqual(['c3']);

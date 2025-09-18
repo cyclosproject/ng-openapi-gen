@@ -17,7 +17,7 @@ describe('OpenAPI 3.1 JSON Schema Features Tests', () => {
     gen.generate();
   });
 
-  it('should handle prefixItems as tuple types', done => {
+  it('should handle prefixItems as tuple types', () => {
     const model = gen.models.get('AdvancedSchemaFeatures');
     expect(model).toBeDefined();
     if (model) {
@@ -25,7 +25,7 @@ describe('OpenAPI 3.1 JSON Schema Features Tests', () => {
       const parser = new TypescriptParser();
       parser.parseSource(ts).then(ast => {
         expect(ast.declarations.length).toBe(1);
-        expect(ast.declarations[0]).toEqual(jasmine.any(InterfaceDeclaration));
+        expect(ast.declarations[0]).toEqual(expect.any(InterfaceDeclaration));
         const decl = ast.declarations[0] as InterfaceDeclaration;
 
         // Check tupleArray property - should be tuple type [string, number, boolean]
@@ -34,12 +34,12 @@ describe('OpenAPI 3.1 JSON Schema Features Tests', () => {
         // OpenAPI 3.1 prefixItems now correctly generates tuple types
         expect(tupleArrayProp?.type).toContain('[string, number, boolean]');
 
-        done();
+
       });
     }
   });
 
-  it('should handle discriminator with mapping', done => {
+  it('should handle discriminator with mapping', () => {
     const model = gen.models.get('Dog');
     expect(model).toBeDefined();
     if (model) {
@@ -61,12 +61,12 @@ describe('OpenAPI 3.1 JSON Schema Features Tests', () => {
         expect(breedProp?.type).toContain('Husky');
         expect(breedProp?.type).toContain('Retriever');
 
-        done();
+
       });
     }
   });
 
-  it('should handle Cat model properly', done => {
+  it('should handle Cat model properly', () => {
     const model = gen.models.get('Cat');
     expect(model).toBeDefined();
     if (model) {
@@ -81,12 +81,12 @@ describe('OpenAPI 3.1 JSON Schema Features Tests', () => {
         expect(petTypeProp).toBeDefined();
         expect(petTypeProp?.type).toContain('cat');
 
-        done();
+
       });
     }
   });
 
-  it('should handle ResponseWithDiscriminator as union type', done => {
+  it('should handle ResponseWithDiscriminator as union type', () => {
     const model = gen.models.get('ResponseWithDiscriminator');
     expect(model).toBeDefined();
     if (model) {
@@ -100,12 +100,12 @@ describe('OpenAPI 3.1 JSON Schema Features Tests', () => {
         expect(ts).toContain('Dog');
         expect(ts).toContain('Cat');
 
-        done();
+
       });
     }
   });
 
-  it('should handle ArrayWithContains model', done => {
+  it('should handle ArrayWithContains model', () => {
     const model = gen.models.get('ArrayWithContains');
     expect(model).toBeDefined();
     if (model) {
@@ -121,12 +121,12 @@ describe('OpenAPI 3.1 JSON Schema Features Tests', () => {
         // TODO: contains is advanced feature, may fall back to basic array
         expect(mixedArrayProp?.type).toContain('Array');
 
-        done();
+
       });
     }
   });
 
-  it('should generate service with testSchemaFeatures method', done => {
+  it('should generate service with testSchemaFeatures method', () => {
     const service = gen.services.get('Api');
     expect(service).toBeDefined();
     if (service) {
@@ -134,14 +134,14 @@ describe('OpenAPI 3.1 JSON Schema Features Tests', () => {
       const parser = new TypescriptParser();
       parser.parseSource(ts).then(ast => {
         expect(ast.declarations.length).toBe(1);
-        expect(ast.declarations[0]).toEqual(jasmine.any(ClassDeclaration));
+        expect(ast.declarations[0]).toEqual(expect.any(ClassDeclaration));
         const cls = ast.declarations[0] as ClassDeclaration;
 
         // Should have testSchemaFeatures method
         const testSchemaFeaturesMethod = cls.methods.find(m => m.name.includes('testSchemaFeatures'));
         expect(testSchemaFeaturesMethod).toBeDefined();
 
-        done();
+
       });
     }
   });

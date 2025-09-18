@@ -17,7 +17,7 @@ describe('OpenAPI 3.1 Webhooks Tests', () => {
     gen.generate();
   });
 
-  it('should generate User model with discriminator', done => {
+  it('should generate User model with discriminator', () => {
     const model = gen.models.get('User');
     expect(model).toBeDefined();
     if (model) {
@@ -25,7 +25,7 @@ describe('OpenAPI 3.1 Webhooks Tests', () => {
       const parser = new TypescriptParser();
       parser.parseSource(ts).then(ast => {
         expect(ast.declarations.length).toBe(1);
-        expect(ast.declarations[0]).toEqual(jasmine.any(InterfaceDeclaration));
+        expect(ast.declarations[0]).toEqual(expect.any(InterfaceDeclaration));
         const decl = ast.declarations[0] as InterfaceDeclaration;
         expect(decl.name).toBe('User');
 
@@ -45,12 +45,12 @@ describe('OpenAPI 3.1 Webhooks Tests', () => {
         expect(userTypeProp?.type).toContain('regular');
         expect(userTypeProp?.type).toContain('admin');
 
-        done();
+
       });
     }
   });
 
-  it('should generate WebhookPayload model with const and enum', done => {
+  it('should generate WebhookPayload model with const and enum', () => {
     const model = gen.models.get('WebhookPayload');
     expect(model).toBeDefined();
     if (model) {
@@ -58,7 +58,7 @@ describe('OpenAPI 3.1 Webhooks Tests', () => {
       const parser = new TypescriptParser();
       parser.parseSource(ts).then(ast => {
         expect(ast.declarations.length).toBe(1);
-        expect(ast.declarations[0]).toEqual(jasmine.any(InterfaceDeclaration));
+        expect(ast.declarations[0]).toEqual(expect.any(InterfaceDeclaration));
         const decl = ast.declarations[0] as InterfaceDeclaration;
         expect(decl.name).toBe('WebhookPayload');
 
@@ -79,12 +79,12 @@ describe('OpenAPI 3.1 Webhooks Tests', () => {
         expect(dataProp).toBeDefined();
         expect(dataProp?.type).toContain('User');
 
-        done();
+
       });
     }
   });
 
-  it('should generate API service with webhook operations', done => {
+  it('should generate API service with webhook operations', () => {
     const service = gen.services.get('Api');
     expect(service).toBeDefined();
     if (service) {
@@ -92,7 +92,7 @@ describe('OpenAPI 3.1 Webhooks Tests', () => {
       const parser = new TypescriptParser();
       parser.parseSource(ts).then(ast => {
         expect(ast.declarations.length).toBe(1);
-        expect(ast.declarations[0]).toEqual(jasmine.any(ClassDeclaration));
+        expect(ast.declarations[0]).toEqual(expect.any(ClassDeclaration));
         const cls = ast.declarations[0] as ClassDeclaration;
 
         // Should have createUser method
@@ -103,7 +103,7 @@ describe('OpenAPI 3.1 Webhooks Tests', () => {
         const getWebhookPayloadMethod = cls.methods.find(m => m.name.includes('getWebhookPayload'));
         expect(getWebhookPayloadMethod).toBeDefined();
 
-        done();
+
       });
     }
   });
