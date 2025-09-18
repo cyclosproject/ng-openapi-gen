@@ -5,10 +5,46 @@
       "type": "node",
       "request": "launch",
       "name": "Run tests",
-      "program": "${workspaceFolder}/node_modules/jasmine-ts/lib/index",
+      "program": "${workspaceFolder}/node_modules/.bin/vitest",
       "args": [
-        "--project=${workspaceFolder}/tsconfig.json",
-        "--config=${workspaceFolder}/jasmine.json"
+        "run"
+      ],
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}",
+      "stopOnEntry": false,
+      "skipFiles": [
+        "<node_internals>/**",
+        "node_modules/**"
+      ]
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Run tests (watch)",
+      "program": "${workspaceFolder}/node_modules/.bin/vitest",
+      "args": [],
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}",
+      "stopOnEntry": false,
+      "skipFiles": [
+        "<node_internals>/**",
+        "node_modules/**"
+      ]
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Run tests (UI)",
+      "program": "${workspaceFolder}/node_modules/.bin/vitest",
+      "args": [
+        "--ui"
+      ],
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}",
+      "stopOnEntry": false,
+      "skipFiles": [
+        "<node_internals>/**",
+        "node_modules/**"
       ]
     },
     {
