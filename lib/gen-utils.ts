@@ -279,8 +279,8 @@ function rawTsType(schema: SchemaObject, options: Options, openApi: OpenAPIObjec
     const required = schema.required;
 
     for (const baseSchema of allOf) {
-      const discriminator = tryGetDiscriminator(baseSchema, schema, openApi);
-      if (discriminator) {
+      const discriminators = findAllDiscriminators(baseSchema, schema, openApi);
+      for (const discriminator of discriminators) {
         result += `'${discriminator.propName}': '${discriminator.value}';\n`;
       }
     }
@@ -436,6 +436,41 @@ export function syncDirs(srcDir: string, destDir: string, removeStale: boolean, 
       }
     }
   }
+}
+
+/**
+ * Recursively finds all discriminators from a base schema and its inheritance chain for a derived schema.
+ */
+function findAllDiscriminators(baseSchemaOrRef: SchemaObject | ReferenceObject, derivedSchema: SchemaObject, openApi: OpenAPIObject): Array<{propName: string, value: string}> {
+  const discriminators: Array<{propName: string, value: string}> = [];
+  const visited = new Set<string>();
+
+  function collectDiscriminators(currentSchemaOrRef: SchemaObject | ReferenceObject) {
+    const currentSchema = (isReferenceObject(currentSchemaOrRef) ? resolveRef(openApi, currentSchemaOrRef.$ref) : currentSchemaOrRef) as SchemaObject;
+
+    // Avoid infinite recursion
+    const schemaKey = isReferenceObject(currentSchemaOrRef) ? currentSchemaOrRef.$ref : JSON.stringify(currentSchema);
+    if (visited.has(schemaKey)) {
+      return;
+    }
+    visited.add(schemaKey);
+
+    // Check if current schema has a discriminator
+    const discriminator = tryGetDiscriminator(currentSchemaOrRef, derivedSchema, openApi);
+    if (discriminator) {
+      discriminators.push(discriminator);
+    }
+
+    // Recursively check allOf schemas
+    if (currentSchema.allOf) {
+      for (const allOfSchema of currentSchema.allOf) {
+        collectDiscriminators(allOfSchema);
+      }
+    }
+  }
+
+  collectDiscriminators(baseSchemaOrRef);
+  return discriminators;
 }
 
 /**
