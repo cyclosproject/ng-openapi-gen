@@ -1,0 +1,5 @@
+{
+  "input": "test/model-name-collision.json",
+  "output": "out/model-name-collision",
+  "ignoreUnusedModels": false
+}

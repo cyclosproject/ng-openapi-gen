@@ -352,7 +352,16 @@ export function tsType(schemaOrRef: SchemaOrRef | undefined, options: Options, o
     const resolved = resolveRef(openApi, schemaOrRef.$ref) as SchemaObject;
     const name = simpleName(schemaOrRef.$ref);
     // When referencing the same container, use its type name
-    return maybeAppendNull((container && container.name === name) ? container.typeName : qualifiedName(name, options), isNullable(resolved));
+    if (container && container.name === name) {
+      return maybeAppendNull(container.typeName, isNullable(resolved));
+    }
+    // Check if the container has an import alias for this reference
+    if (container && typeof (container as any).getImportTypeName === 'function') {
+      const aliasedTypeName = (container as any).getImportTypeName(name);
+      return maybeAppendNull(aliasedTypeName, isNullable(resolved));
+    }
+    // Fallback to qualified name
+    return maybeAppendNull(qualifiedName(name, options), isNullable(resolved));
   }
 
   // Resolve the actual type (maybe nullable)
