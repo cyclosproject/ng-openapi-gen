@@ -3,3 +3,7 @@
       map((r: {{@root.responseClass}}<{{{resultType}}}>): {{{resultType}}} => r.body)
     );
   }
+
+  {{{bodyMethodTsComments}}}{{methodName}}$Signal({{>operationParametersSignal}}): HttpResourceRef<{{{resultType}}} | undefined> {
+    return {{importName}}.Signal(this.http, this.rootUrl, params, httpResourceOptions, context)
+  }
