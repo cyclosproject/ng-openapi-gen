@@ -64,6 +64,18 @@
         }
       ]
     },
+    "functionIndex": {
+      "description": "Typescript file, without '.ts' extension that exports all functions. Set to false to skip. Defaults to `functions`.",
+      "default": "functions",
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "boolean"
+        }
+      ]
+    },
     "services": {
       "description": "When set to false, no services will be generated, only operation functions. Disabling services also disables the module and service index.",
       "default": true,
