@@ -1,17 +1,19 @@
-import { OpenAPIObject } from 'openapi3-ts';
+import { NamedExport, TypescriptParser } from 'typescript-parser';
 import { NgOpenApiGen } from '../lib/ng-openapi-gen';
+import { OpenAPIObject } from '../lib/openapi-typings';
 import options from './functionIndex.config.json';
 import templatesSpec from './functionIndex.json';
-import { NamedExport, TypescriptParser } from 'typescript-parser';
+
+const spec = templatesSpec as unknown as OpenAPIObject;
 
 describe('Generation tests with index and no ApiModule', () => {
-  const gen = new NgOpenApiGen(templatesSpec as OpenAPIObject, options);
+  const gen = new NgOpenApiGen(spec, options);
 
   beforeAll(() => {
     gen.generate();
   });
 
-  it('functionIndex file', done => {
+  it('functionIndex file', async () => {
     const operations = [...gen.operations.values()];
     const functions = operations.reduce((opAcc, operation) => [
       ...opAcc,
@@ -20,13 +22,12 @@ describe('Generation tests with index and no ApiModule', () => {
 
     const ts = gen.templates.apply('functionIndex', {functions});
     const parser = new TypescriptParser();
-    parser.parseSource(ts).then(ast => {
-      expect(ast.exports.length).withContext('Has the correct number of exports').toBe(1);
-      expect(ast.exports.some((ex: NamedExport) => ex.from === './fn/operations/get-foos')).withContext('Exports correct file').toBeTrue();
-      expect(ast.usages).withContext('Exports correct types').toContain('GetFoos$Params');
-      expect(ast.usages).withContext('Exports correct types').toContain('getFoos');
-      done();
-    });
+    const ast = await parser.parseSource(ts);
+
+    expect(ast.exports.length).toBe(1);
+    expect(ast.exports.some((ex: NamedExport) => ex.from === './fn/operations/get-foos')).toBe(true);
+    expect(ast.usages).toContain('GetFoos$Params');
+    expect(ast.usages).toContain('getFoos');
   });
 
 });
