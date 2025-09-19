@@ -47,25 +47,28 @@ describe('Test CBOR duplicate methods issue', () => {
 
     // Check the variant method name
     const variant = operation.variants[0];
-    expect(variant.methodName).toBe('searchPost$Cbor$Cbor');
+    expect(variant.methodName).toBe('searchPost');
 
     // Check that the generated service file contains the correct method
     const serviceFileContent = fs.readFileSync(fs.realpathSync(`${gen.outDir}/services/api.service.ts`), 'utf8');
 
     // Should contain exactly one searchPost method variant
-    const searchPostMethods = serviceFileContent.match(/^\s+searchPost\$.*?\(/gm);
+    const searchPostMethods = serviceFileContent.match(/^\s+searchPost[^(]*\(/gm);
     expect(searchPostMethods).toBeDefined();
     if (searchPostMethods) {
-      // Should have exactly 2 methods: searchPost$Cbor$Cbor and searchPost$Cbor$Cbor$Response
+      // Should have exactly 2 methods: searchPost and searchPost$Response
+      // Since there's only one content type variant (single CBOR), no content type suffix should be added
       expect(searchPostMethods.length).toBe(2);
-      expect(serviceFileContent).toContain('searchPost$Cbor$Cbor(');
-      expect(serviceFileContent).toContain('searchPost$Cbor$Cbor$Response(');
+      expect(serviceFileContent).toContain('searchPost(');
+      expect(serviceFileContent).toContain('searchPost$Response(');
+      // Should NOT contain methods with content type suffix since there's only one variant
+      expect(serviceFileContent).not.toContain('searchPost$Cbor$Cbor(');
     }
 
     // Should NOT contain duplicate method declarations with the same signature
-    const methodDeclarations = serviceFileContent.match(/^\s+searchPost\$Cbor\$Cbor\(/gm);
+    const methodDeclarations = serviceFileContent.match(/^\s+searchPost\(/gm);
     expect(methodDeclarations?.length).toBe(1);
-    const responseMethodDeclarations = serviceFileContent.match(/^\s+searchPost\$Cbor\$Cbor\$Response\(/gm);
+    const responseMethodDeclarations = serviceFileContent.match(/^\s+searchPost\$Response\(/gm);
     expect(responseMethodDeclarations?.length).toBe(1);
   });
 

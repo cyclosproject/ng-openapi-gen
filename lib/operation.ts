@@ -241,9 +241,13 @@ export class Operation {
     const requestVariants = this.contentsByMethodPart(this.requestBody);
     const responseVariants = this.contentsByMethodPart(this.successResponse);
 
+    // Calculate total number of variants - if there's only one combination, no suffixes needed
+    const totalVariants = Math.max(1, requestVariants.size) * Math.max(1, responseVariants.size);
+
     // Check if we have a potential ambiguity: both request and response have single content types
     // that would result in the same method suffix, causing duplicate method names
-    const hasAmbiguity = requestVariants.size === 1 && responseVariants.size === 1 &&
+    const hasAmbiguity = totalVariants > 1 &&
+      requestVariants.size === 1 && responseVariants.size === 1 &&
       [...requestVariants.keys()][0] === '' && [...responseVariants.keys()][0] === '' &&
       [...requestVariants.values()][0] !== null && [...responseVariants.values()][0] !== null;
 
