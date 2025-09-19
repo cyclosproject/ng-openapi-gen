@@ -1,5 +1,5 @@
 {
-  "$schema": "http://json-schema.org/schema",
+  "$schema": "https://json-schema.org/schema",
   "id": "https://github.com/cyclosproject/ng-openapi-gen/blob/master/ng-openapi-gen-schema.json",
   "title": "Options for ng-openapi-gen",
   "type": "object",
@@ -11,7 +11,7 @@
       "type": "string"
     },
     "input": {
-      "description": "The input file or URL to the OpenAPI 3 specification, JSON or YAML, local file or URL",
+      "description": "The input file or URL to the OpenAPI 3.0 / 3.1 specification, JSON or YAML, local file or URL",
       "type": "string"
     },
     "output": {
@@ -24,6 +24,22 @@
       "type": "number",
       "default": 20000
     },
+    "removeStaleFiles": {
+      "description": "Indicates whether or not to remove any files in the output folder that were not generated. Defaults to true.",
+      "type": "boolean",
+      "default": true
+    },
+    "useTempDir": {
+      "description": "When specified, will create temporary files in system temporary folder instead of output folder",
+      "default": false,
+      "type": "boolean"
+    },
+    "silent": {
+      "description": "When set to true, no verbose output will be displayed.",
+      "default": "false",
+      "type": "boolean"
+    },
+
     "defaultTag": {
       "description": "Tag name assumed for operations without tags. Defaults to 'Api'.",
       "type": "string"
@@ -42,13 +58,52 @@
         "type": "string"
       }
     },
-    "ignoreUnusedModels": {
-      "description": "Indicates whether or not to ignore model files that are not referenced by any operation. Defaults to true.",
+
+    "configuration": {
+      "description": "Name for the configuration class to generate. Defaults to 'ApiConfiguration'.",
+      "type": "string",
+      "default": "ApiConfiguration"
+    },
+    "apiService": {
+      "description": "Name for the service used to invoke functions. Defaults to 'ApiService'. Set to false to not generate it.",
+      "type": "string",
+      "default": "ApiService",
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "boolean"
+        }
+      ]
+    },
+    "excludeParameters": {
+      "description": "When specified, ignores on generated services any parameters whose names are in this list.",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "functionIndex": {
+      "description": "Typescript file, without '.ts' extension that exports all functions. Set to false to skip. Defaults to `functions`.",
+      "default": "functions",
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "boolean"
+        }
+      ]
+    },
+
+    "camelizeModelNames": {
+      "description": "When true (default) models names will be camelized, besides having the first letter capitalized. Setting to false will prevent camelizing.",
       "type": "boolean",
       "default": true
     },
-    "removeStaleFiles": {
-      "description": "Indicates whether or not to remove any files in the output folder that were not generated. Defaults to true.",
+    "ignoreUnusedModels": {
+      "description": "Indicates whether or not to ignore model files that are not referenced by any operation. Defaults to true.",
       "type": "boolean",
       "default": true
     },
@@ -64,25 +119,44 @@
         }
       ]
     },
-    "functionIndex": {
-      "description": "Typescript file, without '.ts' extension that exports all functions. Set to false to skip. Defaults to `functions`.",
-      "default": "functions",
-      "anyOf": [
-        {
-          "type": "string"
-        },
-        {
-          "type": "boolean"
-        }
+    "modelPrefix": {
+      "description": "Prefix for generated model classes. Defaults to empty.",
+      "type": "string",
+      "default": ""
+    },
+    "modelSuffix": {
+      "description": "Suffix for generated model classes. Defaults to empty.",
+      "type": "string",
+      "default": ""
+    },
+    "enumStyle": {
+      "description": "Determines how root enum models will be generated. Possible values are:\n\n- `alias`: just generate an union type with all possible values. Has zero impact in generated code bundle;\n- `upper` for an enum with UPPER_CASE names;\n- `pascal` for enum PascalCase names;\n- `ignorecase` for enum names that ignore character casing; Defaults to 'alias'.",
+      "default": "alias",
+      "enum": [
+        "alias",
+        "upper",
+        "pascal",
+        "ignorecase"
       ]
     },
-    "services": {
-      "description": "When set to false, no services will be generated, only operation functions. Disabling services also disables the module and service index.",
+    "enumArray": {
+      "description": "Should an array be exported for each enum model, in a file sibling to the enum definition? Is recommended for `alias` enumStyle, but can be useful for other styles as well. Defaults to true.",
       "default": true,
       "type": "boolean"
     },
+
+    "promises": {
+      "description": "When set to true, generated methods will return Promises instead of Observables. Defaults to true.",
+      "default": true,
+      "type": "boolean"
+    },
+    "services": {
+      "description": "When set to true, services will be generated. Services are injectable classes that work as a facade to functions, a bit prettier API at cost of increased bundle size. Defaults to false.",
+      "default": false,
+      "type": "boolean"
+    },
     "serviceIndex": {
-      "description": "Typescript file, without '.ts' extension that exports all services. Set to false to skip. Defaults to `services`.",
+      "description": "Typescript file, without '.ts' extension that exports all services. Set to false to skip. Defaults to `services`. Ignored when services are not generated.",
       "default": "services",
       "anyOf": [
         {
@@ -94,40 +168,21 @@
       ]
     },
     "servicePrefix": {
-      "description": "Prefix for generated service classes. Defaults to empty.",
+      "description": "Prefix for generated service classes. Defaults to empty. Ignored when services are not generated.",
       "type": "string",
       "default": ""
     },
     "serviceSuffix": {
-      "description": "Suffix for generated service classes. Defaults to `Service`.",
+      "description": "Suffix for generated service classes. Defaults to `Service`. Ignored when services are not generated.",
       "type": "string",
       "default": "Service"
-    },
-    "modelPrefix": {
-      "description": "Prefix for generated model classes. Defaults to empty.",
-      "type": "string",
-      "default": ""
-    },
-    "modelSuffix": {
-      "description": "Suffix for generated model classes. Defaults to empty.",
-      "type": "string",
-      "default": ""
-    },
-    "configuration": {
-      "description": "Name for the configuration class to generate. Defaults to 'ApiConfiguration'.",
-      "type": "string",
-      "default": "ApiConfiguration"
     },
     "baseService": {
       "description": "Name for the base service class to generate. Defaults to 'BaseService'.",
       "type": "string",
       "default": "BaseService"
     },
-    "apiService": {
-      "description": "Name for the service to call functions directly. By default is not generated.",
-      "type": "string",
-      "default": ""
-    },
+
     "requestBuilder": {
       "description": "Name for the request builder class to generate. Defaults to 'RequestBuilder'.",
       "type": "string",
@@ -139,8 +194,8 @@
       "default": "StrictHttpResponse"
     },
     "module": {
-      "description": "Class name of the module that provides all services. Set to false to skip. Defaults to `ApiModule`.",
-      "default": "ApiModule",
+      "description": "Class name of the NgModule that provides all services. By default, no module is generated, as Angular discourages them since standalone components were introduced.",
+      "default": false,
       "anyOf": [
         {
           "type": "string"
@@ -149,21 +204,6 @@
           "type": "boolean"
         }
       ]
-    },
-    "enumStyle": {
-      "description": "Determines how root enums will be generated. Possible values are:\n\n- `alias`: just generate a type alias with the possible values;\n- `upper` for an enum with UPPER_CASE names;\n- `pascal` for enum PascalCase names;\n- `ignorecase` for enum names that ignore character casing; Defaults to 'pascal'.",
-      "default": "pascal",
-      "enum": [
-        "alias",
-        "upper",
-        "pascal",
-        "ignorecase"
-      ]
-    },
-    "enumArray": {
-      "description": "Should an array be exported for each model, in a file sibling to the enum definition?",
-      "default": false,
-      "type": "boolean"
     },
     "endOfLineStyle": {
       "description": "Determines how to normalize line endings. Possible values are: `crlf`: normalize line endings to CRLF (Windows, DOS) => \\r\\n. `lf` normalize line endings to LF (Unix, OS X) => \\n. `cr` normalize line endings to CR (Mac OS) => \\r. `auto` normalize line endings for the current operating system. Defaults to 'auto'.",
@@ -178,13 +218,6 @@
     "templates": {
       "description": "Custom templates directory. Any `.handlebars` files here will be used instead of the corresponding default.",
       "type": "string"
-    },
-    "excludeParameters": {
-      "description": "When specified, ignores on generated services any parameters whose names are in this list.",
-      "type": "array",
-      "items": {
-        "type": "string"
-      }
     },
     "indexFile": {
       "description": "When set to true, a index.ts file will be generated that exports all generated files.",
@@ -219,21 +252,6 @@
           }
         }
       }
-    },
-    "useTempDir": {
-      "description": "When specified, will create temporary files in system temporary folder instead of output folder",
-      "default": false,
-      "type": "boolean"
-    },
-    "silent": {
-      "description": "When set to true, no verbose output will be displayed.",
-      "default": "false",
-      "type": "boolean"
-    },
-    "camelizeModelNames": {
-      "description": "When true (default) models names will be camelized, besides having the first letter capitalized. Setting to false will prevent camelizing.",
-      "default": "true",
-      "type": "boolean"
     },
     "keepFullResponseMediaType": {
       "description": "When true, the expected response type in the request method names are not abbreviated and all response variants are kept.\\nWhen array is given, `mediaType` is expected to be a RegExp string matching the response media type. The first match in the array\\nwill decide whether or how to shorten the media type. If no mediaType is given, it will always match.\\n'short':     application/x-spring-data-compact+json    ->    getEntities$Json\\n'tail':      application/x-spring-data-compact+json    ->    getEntities$XSpringDataCompactJson\\n'full':      application/x-spring-data-compact+json    ->    getEntities$ApplicationXSpringDataCompactJson",

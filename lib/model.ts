@@ -1,7 +1,7 @@
 import { upperCase } from 'lodash';
 import { EnumValue } from './enum-value';
 import { GenType } from './gen-type';
-import { fileName, tsComments, tsType, unqualifiedName, resolveRef } from './gen-utils';
+import { fileName, tsComments, tsType, unqualifiedName, resolveRef, qualifiedName } from './gen-utils';
 import { OpenAPIObject, SchemaObject, getSchemaType, isNullable, isReferenceObject } from './openapi-typings';
 import { Options } from './options';
 import { Property } from './property';
@@ -69,12 +69,25 @@ export class Model extends GenType {
       const sortedNames = [...propertiesByName.keys()];
       sortedNames.sort();
       this.properties = sortedNames.map(propName => propertiesByName.get(propName) as Property);
-    } else {
-      // Simple / array / enum / union / intersection
-      this.simpleType = tsType(schema, options, openApi, this);
     }
+
     this.collectImports(schema);
     this.updateImports();
+
+    // Resolve types after imports are finalized
+    if (this.isObject) {
+      // Resolve property types
+      for (const property of this.properties) {
+        property.resolveType();
+      }
+      // Finalize additional properties type
+      this.finalizeAdditionalPropertiesType();
+    }
+
+    if (this.isSimple) {
+      // Simple / array / enum / union / intersection - generate after imports are resolved
+      this.simpleType = tsType(schema, options, openApi, this);
+    }
   }
 
   protected initPathToRoot(): string {
@@ -91,37 +104,38 @@ export class Model extends GenType {
     return this.name === name;
   }
 
+  /**
+   * Returns the appropriate type name for a referenced model, considering import aliases
+   */
+  getImportTypeName(referencedModelName: string): string {
+    // Find if there's an import for this model
+    const imp = this.imports.find(i => i.name === referencedModelName);
+    if (imp) {
+      // Use the import's qualified name (which might be an alias)
+      return imp.qualifiedName;
+    }
+    // Fallback to the regular qualified name
+    return qualifiedName(referencedModelName, this.options);
+  }
+
   private collectObject(schema: SchemaObject, propertiesByName: Map<string, Property>) {
     if (schema.type === 'object' || !!schema.properties) {
       // An object definition
       const properties = schema.properties || {};
       const required = schema.required || [];
       const propNames = Object.keys(properties);
-      // When there are additional properties, we need an union of all types for it.
-      // See https://github.com/cyclosproject/ng-openapi-gen/issues/68
-      const propTypes = new Set<string>();
-      const appendType = (type: string) => {
-        if (type.startsWith('null | ')) {
-          propTypes.add('null');
-          propTypes.add(type.substring('null | '.length));
-        } else {
-          propTypes.add(type);
-        }
-      };
+
       for (const propName of propNames) {
         const prop = new Property(this, propName, properties[propName], required.includes(propName), this.options, this.openApi);
         propertiesByName.set(propName, prop);
-        appendType(prop.type);
-        if (!prop.required) {
-          propTypes.add('undefined');
-        }
       }
+
+      // Handle additional properties (defer type resolution if needed)
       if (schema.additionalProperties === true) {
         this.additionalPropertiesType = 'any';
       } else if (schema.additionalProperties) {
-        const propType = tsType(schema.additionalProperties, this.options, this.openApi);
-        appendType(propType);
-        this.additionalPropertiesType = [...propTypes].sort().join(' | ');
+        // Store for later resolution
+        this._additionalPropertiesSchema = schema.additionalProperties as SchemaObject;
       }
     }
     if (schema.allOf) {
@@ -134,6 +148,38 @@ export class Model extends GenType {
           this.collectObject(s, propertiesByName);
         }
       });
+    }
+  }
+
+  private _additionalPropertiesSchema?: SchemaObject;
+
+  /**
+   * Finalizes additional properties type after all property types are resolved
+   */
+  private finalizeAdditionalPropertiesType(): void {
+    if (this._additionalPropertiesSchema) {
+      // When there are additional properties, we need an union of all types for it.
+      // See https://github.com/cyclosproject/ng-openapi-gen/issues/68
+      const propTypes = new Set<string>();
+      const appendType = (type: string) => {
+        if (type.startsWith('null | ')) {
+          propTypes.add('null');
+          propTypes.add(type.substring('null | '.length));
+        } else {
+          propTypes.add(type);
+        }
+      };
+
+      for (const prop of this.properties) {
+        appendType(prop.type);
+        if (!prop.required) {
+          propTypes.add('undefined');
+        }
+      }
+
+      const propType = tsType(this._additionalPropertiesSchema, this.options, this.openApi, this);
+      appendType(propType);
+      this.additionalPropertiesType = [...propTypes].sort().join(' | ');
     }
   }
 }

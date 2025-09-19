@@ -1,22 +1,14 @@
 import { ClassDeclaration, InterfaceDeclaration, TypescriptParser } from 'typescript-parser';
 import { NgOpenApiGen } from '../lib/ng-openapi-gen';
-import { Options } from '../lib/options';
-import webhooksSpec from './openapi31-webhooks.json';
 import { OpenAPIObject } from '../lib/openapi-typings';
+import options from './openapi31-webhooks.config.json';
+import webhooksSpec from './openapi31-webhooks.json';
 const spec = webhooksSpec as OpenAPIObject;
 
-const root = __dirname;
+const gen = new NgOpenApiGen(spec, options);
+gen.generate();
 
 describe('OpenAPI 3.1 Webhooks Tests', () => {
-  let gen: NgOpenApiGen;
-
-  beforeEach(() => {
-    gen = new NgOpenApiGen(spec, {
-      output: root + '/../out/openapi31-webhooks',
-    } as Options);
-    gen.generate();
-  });
-
   it('should generate User model with discriminator', () => {
     const model = gen.models.get('User');
     expect(model).toBeDefined();
@@ -44,8 +36,6 @@ describe('OpenAPI 3.1 Webhooks Tests', () => {
         expect(userTypeProp).toBeDefined();
         expect(userTypeProp?.type).toContain('regular');
         expect(userTypeProp?.type).toContain('admin');
-
-
       });
     }
   });
@@ -78,8 +68,6 @@ describe('OpenAPI 3.1 Webhooks Tests', () => {
         const dataProp = decl.properties.find(p => p.name === 'data');
         expect(dataProp).toBeDefined();
         expect(dataProp?.type).toContain('User');
-
-
       });
     }
   });
@@ -102,8 +90,6 @@ describe('OpenAPI 3.1 Webhooks Tests', () => {
         // Should have getWebhookPayload method
         const getWebhookPayloadMethod = cls.methods.find(m => m.name.includes('getWebhookPayload'));
         expect(getWebhookPayloadMethod).toBeDefined();
-
-
       });
     }
   });

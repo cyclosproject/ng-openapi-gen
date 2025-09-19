@@ -19,5 +19,7 @@
     "files.insertFinalNewline": false,
   },
   "files.insertFinalNewline": true,
-  "prettier.requireConfig": true
+  "prettier.requireConfig": true,
+  "debug.javascript.breakOnConditionalError": false,
+  "debug.javascript.pauseForSourceMap": false
 }

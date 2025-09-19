@@ -1,22 +1,14 @@
 import { ClassDeclaration, InterfaceDeclaration, TypescriptParser } from 'typescript-parser';
 import { NgOpenApiGen } from '../lib/ng-openapi-gen';
-import { Options } from '../lib/options';
-import contentSpec from './openapi31-content.json';
 import { OpenAPIObject } from '../lib/openapi-typings';
+import options from './openapi31-content.config.json';
+import contentSpec from './openapi31-content.json';
 const spec = contentSpec as OpenAPIObject;
 
-const root = __dirname;
+const gen = new NgOpenApiGen(spec, options);
+gen.generate();
 
 describe('OpenAPI 3.1 Content Types and Formats Tests', () => {
-  let gen: NgOpenApiGen;
-
-  beforeEach(() => {
-    gen = new NgOpenApiGen(spec, {
-      output: root + '/../out/openapi31-content',
-    } as Options);
-    gen.generate();
-  });
-
   it('should handle binary format correctly', () => {
     const model = gen.models.get('FileUpload');
     expect(model).toBeDefined();

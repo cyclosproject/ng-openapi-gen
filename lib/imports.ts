@@ -44,7 +44,7 @@ export class Import implements Importable {
 export class Imports {
   private _imports = new Map<string, Import>();
 
-  constructor(private options: Options) {
+  constructor(private options: Options, private currentTypeName?: string) {
   }
 
   /**
@@ -54,12 +54,37 @@ export class Imports {
     let imp: Import;
     if (typeof param === 'string') {
       // A model
-      imp = new Import(param, unqualifiedName(param, this.options), qualifiedName(param, this.options), 'models/', modelFile(param, this.options), typeOnly);
+      const importTypeName = unqualifiedName(param, this.options);
+      let importQualifiedName = qualifiedName(param, this.options);
+
+      // Check for collision with current type name
+      if (this.currentTypeName && importTypeName === this.currentTypeName) {
+        // Add suffix to avoid collision
+        let suffix = 1;
+        let aliasedTypeName = `${importTypeName}_${suffix}`;
+        while (this.hasImportWithTypeName(aliasedTypeName)) {
+          suffix++;
+          aliasedTypeName = `${importTypeName}_${suffix}`;
+        }
+        // Keep the original typeName for import, use alias for qualifiedName
+        importQualifiedName = aliasedTypeName;
+      }
+
+      imp = new Import(param, importTypeName, importQualifiedName, 'models/', modelFile(param, this.options), typeOnly);
     } else {
       // An Importable
       imp = new Import(param.importName, param.importTypeName ?? param.importName, param.importQualifiedName ?? param.importName, `${param.importPath}`, param.importFile, typeOnly);
     }
     this._imports.set(imp.name, imp);
+  }
+
+  private hasImportWithTypeName(typeName: string): boolean {
+    for (const imp of this._imports.values()) {
+      if (imp.qualifiedName === typeName) {
+        return true;
+      }
+    }
+    return false;
   }
 
   toArray(): Import[] {

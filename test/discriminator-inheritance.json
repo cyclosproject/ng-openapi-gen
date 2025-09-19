@@ -1,0 +1,132 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Discriminator Inheritance Test",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/products": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/Product1"
+                    },
+                    {
+                      "$ref": "#/components/schemas/Product2"
+                    },
+                    {
+                      "$ref": "#/components/schemas/Product3"
+                    },
+                    {
+                      "$ref": "#/components/schemas/Product4"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Product": {
+        "type": "object",
+        "required": ["code"],
+        "properties": {
+          "code": {
+            "type": "string",
+            "example": "PRODUCT1"
+          }
+        },
+        "discriminator": {
+          "propertyName": "code",
+          "mapping": {
+            "PRODUCT1": "#/components/schemas/Product1",
+            "PRODUCT2": "#/components/schemas/Product2",
+            "PRODUCT3": "#/components/schemas/Product3",
+            "PRODUCT4": "#/components/schemas/Product4"
+          }
+        }
+      },
+      "Product1": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Product"
+          },
+          {
+            "properties": {
+              "name": {
+                "type": "string",
+                "example": "Product 1"
+              }
+            }
+          }
+        ]
+      },
+      "Product2": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Product"
+          },
+          {
+            "properties": {
+              "description": {
+                "type": "string",
+                "example": "Product 2 description"
+              }
+            }
+          }
+        ]
+      },
+      "Product3": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Product"
+          },
+          {
+            "properties": {
+              "number": {
+                "type": "string",
+                "example": "453091G265555000"
+              }
+            }
+          }
+        ]
+      },
+      "Product4": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Product3"
+          },
+          {
+            "properties": {
+              "value": {
+                "$ref": "#/components/schemas/OtherObject"
+              }
+            }
+          }
+        ]
+      },
+      "OtherObject": {
+        "type": "object",
+        "properties": {
+          "someProperty": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

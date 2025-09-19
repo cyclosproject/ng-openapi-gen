@@ -4,6 +4,7 @@
   "output": "out/templates",
   "defaultTag": "noTag",
   "templates": "test/templates",
+  "services": true,
   "excludeParameters": [
     "X-Exclude"
   ]

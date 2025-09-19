@@ -1,22 +1,14 @@
 import { ClassDeclaration, InterfaceDeclaration, TypescriptParser } from 'typescript-parser';
 import { NgOpenApiGen } from '../lib/ng-openapi-gen';
-import { Options } from '../lib/options';
 import { OpenAPIObject } from '../lib/openapi-typings';
+import options from './openapi31-nullable.config.json';
 import nullableSpec from './openapi31-nullable.json';
 const spec = nullableSpec as OpenAPIObject;
 
-const root = __dirname;
+const gen = new NgOpenApiGen(spec, options);
+gen.generate();
 
 describe('OpenAPI 3.1 Nullable Types Tests', () => {
-  let gen: NgOpenApiGen;
-
-  beforeEach(() => {
-    gen = new NgOpenApiGen(spec, {
-      output: root + '/../out/openapi31-nullable',
-    } as Options);
-    gen.generate();
-  });
-
   it('should generate NullableArrayResponse model with union types', () => {
     const model = gen.models.get('NullableArrayResponse');
     expect(model).toBeDefined();
@@ -38,8 +30,6 @@ describe('OpenAPI 3.1 Nullable Types Tests', () => {
         const nullableStringProp = decl.properties.find(p => p.name === 'nullableString');
         expect(nullableStringProp).toBeDefined();
         expect(nullableStringProp?.type).toContain('string');
-
-
       });
     }
   });
@@ -67,8 +57,6 @@ describe('OpenAPI 3.1 Nullable Types Tests', () => {
         expect(enumWithNullProp).toBeDefined();
         expect(enumWithNullProp?.type).toContain('option1');
         expect(enumWithNullProp?.type).toContain('option2');
-
-
       });
     }
   });
@@ -92,8 +80,6 @@ describe('OpenAPI 3.1 Nullable Types Tests', () => {
         const constFieldProp = decl.properties.find(p => p.name === 'constField');
         expect(constFieldProp).toBeDefined();
         expect(constFieldProp?.type).toContain('constant_value');
-
-
       });
     }
   });
@@ -116,8 +102,6 @@ describe('OpenAPI 3.1 Nullable Types Tests', () => {
         // Should have postMixedTypes method
         const postMixedTypesMethod = cls.methods.find(m => m.name.includes('postMixedTypes'));
         expect(postMixedTypesMethod).toBeDefined();
-
-
       });
     }
   });

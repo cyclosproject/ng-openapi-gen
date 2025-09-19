@@ -45,7 +45,7 @@ export abstract class GenType {
       this.fileName = this.namespace + '/' + this.fileName;
       this.qualifiedName = typeName(this.namespace, options) + this.typeName;
     }
-    this._imports = new Imports(options);
+    this._imports = new Imports(options, this.typeName);
   }
 
   protected addImport(param: string | Importable | null | undefined, typeOnly?: boolean) {

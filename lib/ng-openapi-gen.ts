@@ -95,8 +95,8 @@ export class NgOpenApiGen {
         }
       }
 
-      // Generate each service
-      const generateServices = this.options.services ?? true;
+      // Generate each service and function
+      const generateServices = !!this.options.services;
       const services = [...this.services.values()];
       for (const service of services) {
         if (generateServices) {

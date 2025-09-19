@@ -1,0 +1,79 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Model Name Collision Test",
+    "version": "1"
+  },
+  "paths": {},
+  "components": {
+    "schemas": {
+      "Clazz": {
+        "type": "object",
+        "properties": {
+          "parentProps": {
+            "type": "string"
+          }
+        }
+      },
+      "Foo.Bar.Baz.Clazz": {
+        "allOf": [
+          { "$ref": "#/components/schemas/Clazz" },
+          {
+            "type": "object",
+            "required": [
+              "arrayProperty"
+            ],
+            "properties": {
+              "refProperty": {
+                "$ref": "#/components/schemas/Foo.Bar.Baz.Clazz"
+              },
+              "arrayProperty": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Foo.Bar.Baz.Clazz"
+                }
+              },
+              "parentRefProperty": {
+                "$ref": "#/components/schemas/Clazz"
+              },
+              "parentArrayProperty": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Clazz"
+                }
+              },
+              "objectProperty": {
+                "type": "object",
+                "required": [
+                  "nestedArray",
+                  "nestedRef",
+                  "nestedParentRef"
+                ],
+                "properties": {
+                  "nestedArray": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/Foo.Bar.Baz.Clazz"
+                    }
+                  },
+                  "nestedRef": {
+                    "$ref": "#/components/schemas/Foo.Bar.Baz.Clazz"
+                  },
+                  "nestedParentRef": {
+                    "$ref": "#/components/schemas/Clazz"
+                  },
+                  "nestedParentArray": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/Clazz"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}
