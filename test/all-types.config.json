@@ -2,5 +2,6 @@
   "$schema": "../ng-openapi-gen-schema.json",
   "input": "all-types.json",
   "output": "out/all-types/",
-  "indexFile": true
+  "indexFile": true,
+  "enumStyle": "pascal"
 }

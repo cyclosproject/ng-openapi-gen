@@ -46,7 +46,7 @@ the settings that have changed:
 - `"services": false`: Previously, the default was `true`. For some time already, ng-openapi-gen has generated functions for each API
   operation, and services (one per API tag) are just wrappers around those functions. As services reference all functions, for larger APIs,
   the bundle size is impacted, because the code for handling all functions in the tag will be bundled, even when using a single one.
-- `"apiService": "ApiService"`. Previously empty, the `ApiService` was not generated, because the default was to use a service per tag. But
+- `"apiService": "Api"`. Previously empty, the `Api` service was not generated, because the default was to use a service per tag. But
   now we need it to invoke the generated API functions.
 - `"enumStyle": "alias"`. Previously, the default was `pascal`. With this change, by default we'll no longer generate TypeScript `enum`.
   Instead, a type is defined with an union of possible values. All other options end up generating a TypeScript `enum`, which emit a
@@ -121,13 +121,13 @@ Here is an example of a configuration file:
 ## Using functional API calls
 
 `ng-openapi-gen` generates a function with the implementation of each actual API call. By default since version 1.0, services per API tag
-are not generated. To use these functions, a generated @Injectable `ApiService` is provided. This name can be changed with the `apiService`
+are not generated. To use these functions, a generated @Injectable `Api` is provided. This name can be changed with the `apiService`
 configuration. Here is an example:
 
 ```typescript
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { ApiService } from './api/api.service';
+import { Api } from './api/api';
 import { getResults } from './api/fn/operations/get-results';
 import { Result } from './api/models';
 
@@ -140,10 +140,10 @@ import { Result } from './api/models';
 export class App implements OnInit {
   protected readonly results = signal<Result[] | null>(null);
 
-  private apiService = inject(ApiService);
+  private api = inject(Api);
 
   async ngOnInit() {
-    this.results.set(await this.apiService.invoke(getResults, { limit: 5 }));
+    this.results.set(await this.api.invoke(getResults, { limit: 5 }));
   }
 }
 ```

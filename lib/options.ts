@@ -65,7 +65,7 @@ export interface Options {
   /** Name for the base service class to generate. Defaults to 'BaseService'. */
   baseService?: string;
 
-  /** Name for the service to call functions directly. Defaults to 'ApiService'. */
+  /** Name for the service to call functions directly. Defaults to 'Api'. */
   apiService?: string | boolean;
 
   /** Name for the request builder class to generate. Defaults to 'RequestBuilder'. */
@@ -85,7 +85,7 @@ export interface Options {
    * - `pascal` for enum PascalCase names;
    * - `ignorecase` for enum names that ignore character casing;
    *
-   * Defaults to 'pascal'.
+   * Defaults to 'alias'.
    */
   enumStyle?: 'alias' | 'upper' | 'pascal' | 'ignorecase';
 

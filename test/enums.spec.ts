@@ -16,12 +16,7 @@ describe('Test enum generation', () => {
     } as Options);
     genDefault.generate();
     const fileContents = fs.readFileSync(fs.realpathSync(`${genDefault.outDir}/models/flavor-enum.ts`));
-    expect(/Vanilla = 'vanilla'/.test(fileContents.toString())).toBe(true);
-    expect(/StrawBerry = 'StrawBerry'/.test(fileContents.toString())).toBe(true);
-    expect(/CookieDough = 'cookie dough'/.test(fileContents.toString())).toBe(true);
-    expect(/ChocolateChip = 'Chocolate Chip'/.test(fileContents.toString())).toBe(true);
-    expect(/ButterPecan = 'butter_pecan'/.test(fileContents.toString())).toBe(true);
-    expect(/CokeLight = 'COKE light'/.test(fileContents.toString())).toBe(true);
+    expect(/export type FlavorEnum = 'vanilla' | 'StrawBerry' | 'cookie dough' | 'Chocolate Chip' | 'butter_pecan' | 'COKE light';/.test(fileContents.toString())).toBe(true);
   });
 
   it('enum style "alias"', () => {

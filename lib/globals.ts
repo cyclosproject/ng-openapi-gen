@@ -36,7 +36,7 @@ export class Globals {
     } else {
       this.apiServiceClass = options.apiService === true ? '' : options.apiService;
       if ((this.apiServiceClass ?? '') === '') {
-        this.apiServiceClass = 'ApiService';
+        this.apiServiceClass = 'Api';
       }
       if (typeof this.apiServiceClass === 'string') {
         // Angular's best practices demands xxx.service.ts, not xxx-service.ts

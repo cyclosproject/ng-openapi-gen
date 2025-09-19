@@ -65,9 +65,9 @@
       "default": "ApiConfiguration"
     },
     "apiService": {
-      "description": "Name for the service used to invoke functions. Defaults to 'ApiService'. Set to false to not generate it.",
+      "description": "Name for the service used to invoke functions. Defaults to 'Api'. Set to false to not generate it.",
       "type": "string",
-      "default": "ApiService",
+      "default": "Api",
       "anyOf": [
         {
           "type": "string"
@@ -140,7 +140,7 @@
       ]
     },
     "enumArray": {
-      "description": "Should an array be exported for each enum model, in a file sibling to the enum definition? Is recommended for `alias` enumStyle, but can be useful for other styles as well. Defaults to true.",
+      "description": "Should an array be exported for each enum model, in a file sibling to the enum definition? Defaults to `true` when `enumStyle` is `alias` (the default).",
       "default": true,
       "type": "boolean"
     },

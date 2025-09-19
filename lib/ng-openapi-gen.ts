@@ -44,6 +44,7 @@ export class NgOpenApiGen {
     public options: Options) {
 
     this.logger = new Logger(options.silent);
+    this.setDefaults();
 
     // Validate OpenAPI version
     this.validateOpenApiVersion();
@@ -399,6 +400,15 @@ export class NgOpenApiGen {
       return eol.crlf(text);
     default:
       return eol.auto(text);
+    }
+  }
+
+  private setDefaults(): void {
+    if (!this.options.enumStyle) {
+      this.options.enumStyle = 'alias';
+    }
+    if (this.options.enumStyle === 'alias' && this.options.enumArray == null) {
+      this.options.enumArray = true;
     }
   }
 }
