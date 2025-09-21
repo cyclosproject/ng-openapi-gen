@@ -49,7 +49,7 @@ export class {{apiServiceClass}} {
     {{#if promises}}
     return (await resp).body;
     {{else}}
-    return obs.pipe(map(r => r.body));
+    return resp.pipe(map(r => r.body));
     {{/if}}
   }
 
