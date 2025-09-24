@@ -404,6 +404,11 @@ export class NgOpenApiGen {
   }
 
   private setDefaults(): void {
+    if (this.options.module === undefined) {
+      this.options.module = false;
+    } else if (this.options.module === true) {
+      this.options.module = 'ApiModule';
+    }
     if (!this.options.enumStyle) {
       this.options.enumStyle = 'alias';
     }

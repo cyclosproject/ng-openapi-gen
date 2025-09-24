@@ -535,12 +535,11 @@ describe('Generation tests using all-types.json', () => {
     const parser = new TypescriptParser();
     parser.parseSource(ts).then(ast => {
       expect(ast.exports.length).toBe(5);
-      expect(ast.exports.some((ex: NamedExport) => ex.from === './api-configuration')).toBeDefined();
-      expect(ast.exports.some((ex: NamedExport) => ex.from === './base-service')).toBeDefined();
-      expect(ast.exports.some((ex: NamedExport) => ex.from === './request-builder')).toBeDefined();
-      expect(ast.exports.some((ex: NamedExport) => ex.from === './strict-http-response')).toBeDefined();
-      expect(ast.exports.some((ex: NamedExport) => ex.from === './api.module')).toBeDefined();
-
+      expect(ast.exports.find((ex: NamedExport) => ex.from === './api-configuration')).toBeDefined();
+      expect(ast.exports.find((ex: NamedExport) => ex.from === './base-service')).toBeDefined();
+      expect(ast.exports.find((ex: NamedExport) => ex.from === './request-builder')).toBeDefined();
+      expect(ast.exports.find((ex: NamedExport) => ex.from === './strict-http-response')).toBeDefined();
+      expect(ast.exports.find((ex: NamedExport) => ex.from === './all-types.module')).toBeDefined();
     });
   });
 });
