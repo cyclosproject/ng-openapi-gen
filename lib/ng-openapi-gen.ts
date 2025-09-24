@@ -424,18 +424,69 @@ export class NgOpenApiGen {
 export async function runNgOpenApiGen() {
   const options = parseOptions();
   const refParser = new $RefParser();
-  const input = options.input;
+  let input = options.input;
+
+  const timeout = options.fetchTimeout == null ? 20000 : options.fetchTimeout;
+
   try {
-    const openApi = await refParser.bundle(input, {
-      dereference: {
-        circular: false
-      },
-      resolve: {
-        http: {
-          timeout: options.fetchTimeout == null ? 20000 : options.fetchTimeout
+    // If input is a URL, try downloading it locally first to avoid URL-based $ref resolution issues
+    if (input.startsWith('http://') || input.startsWith('https://')) {
+      try {
+        const response = await fetch(input);
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
         }
+        const specContent = await response.text();
+
+        // Write to a temporary file
+        const tempFile = path.join(os.tmpdir(), `ng-openapi-gen-${Date.now()}.json`);
+        await fs.writeFile(tempFile, specContent);
+        input = tempFile;
+
+        // Clean up temp file after processing
+        process.on('exit', () => {
+          try {
+            fs.unlinkSync(tempFile);
+          } catch {
+            // Ignore cleanup errors
+          }
+        });
+      } catch (fetchError) {
+        console.warn(`Failed to download spec from URL, will try direct parsing: ${fetchError}`);
+        // Fall back to original input
+        input = options.input;
       }
-    }) as OpenAPIObject;
+    }
+
+    // First try to parse without dereferencing to see if there are any structural issues
+    let openApi: OpenAPIObject;
+    try {
+      openApi = await refParser.dereference(input, {
+        dereference: {
+          circular: false
+        },
+        resolve: {
+          http: { timeout }
+        }
+      }) as OpenAPIObject;
+    } catch (dereferenceError) {
+      // If dereference fails, try bundle instead
+      console.warn(`Dereference failed, trying bundle: ${dereferenceError}`);
+      try {
+        openApi = await refParser.bundle(input, {
+          dereference: {
+            circular: false
+          },
+          resolve: {
+            http: { timeout }
+          }
+        }) as OpenAPIObject;
+      } catch (bundleError) {
+        // If both fail, try parse without resolving references
+        console.warn(`Bundle also failed, trying parse: ${bundleError}`);
+        openApi = await refParser.parse(input) as OpenAPIObject;
+      }
+    }
 
     const {excludeTags = [], excludePaths = [], includeTags = []} = options;
     openApi.paths = filterPaths(openApi.paths ?? {}, excludeTags, excludePaths, includeTags);
