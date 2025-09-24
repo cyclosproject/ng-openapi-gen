@@ -24,6 +24,7 @@ export class Globals {
   serviceIndexFile?: string;
   rootUrl?: string;
   promises: boolean;
+  generateServices: boolean;
 
   constructor(options: Options) {
     this.configurationClass = options.configuration ?? 'ApiConfiguration';
@@ -62,6 +63,6 @@ export class Globals {
     if (options.functionIndex !== false && options.functionIndex !== '') {
       this.functionIndexFile = options.functionIndex === true || options.functionIndex === undefined ? 'functions' : options.functionIndex;
     }
+    this.generateServices = !!options.services;
   }
-
 }
