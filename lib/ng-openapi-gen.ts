@@ -458,35 +458,13 @@ export async function runNgOpenApiGen() {
       }
     }
 
-    // First try to parse without dereferencing to see if there are any structural issues
-    let openApi: OpenAPIObject;
-    try {
-      openApi = await refParser.dereference(input, {
-        dereference: {
-          circular: false
-        },
-        resolve: {
-          http: { timeout }
-        }
-      }) as OpenAPIObject;
-    } catch (dereferenceError) {
-      // If dereference fails, try bundle instead
-      console.warn(`Dereference failed, trying bundle: ${dereferenceError}`);
-      try {
-        openApi = await refParser.bundle(input, {
-          dereference: {
-            circular: false
-          },
-          resolve: {
-            http: { timeout }
-          }
-        }) as OpenAPIObject;
-      } catch (bundleError) {
-        // If both fail, try parse without resolving references
-        console.warn(`Bundle also failed, trying parse: ${bundleError}`);
-        openApi = await refParser.parse(input) as OpenAPIObject;
+    // Parse the OpenAPI specification without dereferencing to preserve $ref properties
+    // The generator expects $ref properties to remain intact for proper model generation
+    const openApi = await refParser.parse(input, {
+      resolve: {
+        http: { timeout }
       }
-    }
+    }) as OpenAPIObject;
 
     const {excludeTags = [], excludePaths = [], includeTags = []} = options;
     openApi.paths = filterPaths(openApi.paths ?? {}, excludeTags, excludePaths, includeTags);
