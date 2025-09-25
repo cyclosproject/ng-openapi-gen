@@ -7,8 +7,8 @@ import { Injectable } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 {{else}}
 import { Observable } from 'rxjs';
-{{/if}}
 import { map } from 'rxjs/operators';
+{{/if}}
 
 import { {{baseServiceClass}} } from '../{{baseServiceFile}}';
 import { {{configurationClass}} } from '../{{configurationFile}}';
