@@ -1,4 +1,6 @@
 {
+  "editor.formatOnSave": true,
+  "eslint.codeActionsOnSave.mode": "all",
   "editor.rulers": [140],
   "editor.insertSpaces": true,
   "editor.detectIndentation": false,

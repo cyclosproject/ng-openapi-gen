@@ -1,0 +1,57 @@
+{
+  "openapi": "3.0",
+  "info": {
+    "title": "Test using allOf to create an object type with required properties",
+    "version": "1.0"
+  },
+  "paths": {
+    "/foo": {
+      "get": {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Person"
+                }
+              },
+              "text/plain": {}
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "PartialPerson": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "nickname": {
+            "type": "string"
+          },
+          "age": {
+            "type": "integer"
+          }
+        }
+      },
+      "Person": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/PartialPerson"
+          },
+          {
+            "type": "object",
+            "required": [
+              "id",
+              "nickname"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}
