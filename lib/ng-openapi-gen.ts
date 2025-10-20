@@ -106,23 +106,25 @@ export class NgOpenApiGen {
       }
 
       // Generate each function
-      const functions = services.reduce((acc, service) => [
+      const allFunctions = services.reduce((acc, service) => [
         ...acc,
         ...service.operations.reduce((opAcc, operation) => [
           ...opAcc,
           ...operation.variants
         ], [])
       ], []);
+
+      // Remove duplicates
+      const functions = allFunctions.filter((fn, index, arr) =>
+        arr.findIndex(f => f.methodName === fn.methodName) === index
+      );
+
       for (const fn of functions) {
         this.write('fn', fn, fn.importFile, fn.importPath);
       }
 
       // Context object passed to general templates
-      const general = {
-        services: services,
-        models: models,
-        functions: functions
-      };
+      const general = { services, models, functions };
 
       // Generate the general files
       this.write('configuration', general, this.globals.configurationFile);
