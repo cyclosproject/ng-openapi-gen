@@ -30,6 +30,9 @@ export class Model extends GenType {
   properties: Property[];
   additionalPropertiesType: string;
 
+  // Names of required properties without attachment to propertiy definitions
+  orphanRequiredProperties: string[];
+
   constructor(public openApi: OpenAPIObject, name: string, public schema: SchemaObject, options: Options) {
     super(name, unqualifiedName, options);
 
@@ -73,6 +76,11 @@ export class Model extends GenType {
 
     this.collectImports(schema);
     this.updateImports();
+
+    // handle orphan required property names
+    if (hasAllOf) {
+      this.collectOrphanRequiredProperties(schema);
+    }
 
     // Resolve types after imports are finalized
     if (this.isObject) {
@@ -180,6 +188,20 @@ export class Model extends GenType {
       const propType = tsType(this._additionalPropertiesSchema, this.options, this.openApi, this);
       appendType(propType);
       this.additionalPropertiesType = [...propTypes].sort().join(' | ');
+    }
+  }
+
+  /**
+   * Collects property names from allOf where only array of required properties is specified
+   */
+  private collectOrphanRequiredProperties(schema: SchemaObject): void {
+    for (const subschema of schema.allOf || []) {
+      if (isReferenceObject(subschema)) {
+        continue;
+      }
+      if (subschema.required && !subschema.properties) {
+        this.orphanRequiredProperties = (this.orphanRequiredProperties || []).concat(subschema.required);
+      }
     }
   }
 }
