@@ -1,6 +1,6 @@
 {{#if orphanRequiredProperties}}
 type {{typeName}}$ = {{{simpleType}}};
-type RequiredProperties = {{#each orphanRequiredProperties}}"{{this}}"{{#unless @last}} | {{/unless}}{{/each}};
+type RequiredProperties = {{#each orphanRequiredProperties}}'{{this}}'{{#unless @last}} | {{/unless}}{{/each}};
 export type {{typeName}} = {{typeName}}$ & Required<Pick<{{typeName}}$, RequiredProperties>>;
 {{else}}
 export type {{typeName}} = {{{simpleType}}};

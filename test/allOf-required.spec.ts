@@ -44,7 +44,7 @@ describe('Generation tests using allOf-required.json', () => {
     const ts = gen.templates.apply('model', model);
     // Check the generated TypeScript content structure
     expect(ts).toContain('type Person$ = PartialPerson & {');
-    expect(ts).toContain('type RequiredProperties = "id" | "nickname"');
+    expect(ts).toContain('type RequiredProperties = \'id\' | \'nickname\'');
     expect(ts).toContain('export type Person = Person$ & Required<Pick<Person$, RequiredProperties>>');
   });
 });
