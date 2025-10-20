@@ -534,7 +534,7 @@ describe('Generation tests using all-types.json', () => {
     const ts = gen.templates.apply('index', ref);
     const parser = new TypescriptParser();
     parser.parseSource(ts).then(ast => {
-      expect(ast.exports.length).toBe(5);
+      expect(ast.exports.length).toBe(6);
       expect(ast.exports.find((ex: NamedExport) => ex.from === './api-configuration')).toBeDefined();
       expect(ast.exports.find((ex: NamedExport) => ex.from === './base-service')).toBeDefined();
       expect(ast.exports.find((ex: NamedExport) => ex.from === './request-builder')).toBeDefined();
