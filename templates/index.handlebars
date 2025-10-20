@@ -12,5 +12,6 @@ export type { {{responseClass}} } from './{{{responseFile}}}';
 {{#if generateServices}}export { {{baseServiceClass}} } from './{{{baseServiceFile}}}';
 {{#services}}export { {{typeName}} } from './services/{{{fileName}}}';
 {{/services}}{{/if}}
-{{#functions}}export { {{paramsType}}, {{methodName}} } from './{{{importPath}}}/{{{importFile}}}';
+{{#functions}}export type { {{paramsType}} } from './{{{importPath}}}/{{{importFile}}}';
+export { {{methodName}} } from './{{{importPath}}}/{{{importFile}}}';
 {{/functions}}
