@@ -24,6 +24,7 @@ import { Options } from './options';
 import { Service } from './service';
 import { Templates } from './templates';
 import { ModelIndex } from './model-index';
+import { OperationVariant } from './operation-variant';
 
 /**
  * Main generator class
@@ -35,6 +36,7 @@ export class NgOpenApiGen {
   models = new Map<string, Model>();
   services = new Map<string, Service>();
   operations = new Map<string, Operation>();
+  functions: OperationVariant[] = [];
   outDir: string;
   logger: Logger;
   tempDir: string;
@@ -115,16 +117,16 @@ export class NgOpenApiGen {
       ], []);
 
       // Remove duplicates
-      const functions = allFunctions.filter((fn, index, arr) =>
+      this.functions = allFunctions.filter((fn, index, arr) =>
         arr.findIndex(f => f.methodName === fn.methodName) === index
       );
 
-      for (const fn of functions) {
+      for (const fn of this.functions) {
         this.write('fn', fn, fn.importFile, fn.importPath);
       }
 
       // Context object passed to general templates
-      const general = { services, models, functions };
+      const general = { services, models, functions: this.functions };
 
       // Generate the general files
       this.write('configuration', general, this.globals.configurationFile);

@@ -1,0 +1,7 @@
+{
+  "$schema": "../ng-openapi-gen-schema.json",
+  "input": "test/reservedWords.json",
+  "output": "out/reservedWords",
+  "useTempDir": true,
+  "indexFile": true
+}
