@@ -3,7 +3,9 @@
 
 export { {{configurationClass}} } from './{{{configurationFile}}}';
 export { {{requestBuilderClass}} } from './{{{requestBuilderFile}}}';
+{{#if apiServiceClass}}
 export { {{apiServiceClass}} } from './{{{apiServiceFile}}}';
+{{/if}}
 {{#if moduleClass}}
 export { {{moduleClass}} } from './{{{moduleFile}}}';
 {{/if}}
