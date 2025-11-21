@@ -45,7 +45,7 @@ export function isArraySchemaObject(obj: SchemaObject): obj is ArraySchemaObject
     return true;
   }
   // OpenAPI 3.1 allows 'type' to be an array of types, so we need to check if it includes 'array'
-  if (Array.isArray(obj.type) && obj.type.includes('array' as any)) {
+  if (Array.isArray(obj.type) && obj.type.includes('array')) {
     return true;
   }
   return false;
