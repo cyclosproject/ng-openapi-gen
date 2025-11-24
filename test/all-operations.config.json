@@ -4,6 +4,7 @@
   "output": "out/all-operations",
   "defaultTag": "noTag",
   "indexFile": true,
+  "apiService": false,
   "excludeParameters": [
     "X-Exclude"
   ],

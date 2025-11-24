@@ -3,11 +3,9 @@
 
 export { {{configurationClass}} } from './{{{configurationFile}}}';
 export { {{requestBuilderClass}} } from './{{{requestBuilderFile}}}';
-export { {{apiServiceClass}} } from './{{{apiServiceFile}}}';
-{{#if moduleClass}}
-export { {{moduleClass}} } from './{{{moduleFile}}}';
-{{/if}}
 export type { {{responseClass}} } from './{{{responseFile}}}';
+{{#if apiServiceClass}}export { {{apiServiceClass}} } from './{{{apiServiceFile}}}';{{/if}}
+{{#if moduleClass}}export { {{moduleClass}} } from './{{{moduleFile}}}';{{/if}}
 {{#modelIndex.imports}}export {{#typeOnly}}type {{/typeOnly}}{ {{{typeName}}}{{#useAlias}} as {{{qualifiedName}}}{{/useAlias}} } from './models{{{file}}}';
 {{/modelIndex.imports}}
 {{#if generateServices}}export { {{baseServiceClass}} } from './{{{baseServiceFile}}}';
