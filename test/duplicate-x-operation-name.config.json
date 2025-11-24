@@ -1,0 +1,6 @@
+{
+  "$schema": "../ng-openapi-gen-schema.json",
+  "input": "test/duplicate-x-operation-name.json",
+  "output": "out/duplicate-x-operation-name",
+  "indexFile": true
+}

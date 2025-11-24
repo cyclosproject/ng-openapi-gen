@@ -346,4 +346,8 @@ export class Operation {
 
     return 'short';
   }
+
+  get tag() {
+    return this.tags[0] || this.options.defaultTag || 'operations';
+  }
 }

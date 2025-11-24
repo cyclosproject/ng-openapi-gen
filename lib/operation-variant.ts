@@ -28,6 +28,8 @@ export class OperationVariant extends GenType implements Importable {
   importName: string;
   importPath: string;
   importFile: string;
+  exportName: string;
+  paramsTypeExportName: string;
 
   constructor(
     public operation: Operation,
@@ -55,7 +57,7 @@ export class OperationVariant extends GenType implements Importable {
     this.responseMethodTsComments = tsComments(this.responseMethodDescription(), 1, operation.deprecated);
     this.bodyMethodTsComments = tsComments(this.bodyMethodDescription(), 1, operation.deprecated);
 
-    this.importPath = 'fn/' + fileName(this.operation.tags[0] || options.defaultTag || 'operations');
+    this.importPath = 'fn/' + fileName(this.operation.tag);
     this.importName = ensureNotReserved(methodName);
     this.importFile = fileName(methodName);
 
@@ -144,5 +146,9 @@ To access the full response (for headers, for example), \`${this.responseMethodN
 
   protected initPathToRoot(): string {
     return this.importPath.split(/\//g).map(() => '..').join('/') + '/';
+  }
+
+  get tag() {
+    return this.operation.tags[0] || this.options.defaultTag || 'Api';
   }
 }

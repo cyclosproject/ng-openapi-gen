@@ -1,5 +1,6 @@
 import $RefParser from '@apidevtools/json-schema-ref-parser';
 import eol from 'eol';
+import { upperFirst } from 'lodash';
 
 // Import centralized OpenAPI types and utilities
 import {
@@ -106,7 +107,7 @@ export class NgOpenApiGen {
       }
 
       // Generate each function
-      const allFunctions = services.reduce((acc, service) => [
+      const functions = services.reduce((acc, service) => [
         ...acc,
         ...service.operations.reduce((opAcc, operation) => [
           ...opAcc,
@@ -114,12 +115,24 @@ export class NgOpenApiGen {
         ], [])
       ], []);
 
-      // Remove duplicates
-      const functions = allFunctions.filter((fn, index, arr) =>
-        arr.findIndex(f => f.methodName === fn.methodName) === index
-      );
-
+      // Detect duplicates by methodName and set exportName
+      const methodNameCounts = new Map<string, number>();
       for (const fn of functions) {
+        const count = methodNameCounts.get(fn.methodName) || 0;
+        methodNameCounts.set(fn.methodName, count + 1);
+      }
+
+      // Set exportName and paramsTypeExportName, then write each function
+      for (const fn of functions) {
+        const isDuplicate = (methodNameCounts.get(fn.methodName) || 0) > 1;
+        if (isDuplicate) {
+          const tagSuffix = upperFirst(fn.operation.tag);
+          fn.exportName = fn.methodName + tagSuffix;
+          fn.paramsTypeExportName = fn.paramsType.replace('$Params', '') + tagSuffix + '$Params';
+        } else {
+          fn.exportName = fn.importName;
+          fn.paramsTypeExportName = fn.paramsType;
+        }
         this.write('fn', fn, fn.importFile, fn.importPath);
       }
 

@@ -1,0 +1,47 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "ng-openapi-gen-duplicated-operation-name",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/api/car/consumption": {
+      "get": {
+        "x-controller-name": "Car",
+        "x-operation-name": "getConsumption",
+        "tags": ["Car"],
+        "responses": {
+          "200": {
+            "description": "Consumption",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/plane/consumption": {
+      "get": {
+        "x-controller-name": "Plane",
+        "x-operation-name": "getConsumption",
+        "tags": ["Plane"],
+        "responses": {
+          "200": {
+            "description": "Consumption",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
