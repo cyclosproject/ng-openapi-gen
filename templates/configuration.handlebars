@@ -4,6 +4,18 @@
 import { Injectable } from '@angular/core';
 
 /**
+ * Provides the {{configurationClass}} configuration object with a given root URL.
+ */
+export function provide{{configurationClass}}(rootUrl: string) {
+  var config = new {{configurationClass}}();
+  config.rootUrl = rootUrl;
+  return {
+    provide: {{configurationClass}},
+    useValue: config
+  };
+}
+
+/**
  * Global configuration
  */
 @Injectable({
@@ -13,9 +25,11 @@ export class {{configurationClass}} {
   rootUrl: string = '{{{rootUrl}}}';
 }
 
+{{#if moduleClass}}
 /**
  * Parameters for `{{moduleClass}}.forRoot()`
  */
 export interface {{configurationParams}} {
   rootUrl?: string;
 }
+{{/if}}

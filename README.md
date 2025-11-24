@@ -180,9 +180,23 @@ Notice there are minimal cosmetic improvements, at expense of extra bundle sizes
 
 ## Specifying the root URL / web service endpoint
 
-By default, the server specified in the OpenAPI specification is used as root URL for API paths. However, it is a common requirement to
-configure this from the application. The easiest way is to inject the `ApiConfiguration` instance (note it can be renamed with the
-`configuration` setting) in your bootstrap component and set it directly:
+By default, the server specified in the OpenAPI specification is used as root URL for API paths. However, it is a common requirement to configure this from the application. These are the possible ways to achieve this (note that the `ApiConfiguration` class can be renamed with the `configuration` setting):
+
+1. Starting with version 1.0.5, in you application providers list, add a provider for your `ApiConfiguration` class, like this:
+
+```typescript
+import { ApplicationConfig } from '@angular/core';
+import { provideApiConfiguration } from './api/api-configuration';
+
+export const appConfig: ApplicationConfig = {
+  providers: [
+    // ...other providers...
+    provideApiConfiguration('https://my-custom-endpoint/api')
+  ]
+};
+```
+
+2. Inject the `ApiConfiguration` instance in your bootstrap component and set it directly:
 
 ```typescript
 import { Component, inject, OnInit, signal } from '@angular/core';
@@ -207,9 +221,7 @@ export class App implements OnInit {
 }
 ```
 
-Alternatively, if you generate an `NgModule` by setting the `module` configuration (which isn't recommended since Angular's standalone
-components, and is disabled in ng-openapi-gen by default), you can use its `.forRoot({ rootUrl: 'https://www.my-server.com/api'})` method
-when importing the module. However, this is only kept for historical reasons, and might be removed in the future.
+3. Alternatively, if you generate an `NgModule` by setting the `module` configuration (which isn't recommended since Angular's standalone components, and is disabled in ng-openapi-gen by default), you can use its `.forRoot({ rootUrl: 'https://www.my-server.com/api'})` method when importing the module. However, this is only kept for historical reasons, and might be removed in the future.
 
 ## Passing request headers / customizing the request
 
