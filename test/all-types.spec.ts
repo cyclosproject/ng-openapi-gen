@@ -184,7 +184,7 @@ describe('Generation tests using all-types.json', () => {
       expect(decl.name).toBe('ReferencedInOneOf');
       expect(decl.properties.length).toBe(1);
       expect(decl.properties[0].name).toBe('name');
-      expect(decl.properties[0].type).toBe('string');
+      expect(decl.properties[0].type).toBe('string | null');
 
     });
   });
@@ -426,6 +426,7 @@ describe('Generation tests using all-types.json', () => {
       assertProperty('arrayOfABRefObjectsProp', 'Array<ABRefObject>');
       assertProperty('arrayOfAnyProp', 'Array<any>');
       assertProperty('nestedObject', '{\n\'p1\'?: string;\n\'p2\'?: number;\n' +
+        // Note that the spec includes a nullable: true in d1, but it must be ignored, as it is a $ref
         '\'deeper\'?: {\n\'d1\': ABRefObject;\n\'d2\'?: (string | Array<ABRefObject> | number);\n};\n}');
       assertProperty('dynamic', '{\n[key: string]: XYRefObject;\n}');
       assertProperty('stringEnumProp', '\'a\' | \'b\' | \'c\'');

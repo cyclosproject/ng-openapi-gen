@@ -261,7 +261,8 @@
         "type": "object",
         "properties": {
           "name": {
-            "type": "string"
+            "type": "string",
+            "nullable": true
           }
         }
       },
@@ -533,7 +534,8 @@
                     ],
                     "properties": {
                       "d1": {
-                        "$ref": "#/components/schemas/a.b.RefObject"
+                        "$ref": "#/components/schemas/a.b.RefObject",
+                        "nullable": true
                       },
                       "d2": {
                         "anyOf": [
