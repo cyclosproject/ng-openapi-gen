@@ -3,6 +3,7 @@
   "input": "all-operations.json",
   "output": "out/all-operations",
   "defaultTag": "noTag",
+  "indexFile": true,
   "excludeParameters": [
     "X-Exclude"
   ],
