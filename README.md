@@ -191,7 +191,7 @@ import { provideApiConfiguration } from './api/api-configuration';
 export const appConfig: ApplicationConfig = {
   providers: [
     // ...other providers...
-    provideApiConfiguration('https://my-custom-endpoint/api')
+    provideApiConfiguration('http://localhost:3000/api')
   ]
 };
 ```
@@ -216,12 +216,12 @@ export class App implements OnInit {
   private apiConfiguration = inject(ApiConfiguration);
 
   async ngOnInit() {
-    this.apiConfiguration.rootUrl = 'http://localhost:3000';
+    this.apiConfiguration.rootUrl = 'http://localhost:3000/api';
   }
 }
 ```
 
-3. Alternatively, if you generate an `NgModule` by setting the `module` configuration (which isn't recommended since Angular's standalone components, and is disabled in ng-openapi-gen by default), you can use its `.forRoot({ rootUrl: 'https://www.my-server.com/api'})` method when importing the module. However, this is only kept for historical reasons, and might be removed in the future.
+3. Alternatively, if you generate an `NgModule` by setting the `module` configuration (which isn't recommended since Angular's standalone components, and is disabled in ng-openapi-gen by default), you can use its `.forRoot({ rootUrl: 'http://localhost:3000/api'})` method when importing the module. However, this is only kept for historical reasons, and might be removed in the future.
 
 ## Passing request headers / customizing the request
 
