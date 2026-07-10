@@ -269,7 +269,19 @@ function rawTsType(schema: SchemaObject, options: Options, openApi: OpenAPIObjec
   const allOf = schema.allOf || [];
   let intersectionType: string[] = [];
   if (allOf.length > 0) {
-    intersectionType = allOf.map(u => tsType(u, options, openApi, container));
+    const parentRequired = schema.required || [];
+    intersectionType = allOf.map(subSchema => {
+      // A property required by the enclosing schema may be declared inside an
+      // inline allOf member, either directly or within that member's own nested
+      // allOf. Propagate the enclosing schema's required names into inline
+      // members so those properties are not generated as optional. Names the
+      // member doesn't declare are ignored by the per-property loop below and
+      // flow further down through nested allOf. See issue #395.
+      if (parentRequired.length > 0 && !isReferenceObject(subSchema) && (subSchema.properties || subSchema.allOf)) {
+        subSchema = { ...subSchema, required: [...new Set([...(subSchema.required || []), ...parentRequired])] };
+      }
+      return tsType(subSchema, options, openApi, container);
+    });
   }
 
   // An object

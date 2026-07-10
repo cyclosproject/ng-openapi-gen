@@ -51,6 +51,221 @@
             ]
           }
         ]
+      },
+      "IFilter": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string"
+          }
+        }
+      },
+      "BigDecimalInclusionAttributeFilter": {
+        "required": [
+          "name",
+          "operator",
+          "values"
+        ],
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/IFilter"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "operator": {
+                "type": "string",
+                "enum": [
+                  "IN",
+                  "NOT_IN"
+                ]
+              },
+              "values": {
+                "type": "array",
+                "items": {
+                  "type": "number"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "RequiredFromBase": {
+        "required": [
+          "id",
+          "ghost"
+        ],
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/PartialPerson"
+          }
+        ]
+      },
+      "NestedInlineRequired": {
+        "required": [
+          "shallow",
+          "deep"
+        ],
+        "type": "object",
+        "allOf": [
+          {
+            "type": "object",
+            "properties": {
+              "shallow": {
+                "type": "string"
+              }
+            },
+            "allOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "deep": {
+                    "type": "string"
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "NullablePerson": {
+        "type": "object",
+        "nullable": true,
+        "properties": {
+          "id": {
+            "type": "string"
+          }
+        }
+      },
+      "RequiredFromNullableBase": {
+        "required": [
+          "id"
+        ],
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NullablePerson"
+          }
+        ]
+      },
+      "EnclosingUnionWithRequired": {
+        "type": "object",
+        "required": [
+          "id"
+        ],
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/IFilter"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "other": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/PartialPerson"
+          }
+        ]
+      },
+      "RefWithUnionAndProps": {
+        "type": "object",
+        "properties": {
+          "foo": {
+            "type": "string"
+          }
+        },
+        "oneOf": [
+          {
+            "type": "object",
+            "properties": {
+              "x": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "properties": {
+              "y": {
+                "type": "string"
+              }
+            }
+          }
+        ]
+      },
+      "RequiredFromUnionRef": {
+        "type": "object",
+        "required": [
+          "foo"
+        ],
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/RefWithUnionAndProps"
+          }
+        ]
+      },
+      "GrandBase": {
+        "type": "object",
+        "properties": {
+          "gid": {
+            "type": "string"
+          }
+        }
+      },
+      "MidBase": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/GrandBase"
+          }
+        ]
+      },
+      "RequiredFromDeepRef": {
+        "type": "object",
+        "required": [
+          "gid"
+        ],
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/MidBase"
+          }
+        ]
+      },
+      "SharedBase": {
+        "type": "object",
+        "properties": {
+          "shared": {
+            "type": "string"
+          }
+        }
+      },
+      "InlineAndReferenced": {
+        "type": "object",
+        "required": [
+          "shared"
+        ],
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/SharedBase"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "shared": {
+                "type": "string"
+              }
+            }
+          }
+        ]
       }
     }
   }
