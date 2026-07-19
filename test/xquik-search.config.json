@@ -1,0 +1,5 @@
+{
+  "$schema": "../ng-openapi-gen-schema.json",
+  "input": "xquik-search.json",
+  "output": "out/xquik-search"
+}
