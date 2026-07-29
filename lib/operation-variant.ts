@@ -149,6 +149,6 @@ To access the full response (for headers, for example), \`${this.responseMethodN
   }
 
   get tag() {
-    return this.operation.tags[0] || this.options.defaultTag || 'Api';
+    return this.operation.tag;
   }
 }

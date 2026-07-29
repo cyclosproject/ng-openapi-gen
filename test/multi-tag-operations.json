@@ -1,0 +1,30 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "ng-openapi-gen-multi-tag-operations",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/appointments/{id}": {
+      "delete": {
+        "operationId": "deleteAppointment",
+        "tags": ["Appointment", "Called by frontend"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Deleted"
+          }
+        }
+      }
+    }
+  }
+}

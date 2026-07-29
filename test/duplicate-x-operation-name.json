@@ -1,15 +1,15 @@
 {
   "openapi": "3.0.0",
   "info": {
-    "title": "ng-openapi-gen-duplicated-operation-name",
+    "title": "ng-openapi-gen-duplicate-x-operation-name",
     "version": "1.0.0"
   },
   "paths": {
     "/api/car/consumption": {
       "get": {
-        "x-controller-name": "Car",
+        "x-controller-name": "Car report",
         "x-operation-name": "getConsumption",
-        "tags": ["Car"],
+        "tags": ["Car report"],
         "responses": {
           "200": {
             "description": "Consumption",

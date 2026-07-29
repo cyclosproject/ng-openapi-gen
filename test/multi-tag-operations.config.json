@@ -1,0 +1,7 @@
+{
+  "$schema": "../ng-openapi-gen-schema.json",
+  "input": "test/multi-tag-operations.json",
+  "output": "out/multi-tag-operations",
+  "indexFile": true,
+  "services": true
+}
