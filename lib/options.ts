@@ -23,7 +23,7 @@ export interface Options {
   /** Whether to skip models without references to them */
   ignoreUnusedModels?: boolean;
 
-  /** Whether to remove unexpected files in the output directory */
+  /** Whether to remove unexpected files and directories in the output directory */
   removeStaleFiles?: boolean;
 
   /** Typescript file, without '.ts' extension that exports all models. Set to false to skip. Defaults to `models`. */

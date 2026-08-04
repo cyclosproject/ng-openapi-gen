@@ -439,7 +439,14 @@ export function syncDirs(srcDir: string, destDir: string, removeStale: boolean, 
     for (const file of destFiles) {
       const srcFile = path.join(srcDir, file);
       const destFile = path.join(destDir, file);
-      if (!fs.existsSync(srcFile) && fs.lstatSync(destFile).isFile()) {
+      if (fs.existsSync(srcFile)) {
+        continue;
+      }
+      const stat = fs.lstatSync(destFile);
+      if (stat.isDirectory()) {
+        deleteDirRecursive(destFile);
+        logger.debug('Removed stale directory ' + destFile);
+      } else if (stat.isFile()) {
         fs.unlinkSync(destFile);
         logger.debug('Removed stale file ' + destFile);
       }
