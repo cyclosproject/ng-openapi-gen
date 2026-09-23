@@ -25,7 +25,7 @@
       "default": 20000
     },
     "removeStaleFiles": {
-      "description": "Indicates whether or not to remove any files in the output folder that were not generated. Defaults to true.",
+      "description": "Indicates whether or not to remove any files and directories in the output folder that were not generated. Defaults to true.",
       "type": "boolean",
       "default": true
     },
