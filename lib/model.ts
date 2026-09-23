@@ -1,7 +1,7 @@
 import { upperCase } from 'lodash';
 import { EnumValue } from './enum-value';
 import { GenType } from './gen-type';
-import { fileName, tsComments, tsType, unqualifiedName, resolveRef, qualifiedName } from './gen-utils';
+import { fileName, tsComments, tsType, unqualifiedName, resolveRef, qualifiedName, hasUnionSiblings } from './gen-utils';
 import { OpenAPIObject, ReferenceObject, SchemaObject, getSchemaType, isNullable, isReferenceObject } from './openapi-typings';
 import { Options } from './options';
 import { Property } from './property';
@@ -275,10 +275,11 @@ export class Model extends GenType {
       schema = schemaOrRef;
     }
 
-    // Mirror gen-utils' tsType: a schema with oneOf/anyOf renders as a union
-    // (dropping its properties and allOf) and a nullable schema renders as
-    // `T | null`; in both cases the schema's own keys are not usable in a
-    // `Pick<...>` on the intersection, so they must not be reported as declared.
+    // Mirror gen-utils' tsType: a schema with a bare oneOf/anyOf (no sibling
+    // properties / allOf / additionalProperties) renders as a union, dropping
+    // its other keywords, and a nullable schema renders as `T | null`; in both
+    // cases the schema's own keys are not usable in a `Pick<...>` on the
+    // intersection, so they must not be reported as declared. See issue #401.
     if (isUnionSchema(schema) || isNullable(schema)) {
       return;
     }
@@ -293,9 +294,12 @@ export class Model extends GenType {
 }
 
 /**
- * Whether the schema renders as a union type, i.e. it declares oneOf or anyOf.
- * gen-utils' tsType short-circuits on these, dropping properties and allOf.
+ * Whether the schema renders as a bare union type, i.e. it declares oneOf or
+ * anyOf without sibling keywords. gen-utils' tsType renders such schemas as a
+ * plain union; when sibling properties / allOf / additionalProperties are
+ * present, the union is intersected with them instead. See issue #401.
  */
 function isUnionSchema(schema: SchemaObject): boolean {
-  return !!((schema.oneOf && schema.oneOf.length > 0) || (schema.anyOf && schema.anyOf.length > 0));
+  const hasUnion = !!((schema.oneOf && schema.oneOf.length > 0) || (schema.anyOf && schema.anyOf.length > 0));
+  return hasUnion && !hasUnionSiblings(schema);
 }

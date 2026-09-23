@@ -172,6 +172,27 @@ describe('Generation tests using all-types.json', () => {
     });
   });
 
+  it('OneOfWithSiblings model', () => {
+    const model = gen.models.get('OneOfWithSiblings');
+    const ts = gen.templates.apply('model', model);
+    const parser = new TypescriptParser();
+    parser.parseSource(ts).then(ast => {
+      expect(ast.imports.find(i => i.libraryName.endsWith('/one-of-sibling-variant-a'))).toBeDefined();
+      expect(ast.imports.find(i => i.libraryName.endsWith('/one-of-sibling-variant-b'))).toBeDefined();
+      expect(ast.declarations.length).toBe(1);
+      expect(ast.declarations[0]).toEqual(expect.any(TypeAliasDeclaration));
+      const decl = ast.declarations[0] as TypeAliasDeclaration;
+      expect(decl.name).toBe('OneOfWithSiblings');
+      const text = ts.substring(decl.start || 0, decl.end || ts.length);
+      // Properties declared as siblings of oneOf must not be dropped: they are
+      // intersected with the union, so shared fields are accessible on the type.
+      expect(text).toBe('export type OneOfWithSiblings = (OneOfSiblingVariantA | OneOfSiblingVariantB) & {\n\'id\': number;\n\'name\'?: string;\n};');
+      expect(text).toContain('\'id\': number;');
+      expect(text).not.toContain('\'id\'?:');
+      expect(text).toContain('\'name\'?: string;');
+    });
+  });
+
   it('ReferencedInOneOf model', () => {
     const ref = gen.models.get('ReferencedInOneOf');
     const ts = gen.templates.apply('model', ref);

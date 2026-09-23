@@ -192,18 +192,25 @@ function maybeAppendNull(type: string, nullable: boolean) {
 function rawTsType(schema: SchemaObject, options: Options, openApi: OpenAPIObject, container?: Model): string {
   // An union of types
   const union = schema.oneOf || schema.anyOf || [];
+  let unionType: string | undefined;
   if (union.length > 0) {
-    if (union.length > 1) {
-      return `(${union.map(u => tsType(u, options, openApi, container)).join(' | ')})`;
-    } else {
-      return union.map(u => tsType(u, options, openApi, container)).join(' | ');
+    unionType = union.length > 1
+      ? `(${union.map(u => tsType(u, options, openApi, container)).join(' | ')})`
+      : union.map(u => tsType(u, options, openApi, container)).join(' | ');
+    // Keywords declared as siblings of oneOf/anyOf (properties, allOf,
+    // additionalProperties) apply in addition to the union, so they are
+    // rendered as an intersection with it instead of being dropped. When
+    // there are no siblings, the union alone is the resulting type.
+    // See https://github.com/cyclosproject/ng-openapi-gen/issues/401
+    if (!hasUnionSiblings(schema)) {
+      return unionType;
     }
   }
 
   const type = getSchemaType(schema);
 
   // Handle OpenAPI 3.1 union types (type array)
-  if (Array.isArray(type)) {
+  if (unionType === undefined && Array.isArray(type)) {
     const nonNullTypes = type.filter(t => t !== 'null');
     const hasNull = type.includes('null');
 
@@ -222,8 +229,8 @@ function rawTsType(schema: SchemaObject, options: Options, openApi: OpenAPIObjec
         return hasNull ? `(${uniqueTypes[0]} | null)` : uniqueTypes[0];
       }
 
-      const unionType = uniqueTypes.join(' | ');
-      return hasNull ? `(${unionType} | null)` : `(${unionType})`;
+      const joinedTypes = uniqueTypes.join(' | ');
+      return hasNull ? `(${joinedTypes} | null)` : `(${joinedTypes})`;
     } else if (nonNullTypes.length === 1) {
       // Single non-null type, process normally
       const singleType = nonNullTypes[0];
@@ -239,7 +246,7 @@ function rawTsType(schema: SchemaObject, options: Options, openApi: OpenAPIObjec
   }
 
   // An array
-  if (type === 'array' || isArraySchemaObject(schema)) {
+  if (unionType === undefined && (type === 'array' || isArraySchemaObject(schema))) {
     // Check for OpenAPI 3.1 prefixItems (tuple types)
     if ('prefixItems' in schema && Array.isArray((schema as any).prefixItems)) {
       const prefixItems = (schema as any).prefixItems;
@@ -267,10 +274,10 @@ function rawTsType(schema: SchemaObject, options: Options, openApi: OpenAPIObjec
 
   // All the types
   const allOf = schema.allOf || [];
-  let intersectionType: string[] = [];
+  const intersectionType: string[] = unionType ? [unionType] : [];
   if (allOf.length > 0) {
     const parentRequired = schema.required || [];
-    intersectionType = allOf.map(subSchema => {
+    intersectionType.push(...allOf.map(subSchema => {
       // A property required by the enclosing schema may be declared inside an
       // inline allOf member, either directly or within that member's own nested
       // allOf. Propagate the enclosing schema's required names into inline
@@ -281,7 +288,7 @@ function rawTsType(schema: SchemaObject, options: Options, openApi: OpenAPIObjec
         subSchema = { ...subSchema, required: [...new Set([...(subSchema.required || []), ...parentRequired])] };
       }
       return tsType(subSchema, options, openApi, container);
-    });
+    }));
   }
 
   // An object
@@ -341,7 +348,7 @@ function rawTsType(schema: SchemaObject, options: Options, openApi: OpenAPIObjec
   }
 
   // A simple type (integer doesn't exist as type in JS, use number instead)
-  if (type) {
+  if (type && !Array.isArray(type)) {
     const finalType = type === 'integer' ? 'number' : type;
     return finalType;
   }
@@ -517,6 +524,17 @@ function tryGetDiscriminator(baseSchemaOrRef: SchemaObject | ReferenceObject, de
     }
   }
   return undefined;
+}
+
+/**
+ * Whether the given schema declares keywords (properties, allOf,
+ * additionalProperties) as siblings of a oneOf / anyOf union. Such siblings
+ * apply in addition to the union.
+ */
+export function hasUnionSiblings(schema: SchemaObject): boolean {
+  return !!(schema.allOf && schema.allOf.length > 0)
+    || !!(schema.properties && Object.keys(schema.properties).length > 0)
+    || !!schema.additionalProperties;
 }
 
 /**

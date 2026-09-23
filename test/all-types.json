@@ -52,6 +52,9 @@
               },
               {
                 "$ref": "#/components/schemas/AuditCdr"
+              },
+              {
+                "$ref": "#/components/schemas/OneOfWithSiblings"
               }
             ]
           }
@@ -256,6 +259,45 @@
             "$ref": "#/components/schemas/EscapedProperties"
           }
         ]
+      },
+      "OneOfWithSiblings": {
+        "description": "Polymorphic object with shared base fields declared as siblings of oneOf (#401)",
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/OneOfSiblingVariantA"
+          },
+          {
+            "$ref": "#/components/schemas/OneOfSiblingVariantB"
+          }
+        ],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ]
+      },
+      "OneOfSiblingVariantA": {
+        "type": "object",
+        "properties": {
+          "file": {
+            "type": "string"
+          }
+        }
+      },
+      "OneOfSiblingVariantB": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string"
+          }
+        }
       },
       "ReferencedInOneOf": {
         "type": "object",

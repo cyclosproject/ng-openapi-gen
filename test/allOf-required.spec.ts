@@ -95,21 +95,25 @@ describe('Generation tests using allOf-required.json', () => {
     expect(ts).toContain('export type RequiredFromNullableBase = NullablePerson | null;');
   });
 
-  it('should not emit Required<Pick<>> when the enclosing schema is a union (would not compile)', () => {
+  it('should intersect oneOf with sibling allOf and required', () => {
     const model = gen.models.get('EnclosingUnionWithRequired');
     expect(model).toBeDefined();
     const ts = gen.templates.apply('model', model);
-    // oneOf makes X$ a union whose keyof is never; no Pick must be generated.
-    expect(ts).not.toContain('Required<Pick');
+    // Sibling allOf/properties declared alongside oneOf are no longer dropped:
+    // the union is intersected with them, so 'id' (declared by the referenced
+    // PartialPerson) is a usable key and can be enforced via Required<Pick<...>>.
+    expect(ts).toContain('type EnclosingUnionWithRequired$ = (IFilter | {\n\'other\'?: string;\n}) & PartialPerson & {\n};');
+    expect(ts).toContain('export type EnclosingUnionWithRequired = EnclosingUnionWithRequired$ & Required<Pick<EnclosingUnionWithRequired$, RequiredProperties>>;');
   });
 
-  it('should not emit Required<Pick<>> for a referenced member that is a union (would not compile)', () => {
+  it('should enforce required on a referenced member that is a union with sibling properties (#401)', () => {
     const model = gen.models.get('RequiredFromUnionRef');
     expect(model).toBeDefined();
     const ts = gen.templates.apply('model', model);
-    // RefWithUnionAndProps renders as a union, so 'foo' is not a usable key and
-    // must not be picked.
-    expect(ts).not.toContain('Required<Pick');
+    // RefWithUnionAndProps declares 'foo' as a sibling of oneOf, so it renders
+    // as (union) & { 'foo'?: string }, making 'foo' a usable key that can be picked.
+    expect(ts).toContain('type RequiredProperties = \'foo\';');
+    expect(ts).toContain('export type RequiredFromUnionRef = RequiredFromUnionRef$ & Required<Pick<RequiredFromUnionRef$, RequiredProperties>>;');
   });
 
   it('should enforce a required property declared in a referenced base\'s own allOf', () => {
