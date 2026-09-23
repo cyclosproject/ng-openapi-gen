@@ -1,0 +1,50 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Delete test",
+    "version": "1"
+  },
+  "paths": {
+    "/first-path": {
+      "get": {
+        "tags": ["pet"],
+        "operationId": "firstPath",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/second-path": {
+      "get": {
+        "tags": ["store"],
+        "operationId": "secondPath",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Nested.Thing"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Nested.Thing": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
