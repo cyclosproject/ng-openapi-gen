@@ -47,9 +47,23 @@ export class Model extends GenType {
       this.enumArrayName = upperCase(this.typeName).replace(/\s+/g, '_');
       this.enumArrayFileName = fileName(this.typeName + '-array');
 
-      const names = (schema as any)['x-enumNames'] as string[] || [];
-      const descriptions = (schema as any)['x-enumDescriptions'] as string[] || [];
-      const values = schema.enum || [];
+      const allNames = (schema as any)['x-enumNames'] as string[] || [];
+      const allDescriptions = (schema as any)['x-enumDescriptions'] as string[] || [];
+      // A null value cannot be a member of a TypeScript enum. The nullability is
+      // expressed in the generated type where the enum is referenced
+      // (e.g. `Enum | null`), so null values are skipped here.
+      // See https://github.com/cyclosproject/ng-openapi-gen/issues/409
+      const names: string[] = [];
+      const descriptions: string[] = [];
+      const values: any[] = [];
+      (schema.enum || []).forEach((value, i) => {
+        if (value === null) {
+          return;
+        }
+        values.push(value);
+        names.push(allNames[i]);
+        descriptions.push(allDescriptions[i]);
+      });
       this.enumValues = [];
       for (let i = 0; i < values.length; i++) {
         const enumValue = new EnumValue(typeForEnum, names[i], descriptions[i], values[i], options);

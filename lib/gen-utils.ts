@@ -214,11 +214,17 @@ function rawTsType(schema: SchemaObject, options: Options, openApi: OpenAPIObjec
     const nonNullTypes = type.filter(t => t !== 'null');
     const hasNull = type.includes('null');
 
+    // When the type itself allows null, a null entry in the enum values is
+    // rendered by this union, so it is removed from the enum before rendering
+    // each non-null type, avoiding a duplicated or nested null.
+    // See https://github.com/cyclosproject/ng-openapi-gen/issues/409
+    const nonNullEnum = hasNull && Array.isArray(schema.enum) ? schema.enum.filter(v => v !== null) : schema.enum;
+
     if (nonNullTypes.length > 1) {
       // Generate union of the different types
       const unionTypes = nonNullTypes.map(t => {
         // Create a schema object with single type for recursive processing
-        const singleTypeSchema = { ...schema, type: t as any };
+        const singleTypeSchema = { ...schema, type: t as any, enum: nonNullEnum };
         return rawTsType(singleTypeSchema, options, openApi, container);
       }).filter(t => t !== null);
 
@@ -234,7 +240,7 @@ function rawTsType(schema: SchemaObject, options: Options, openApi: OpenAPIObjec
     } else if (nonNullTypes.length === 1) {
       // Single non-null type, process normally
       const singleType = nonNullTypes[0];
-      const singleTypeSchema = { ...schema, type: singleType as any };
+      const singleTypeSchema = { ...schema, type: singleType as any, enum: nonNullEnum };
       const result = rawTsType(singleTypeSchema, options, openApi, container);
       return hasNull ? `(${result} | null)` : result;
     } else if (hasNull) {
@@ -336,9 +342,11 @@ function rawTsType(schema: SchemaObject, options: Options, openApi: OpenAPIObjec
   const enumValues = schema.enum || ((schema as any).const ? [(schema as any).const] : []);
   if (enumValues.length > 0) {
     if (type === 'number' || type === 'integer' || type === 'boolean') {
-      return enumValues.join(' | ');
+      return enumValues.filter(v => v !== null).join(' | ');
     } else {
-      return enumValues.map(v => `'${jsesc(v)}'`).join(' | ');
+      // A null value in an enum is rendered as the `null` type, not as the string 'null'.
+      // See https://github.com/cyclosproject/ng-openapi-gen/issues/409
+      return enumValues.map(v => v === null ? 'null' : `'${jsesc(v)}'`).join(' | ');
     }
   }
 

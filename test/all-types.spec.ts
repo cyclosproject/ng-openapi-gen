@@ -104,6 +104,66 @@ describe('Generation tests using all-types.json', () => {
     });
   });
 
+  it('NullableEnums model', () => {
+    const refObject = gen.models.get('NullableEnums');
+    const ts = gen.templates.apply('model', refObject);
+    const parser = new TypescriptParser();
+    parser.parseSource(ts).then(ast => {
+      expect(ast.imports.length).toBe(2);
+      expect(ast.imports.find(i => i.libraryName.endsWith('/nullable-int-enum'))).toBeDefined();
+      expect(ast.imports.find(i => i.libraryName.endsWith('/nullable-string-enum'))).toBeDefined();
+      expect(ast.declarations.length).toBe(1);
+      expect(ast.declarations[0]).toEqual(expect.any(InterfaceDeclaration));
+      const decl = ast.declarations[0] as InterfaceDeclaration;
+      expect(decl.name).toBe('NullableEnums');
+      expect(decl.properties.length).toBe(5);
+      expect(decl.properties[0].name).toBe('inlineEnumNoType');
+      // A null entry in the enum must be rendered as the `null` type, not the string 'null'
+      expect(decl.properties[0].type).toBe('\'a\' | \'b\' | null');
+      expect(decl.properties[1].name).toBe('inlineIntEnum');
+      expect(decl.properties[1].type).toBe('(1 | 2 | null)');
+      expect(decl.properties[2].name).toBe('inlineStringEnum');
+      // Issue #409: must not duplicate null, nor render it as the string literal 'null'
+      expect(decl.properties[2].type).toBe('(\'gridConnectionPoint\' | \'undefined\' | null)');
+      expect(decl.properties[3].name).toBe('refNullableIntEnum');
+      expect(decl.properties[3].type).toBe('NullableIntEnum | null');
+      expect(decl.properties[4].name).toBe('refNullableStringEnum');
+      expect(decl.properties[4].type).toBe('NullableStringEnum | null');
+
+    });
+  });
+
+  it('NullableStringEnum model', () => {
+    const ref = gen.models.get('NullableStringEnum');
+    const ts = gen.templates.apply('model', ref);
+    const parser = new TypescriptParser();
+    parser.parseSource(ts).then(ast => {
+      expect(ast.imports.length).toBe(0);
+      expect(ast.declarations.length).toBe(1);
+      expect(ast.declarations[0]).toEqual(expect.any(EnumDeclaration));
+      const decl = ast.declarations[0] as EnumDeclaration;
+      expect(decl.name).toBe('NullableStringEnum');
+      // The null value cannot be an enum member, so only the string values are present
+      expect(decl.members).toEqual(['GridConnectionPoint', 'Undefined']);
+
+    });
+  });
+
+  it('NullableIntEnum model', () => {
+    const ref = gen.models.get('NullableIntEnum');
+    const ts = gen.templates.apply('model', ref);
+    const parser = new TypescriptParser();
+    parser.parseSource(ts).then(ast => {
+      expect(ast.imports.length).toBe(0);
+      expect(ast.declarations.length).toBe(1);
+      expect(ast.declarations[0]).toEqual(expect.any(EnumDeclaration));
+      const decl = ast.declarations[0] as EnumDeclaration;
+      expect(decl.name).toBe('NullableIntEnum');
+      expect(decl.members).toEqual(['$1', '$2']);
+
+    });
+  });
+
   it('a.b.RefObject model', () => {
     const refObject = gen.models.get('a.b.RefObject');
     const ts = gen.templates.apply('model', refObject);

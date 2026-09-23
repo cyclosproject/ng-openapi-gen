@@ -55,6 +55,9 @@
               },
               {
                 "$ref": "#/components/schemas/OneOfWithSiblings"
+              },
+              {
+                "$ref": "#/components/schemas/NullableEnums"
               }
             ]
           }
@@ -140,6 +143,59 @@
         "properties": {
           "name": {
             "type": "string"
+          }
+        }
+      },
+      "NullableStringEnum": {
+        "description": "String enum that allows null, using the OpenAPI 3.1 type array notation (#409)",
+        "type": ["string", "null"],
+        "enum": [
+          "gridConnectionPoint",
+          "undefined",
+          null
+        ]
+      },
+      "NullableIntEnum": {
+        "description": "Integer enum that allows null, using the OpenAPI 3.1 type array notation (#409)",
+        "type": ["integer", "null"],
+        "enum": [
+          1,
+          2,
+          null
+        ]
+      },
+      "NullableEnums": {
+        "description": "Object with properties that are enums allowing null (#409)",
+        "type": "object",
+        "properties": {
+          "inlineStringEnum": {
+            "type": ["string", "null"],
+            "enum": [
+              "gridConnectionPoint",
+              "undefined",
+              null
+            ]
+          },
+          "inlineIntEnum": {
+            "type": ["integer", "null"],
+            "enum": [
+              1,
+              2,
+              null
+            ]
+          },
+          "inlineEnumNoType": {
+            "enum": [
+              "a",
+              "b",
+              null
+            ]
+          },
+          "refNullableStringEnum": {
+            "$ref": "#/components/schemas/NullableStringEnum"
+          },
+          "refNullableIntEnum": {
+            "$ref": "#/components/schemas/NullableIntEnum"
           }
         }
       },
