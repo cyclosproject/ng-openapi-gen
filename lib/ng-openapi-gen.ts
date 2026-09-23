@@ -1,5 +1,6 @@
 import $RefParser from '@apidevtools/json-schema-ref-parser';
 import eol from 'eol';
+import { upperFirst } from 'lodash';
 
 // Import centralized OpenAPI types and utilities
 import {
@@ -14,12 +15,13 @@ import fs from 'fs-extra';
 import os from 'os';
 import path from 'path';
 import { parseOptions } from './cmd-args';
-import { HTTP_METHODS, deleteDirRecursive, methodName, simpleName, syncDirs, typeName, resolveRef } from './gen-utils';
+import { HTTP_METHODS, deleteDirRecursive, methodName, simpleName, syncDirs, resolveRef } from './gen-utils';
 import { Globals } from './globals';
 import { HandlebarsManager } from './handlebars-manager';
 import { Logger } from './logger';
 import { Model } from './model';
 import { Operation } from './operation';
+import { OperationVariant } from './operation-variant';
 import { Options } from './options';
 import { Service } from './service';
 import { Templates } from './templates';
@@ -29,9 +31,9 @@ import { ModelIndex } from './model-index';
  * Main generator class
  */
 export class NgOpenApiGen {
-  globals: Globals;
-  handlebarsManager: HandlebarsManager;
-  templates: Templates;
+  globals!: Globals;
+  handlebarsManager!: HandlebarsManager;
+  templates!: Templates;
   models = new Map<string, Model>();
   services = new Map<string, Service>();
   operations = new Map<string, Operation>();
@@ -101,37 +103,57 @@ export class NgOpenApiGen {
       const services = [...this.services.values()];
       for (const service of services) {
         if (generateServices) {
+          this.checkDuplicatedMethods(service);
           this.write('service', service, service.fileName, 'services');
         }
       }
 
-      // Generate each function
-      const functions = services.reduce((acc, service) => [
+      // Generate each function. Services of a multi-tagged operation share its variants, so
+      // de-duplicate them (see #379)
+      const allFunctions: OperationVariant[] = services.reduce<OperationVariant[]>((acc, service) => [
         ...acc,
-        ...service.operations.reduce((opAcc, operation) => [
+        ...service.operations.reduce<OperationVariant[]>((opAcc, operation) => [
           ...opAcc,
           ...operation.variants
         ], [])
       ], []);
+      const functions = [...new Set(allFunctions)];
 
-      // Detect duplicates by methodName and set exportName
+      // Detect duplicated method names, such as the same 'x-operation-name' under different tags (see #389)
       const methodNameCounts = new Map<string, number>();
       for (const fn of functions) {
         const count = methodNameCounts.get(fn.methodName) || 0;
         methodNameCounts.set(fn.methodName, count + 1);
       }
 
-      // Set exportName and paramsTypeExportName, then write each function
+      // Set exportName and paramsTypeExportName, disambiguating duplicates by tag, then write each function
+      const usedExportNames = new Set<string>();
+      const writtenFiles = new Set<string>();
       for (const fn of functions) {
         const isDuplicate = (methodNameCounts.get(fn.methodName) || 0) > 1;
-        if (isDuplicate) {
-          const tagSuffix = typeName(fn.operation.tag);
+        const tagSuffix = isDuplicate ? upperFirst(methodName(fn.tag)) : '';
+
+        if (tagSuffix) {
           fn.exportName = fn.methodName + tagSuffix;
-          fn.paramsTypeExportName = fn.paramsType.replace('$Params', '') + tagSuffix + '$Params';
+          fn.paramsTypeExportName = fn.paramsType.replace(/\$Params$/, '') + tagSuffix + '$Params';
         } else {
           fn.exportName = fn.importName;
           fn.paramsTypeExportName = fn.paramsType;
         }
+
+        // Duplicated export name or file. The tag cannot disambiguate, so fail
+        const file = `${fn.importPath}/${fn.importFile}`;
+        if (usedExportNames.has(fn.exportName)) {
+          throw new Error(`Multiple operations would be exported as '${fn.exportName}'. `
+            + 'Make sure operation ids (or \'x-operation-name\') are unique within a tag.');
+        }
+        if (writtenFiles.has(file)) {
+          throw new Error(`Multiple operations would be generated to the file '${file}.ts'. `
+            + 'Make sure operation ids (or \'x-operation-name\') are unique within a tag.');
+        }
+        usedExportNames.add(fn.exportName);
+        writtenFiles.add(file);
+
         this.write('fn', fn, fn.importFile, fn.importPath);
       }
 
@@ -173,6 +195,25 @@ export class NgOpenApiGen {
     } finally {
       // Always remove the temporary directory
       deleteDirRecursive(this.tempDir);
+    }
+  }
+
+  /**
+   * A service can't declare the same method twice. Only reachable when distinct operations
+   * sharing a tag also share a method name (see #392)
+   */
+  private checkDuplicatedMethods(service: Service) {
+    const variantsByMethodName = new Map<string, OperationVariant>();
+    for (const operation of service.operations) {
+      for (const variant of operation.variants) {
+        const other = variantsByMethodName.get(variant.methodName);
+        if (other) {
+          throw new Error(`Operations '${other.operation.id}' and '${variant.operation.id}' would both be generated `
+            + `as method '${variant.methodName}' of the service for tag '${service.name}'. `
+            + 'Make sure operation ids (or \'x-operation-name\') are unique among operations sharing a tag.');
+        }
+        variantsByMethodName.set(variant.methodName, variant);
+      }
     }
   }
 
