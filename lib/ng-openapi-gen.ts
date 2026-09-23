@@ -31,9 +31,9 @@ import { ModelIndex } from './model-index';
  * Main generator class
  */
 export class NgOpenApiGen {
-  globals: Globals;
-  handlebarsManager: HandlebarsManager;
-  templates: Templates;
+  globals!: Globals;
+  handlebarsManager!: HandlebarsManager;
+  templates!: Templates;
   models = new Map<string, Model>();
   services = new Map<string, Service>();
   operations = new Map<string, Operation>();
@@ -110,9 +110,9 @@ export class NgOpenApiGen {
 
       // Generate each function. Services of a multi-tagged operation share its variants, so
       // de-duplicate them (see #379)
-      const allFunctions: OperationVariant[] = services.reduce((acc, service) => [
+      const allFunctions: OperationVariant[] = services.reduce<OperationVariant[]>((acc, service) => [
         ...acc,
-        ...service.operations.reduce((opAcc, operation) => [
+        ...service.operations.reduce<OperationVariant[]>((opAcc, operation) => [
           ...opAcc,
           ...operation.variants
         ], [])
