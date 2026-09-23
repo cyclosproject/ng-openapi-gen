@@ -42,6 +42,25 @@
           }
         }
       }
+    },
+    "/api/electric-sports-car/consumption": {
+      "get": {
+        "x-controller-name": "ElectricSportsCar",
+        "x-operation-name": "getConsumption",
+        "tags": ["Electric Sports Car"],
+        "responses": {
+          "200": {
+            "description": "Consumption",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   }
 }

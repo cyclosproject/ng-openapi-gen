@@ -16,6 +16,8 @@ describe('Generation tests using duplicate-x-operation-name.json', () => {
     expect(content).toContain('export type { GetConsumption$Params as GetConsumptionCar$Params }');
     expect(content).toContain('export { getConsumption as getConsumptionPlane }');
     expect(content).toContain('export type { GetConsumption$Params as GetConsumptionPlane$Params }');
+    expect(content).toContain('export { getConsumption as getConsumptionElectricSportsCar }');
+    expect(content).toContain('export type { GetConsumption$Params as GetConsumptionElectricSportsCar$Params }');
   });
 
   it('functions.ts should have both functions and parameters', () => {
@@ -25,6 +27,8 @@ describe('Generation tests using duplicate-x-operation-name.json', () => {
     expect(content).toContain('export type { GetConsumption$Params as GetConsumptionCar$Params }');
     expect(content).toContain('export { getConsumption as getConsumptionPlane }');
     expect(content).toContain('export type { GetConsumption$Params as GetConsumptionPlane$Params }');
+    expect(content).toContain('export { getConsumption as getConsumptionElectricSportsCar }');
+    expect(content).toContain('export type { GetConsumption$Params as GetConsumptionElectricSportsCar$Params }');
   });
 
 });

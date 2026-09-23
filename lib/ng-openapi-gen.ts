@@ -1,6 +1,5 @@
 import $RefParser from '@apidevtools/json-schema-ref-parser';
 import eol from 'eol';
-import { upperFirst } from 'lodash';
 
 // Import centralized OpenAPI types and utilities
 import {
@@ -15,7 +14,7 @@ import fs from 'fs-extra';
 import os from 'os';
 import path from 'path';
 import { parseOptions } from './cmd-args';
-import { HTTP_METHODS, deleteDirRecursive, methodName, simpleName, syncDirs, resolveRef } from './gen-utils';
+import { HTTP_METHODS, deleteDirRecursive, methodName, simpleName, syncDirs, typeName, resolveRef } from './gen-utils';
 import { Globals } from './globals';
 import { HandlebarsManager } from './handlebars-manager';
 import { Logger } from './logger';
@@ -126,7 +125,7 @@ export class NgOpenApiGen {
       for (const fn of functions) {
         const isDuplicate = (methodNameCounts.get(fn.methodName) || 0) > 1;
         if (isDuplicate) {
-          const tagSuffix = upperFirst(fn.operation.tag);
+          const tagSuffix = typeName(fn.operation.tag);
           fn.exportName = fn.methodName + tagSuffix;
           fn.paramsTypeExportName = fn.paramsType.replace('$Params', '') + tagSuffix + '$Params';
         } else {
