@@ -1,5 +1,6 @@
 {
   "$schema": "../ng-openapi-gen-schema.json",
   "input": "allOf-required.json",
-  "output": "out/allOf-required"
+  "output": "out/allOf-required",
+  "ignoreUnusedModels": false
 }
