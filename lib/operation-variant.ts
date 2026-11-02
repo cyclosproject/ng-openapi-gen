@@ -1,7 +1,7 @@
 import { upperFirst } from 'lodash';
 import { Content } from './content';
 import { GenType } from './gen-type';
-import { ensureNotReserved, fileName, resolveRef, tsComments } from './gen-utils';
+import { ensureNotReserved, fileName, isBinarySchema, resolveRef, tsComments } from './gen-utils';
 import { Importable } from './importable';
 import { SchemaObject, isReferenceObject } from './openapi-typings';
 import { Operation } from './operation';
@@ -87,13 +87,13 @@ export class OperationVariant extends GenType implements Importable {
       return customizedResponseTypeByPath.toUse;
     }
 
-    // When the schema is in binary format, return 'blob'
+    // When the schema represents binary content, return 'blob'
     let schemaOrRef = successResponse.spec?.schema || { type: 'string' };
     if (isReferenceObject(schemaOrRef)) {
       schemaOrRef = resolveRef(operation.openApi, schemaOrRef.$ref);
     }
     const schema = schemaOrRef as SchemaObject;
-    if (schema.format === 'binary') {
+    if (isBinarySchema(schema)) {
       return 'blob';
     }
 
