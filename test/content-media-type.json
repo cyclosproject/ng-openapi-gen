@@ -1,0 +1,120 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "contentMediaType test",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/upload": {
+      "post": {
+        "operationId": "upload",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/UploadForm"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Uploaded"
+          }
+        }
+      }
+    },
+    "/raw": {
+      "put": {
+        "operationId": "putRaw",
+        "requestBody": {
+          "content": {
+            "application/octet-stream": {
+              "schema": {
+                "type": "string",
+                "contentMediaType": "application/octet-stream"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Stored"
+          }
+        }
+      }
+    },
+    "/download": {
+      "get": {
+        "operationId": "download",
+        "responses": {
+          "200": {
+            "description": "The file",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "contentMediaType": "application/octet-stream"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/encoded": {
+      "get": {
+        "operationId": "encoded",
+        "responses": {
+          "200": {
+            "description": "The file, base64 encoded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "contentMediaType": "application/octet-stream",
+                  "contentEncoding": "base64"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "UploadForm": {
+        "type": "object",
+        "required": ["file"],
+        "properties": {
+          "file": {
+            "type": "string",
+            "contentMediaType": "application/octet-stream"
+          },
+          "image": {
+            "type": "string",
+            "contentMediaType": "image/png"
+          },
+          "optionalFile": {
+            "type": ["string", "null"],
+            "contentMediaType": "application/octet-stream"
+          },
+          "encoded": {
+            "type": "string",
+            "contentMediaType": "application/octet-stream",
+            "contentEncoding": "base64"
+          },
+          "jsonText": {
+            "type": "string",
+            "contentMediaType": "application/json"
+          },
+          "plainText": {
+            "type": "string",
+            "contentMediaType": "text/plain"
+          }
+        }
+      }
+    }
+  }
+}

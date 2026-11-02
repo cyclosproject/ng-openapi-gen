@@ -351,7 +351,7 @@ function rawTsType(schema: SchemaObject, options: Options, openApi: OpenAPIObjec
   }
 
   // A Blob
-  if (type === 'string' && schema.format === 'binary') {
+  if (type === 'string' && isBinarySchema(schema)) {
     return 'Blob';
   }
 
@@ -543,6 +543,25 @@ export function hasUnionSiblings(schema: SchemaObject): boolean {
   return !!(schema.allOf && schema.allOf.length > 0)
     || !!(schema.properties && Object.keys(schema.properties).length > 0)
     || !!schema.additionalProperties;
+}
+
+/**
+ * Whether the given schema represents raw binary content, either by using
+ * `format: binary` (OpenAPI 3.0) or a non-textual `contentMediaType`
+ * (OpenAPI 3.1). When `contentEncoding` is set (such as `base64`), the
+ * content is encoded as text, hence it is not considered binary.
+ * See https://github.com/cyclosproject/ng-openapi-gen/issues/403
+ */
+export function isBinarySchema(schema: SchemaObject): boolean {
+  if (schema.format === 'binary') {
+    return true;
+  }
+  const contentMediaType = (schema as any).contentMediaType;
+  if (typeof contentMediaType !== 'string' || (schema as any).contentEncoding) {
+    return false;
+  }
+  const mediaType = contentMediaType.toLowerCase();
+  return !mediaType.startsWith('text/') && !mediaType.includes('/json') && !mediaType.includes('+json');
 }
 
 /**
