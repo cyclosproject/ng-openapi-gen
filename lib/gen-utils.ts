@@ -561,7 +561,7 @@ export function isBinarySchema(schema: SchemaObject): boolean {
     return false;
   }
   const mediaType = contentMediaType.toLowerCase();
-  return !mediaType.startsWith('text/') && !mediaType.includes('/json') && !mediaType.includes('+json');
+  return !mediaType.startsWith('text/') && !/[/+](json|xml)\b/.test(mediaType);
 }
 
 /**

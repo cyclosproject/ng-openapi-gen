@@ -112,6 +112,10 @@
           "plainText": {
             "type": "string",
             "contentMediaType": "text/plain"
+          },
+          "xmlText": {
+            "type": "string",
+            "contentMediaType": "application/xml"
           }
         }
       }

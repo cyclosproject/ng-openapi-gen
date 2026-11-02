@@ -35,6 +35,7 @@ describe('Generation tests using content-media-type.json', () => {
     // Textual content is a string
     expect(type('jsonText')).toBe('string');
     expect(type('plainText')).toBe('string');
+    expect(type('xmlText')).toBe('string');
   });
 
   it('PUT /raw', () => {
