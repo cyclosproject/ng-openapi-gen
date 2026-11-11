@@ -149,6 +149,11 @@
       "default": true,
       "type": "boolean"
     },
+    "useInject": {
+      "description": "When set to true, generated classes use Angular's `inject()` function instead of constructor injection. Defaults to false.",
+      "default": false,
+      "type": "boolean"
+    },
     "services": {
       "description": "When set to true, services will be generated. Services are injectable classes that work as a facade to functions, a bit prettier API at cost of increased bundle size. Defaults to false.",
       "default": false,

@@ -24,6 +24,7 @@ export class Globals {
   serviceIndexFile?: string;
   rootUrl?: string;
   promises: boolean;
+  useInject: boolean;
   generateServices: boolean;
 
   constructor(options: Options) {
@@ -45,6 +46,7 @@ export class Globals {
       }
     }
     this.promises = options.promises ?? true;
+    this.useInject = options.useInject ?? false;
     this.requestBuilderClass = options.requestBuilder ?? 'RequestBuilder';
     this.requestBuilderFile = fileName(this.requestBuilderClass);
     this.responseClass = options.response ?? 'StrictHttpResponse';
