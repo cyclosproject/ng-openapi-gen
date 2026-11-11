@@ -44,6 +44,9 @@ export interface Options {
   /** When true, generates Promise-based service methods. When false, Observable-based. */
   promises?: boolean;
 
+  /** When true, generated classes use Angular's `inject()` function instead of constructor injection. Defaults to false. */
+  useInject?: boolean;
+
   /** Prefix for generated service classes. Defaults to empty. */
   servicePrefix?: string;
 
